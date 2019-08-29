@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger
 import java.util.function.Supplier
 
 const val MOD_ID = "projectessentials"
+const val MOD_NAME = "Project Essentials"
 
 @Mod(MOD_ID)
 class ProjectEssentials {
@@ -23,7 +24,7 @@ class ProjectEssentials {
         )
 
     init {
-        logger.info("Project Essentials starting initializing ...")
+        logger.info("$MOD_NAME starting initializing ...")
         FMLKotlinModLoadingContext.get().modEventBus.register(proxy)
         FMLKotlinModLoadingContext.get().modEventBus.addListener<FMLCommonSetupEvent> {
             this.setup()
@@ -31,6 +32,6 @@ class ProjectEssentials {
     }
 
     private fun setup() {
-        logger.info("Project Essentials starting setup mod ...")
+        logger.info("$MOD_NAME starting setup mod ...")
     }
 }
