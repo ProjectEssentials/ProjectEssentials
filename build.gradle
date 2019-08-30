@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url "https://libraries.minecraft.net" }
         maven { url 'https://minecraft.curseforge.com/api/maven/' }
         jcenter()
         mavenCentral()
@@ -24,6 +25,7 @@ compileKotlin.kotlinOptions.jvmTarget = compileTestKotlin.kotlinOptions.jvmTarge
 
 repositories {
     maven { url 'https://minecraft.curseforge.com/api/maven/' }
+    maven { url "https://libraries.minecraft.net" }
 }
 
 configurations {
@@ -74,6 +76,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.0.73'
     compile "kottle:Kottle:$kottleVersion"
     mod "kottle:Kottle:$kottleVersion"
+    compile 'com.mojang:brigadier:1.0.17'
 }
 
 task installMods(type: Copy, dependsOn: "deinstallMods") {
