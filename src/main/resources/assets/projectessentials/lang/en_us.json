@@ -1,0 +1,10 @@
+{
+  "projectessentials.common.player.notonline": "§cPlayer {0} not online or not exists on server.",
+  "projectessentials.heal.self.success": "§6You have been healed.",
+  "projectessentials.heal.self.maxhealth": "§cYou already fully healed.",
+  "projectessentials.heal.self.error": "§cYou don't have permission to heal yourself.",
+  "projectessentials.heal.player.success": "§6You have healed player {0}.",
+  "projectessentials.heal.player.maxhealth": "§cPlayer {0} already fully healed.",
+  "projectessentials.heal.player.error": "§cYou don't have permission to heal player {0}.",
+  "projectessentials.heal.player.recipient.success": "§6You have been healed by player {0}."
+}
