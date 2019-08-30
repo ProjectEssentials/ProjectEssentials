@@ -41,7 +41,7 @@ class HealCommand {
             val sender: String = c.source.asPlayer().name.string
 
             if (!c.source.asPlayer().hasPermissionLevel(2)) return
-            logger.info("Executed command $HEAL_COMMAND from $sender")
+            logger.info("Executed command \"/$HEAL_COMMAND\" from $sender")
 
             if (hasTarget) {
                 val player: String = getString(c, HEAL_ARG_NAME_COMMAND)
