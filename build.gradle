@@ -3,11 +3,14 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url "https://libraries.minecraft.net" }
         maven { url 'https://minecraft.curseforge.com/api/maven/' }
+        maven { url "https://plugins.gradle.org/m2/" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true) {
+            exclude group: 'trove', module: 'trove'
+        }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.30"
     }
 }
@@ -41,7 +44,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                examplemod {
+                ProjectEssentials {
                     source sourceSets.main
                 }
             }
@@ -52,7 +55,7 @@ minecraft {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                examplemod {
+                ProjectEssentials {
                     source sourceSets.main
                 }
             }
@@ -62,9 +65,9 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'projectessentials', '--all', '--output', file('src/generated/resources/')
             mods {
-                examplemod {
+                ProjectEssentials {
                     source sourceSets.main
                 }
             }
@@ -77,6 +80,7 @@ dependencies {
     compile "kottle:Kottle:$kottleVersion"
     mod "kottle:Kottle:$kottleVersion"
     compile 'com.mojang:brigadier:1.0.17'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.3.30'
 }
 
 task installMods(type: Copy, dependsOn: "deinstallMods") {
@@ -96,13 +100,13 @@ project.afterEvaluate {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "Project Essentials",
-            "Specification-Vendor": "MairwunNx (Pavel Erokhin)",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"MairwunNx (Pavel Erokhin)",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "Project Essentials",
+                "Specification-Vendor"    : "MairwunNx (Pavel Erokhin)",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "MairwunNx (Pavel Erokhin)",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

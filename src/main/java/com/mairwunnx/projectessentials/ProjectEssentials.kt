@@ -23,7 +23,7 @@ const val MOD_NAME = "Project Essentials"
 const val MOD_VERSION = "0.0.1"
 
 @Mod(MOD_ID)
-class ProjectEssentials {
+object ProjectEssentials {
     private val logger: Logger = LogManager.getLogger()
     private val proxy: CommonProxy =
         DistExecutor.runForDist<CommonProxy>(
@@ -45,7 +45,9 @@ class ProjectEssentials {
         var isRemote = false
         logger.info("Getting isRemote state for worlds ...")
         it.server.worlds.forEach {
-            logger.info("    world: ${it.world.worldInfo.worldName} has isRemote state: ${it.isRemote}")
+            logger.info(
+                "    world: ${it.world.worldInfo.worldName}/${it.world.dimension.type.registryName} has isRemote state: ${it.isRemote}"
+            )
             if (it.isRemote) isRemote = true
         }
         logger.debug("Creating CommandsBase instance with isRemote ($isRemote) value ...")
