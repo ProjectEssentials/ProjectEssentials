@@ -23,13 +23,16 @@ buildscript {
 
 apply(plugin: "net.minecraftforge.gradle")
 apply(plugin: "kotlin")
+apply(plugin: "java")
 
 version = projectEssentialsVersion
 group = "com.mairwunnx.$projectEssentialsId"
 archivesBaseName = projectEssentialsName
 
 configurations {
-    modDependencies
+    modClientDependencies
+    modServerDependencies
+    ktlint
 }
 
 minecraft {
@@ -73,7 +76,9 @@ dependencies {
     minecraft(group: "net.minecraftforge", name: "forge", version: forgeBaseVersion)
     compile(group: "com.mojang", name: "brigadier", version: brigadierBaseVersion)
     compile(group: "kottle", name: "Kottle", version: kottleBaseVersion)
-    modDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
+    modClientDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
+    modServerDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
+    ktlint(group: "com.pinterest", name: "ktlint", version: "0.34.2")
     compile(
         group: "org.jetbrains.kotlin",
         name: "kotlin-stdlib-$kotlinJdkVersionTarget",
@@ -81,20 +86,50 @@ dependencies {
     )
 }
 
-task installMods(type: Copy, dependsOn: "deinstallMods") {
-    from { configurations.modDependencies }
+task installMods(type: Copy) {
+    dependsOn("installClientMods")
+    dependsOn("installServerMods")
+}
+
+task installClientMods(type: Copy, dependsOn: "deinstallClientMods") {
+    from { configurations.modClientDependencies }
     include("**/*.jar")
     into(file("$devRunClientPath/mods"))
+}
+
+task installServerMods(type: Copy, dependsOn: "deinstallServerMods") {
+    from { configurations.modServerDependencies }
+    include("**/*.jar")
     into(file("$devRunServerPath/mods"))
 }
 
-task deinstallMods(type: Delete) {
+task deinstallClientMods(type: Delete) {
     delete(fileTree(dir: "$devRunClientPath/mods", include: "*.jar"))
+}
+
+task deinstallServerMods(type: Delete) {
     delete(fileTree(dir: "$devRunServerPath/mods", include: "*.jar"))
 }
 
 project.afterEvaluate {
-    project.tasks["prepareRuns"].dependsOn(project.tasks["installMods"])
+    project.tasks["prepareRuns"].dependsOn(project.tasks["installClientMods"])
+    project.tasks["prepareRuns"].dependsOn(project.tasks["installServerMods"])
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check kotlin sources code style"
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args("src/**/*.kt")
+}
+
+check.dependsOn(ktlint)
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations"
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args("-F", "src/**/*.kt")
 }
 
 jar {
