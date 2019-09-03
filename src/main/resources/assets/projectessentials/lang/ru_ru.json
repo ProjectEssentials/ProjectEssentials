@@ -1,0 +1,10 @@
+{
+  "projectessentials.common.player.notonline": "§cИгрок %s не в сети или отсутствует на сервере.",
+  "projectessentials.heal.self.success": "§6Вы были исцелены.",
+  "projectessentials.heal.self.maxhealth": "§cВы уже полностью исцелены.",
+  "projectessentials.heal.self.error": "§cУ вас нет разрешения исцелять себя.",
+  "projectessentials.heal.player.success": "§6Вы исцелили игрока %s.",
+  "projectessentials.heal.player.maxhealth": "§cИгрок %s уже полностью исцелен.",
+  "projectessentials.heal.player.error": "§cУ вас нет разрешения исцелять игрока %s.",
+  "projectessentials.heal.player.recipient.success": "§6Вы были исцелены игроком %s."
+}
