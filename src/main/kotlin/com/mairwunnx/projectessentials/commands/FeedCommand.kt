@@ -14,28 +14,33 @@ class FeedCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val FEED_COMMAND: String = "feed"
         private const val FEED_ARG_NAME_COMMAND: String = "player"
+        private val FeedCommandAliases: Array<String> = arrayOf(
+            FEED_COMMAND, "eat", "eeat", "efeed"
+        )
 
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
             logger.info("Starting register \"/$FEED_COMMAND\" command ...")
 
-            dispatcher.register(
-                LiteralArgumentBuilder.literal<CommandSource>(FEED_COMMAND)
-                    .then(
-                        RequiredArgumentBuilder.argument<CommandSource, String>(
-                            FEED_ARG_NAME_COMMAND,
-                            StringArgumentType.string()
-                        ).executes {
-                            execute(it, true)
+            FeedCommandAliases.forEach { command ->
+                dispatcher.register(
+                    LiteralArgumentBuilder.literal<CommandSource>(command)
+                        .then(
+                            RequiredArgumentBuilder.argument<CommandSource, String>(
+                                FEED_ARG_NAME_COMMAND,
+                                StringArgumentType.string()
+                            ).executes {
+                                execute(it, true)
+                                return@executes 1
+                            }
+                        )
+                        .executes {
+                            execute(it, false)
                             return@executes 1
                         }
-                    )
-                    .executes {
-                        execute(it, false)
-                        return@executes 1
-                    }
-            )
+                )
+            }
         }
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean) {
