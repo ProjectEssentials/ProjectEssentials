@@ -1,131 +1,119 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url "https://libraries.minecraft.net" }
-        maven { url 'https://minecraft.curseforge.com/api/maven/' }
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url("https://files.minecraftforge.net/maven") }
+        maven { url("https://libraries.minecraft.net") }
+        maven { url("https://plugins.gradle.org/m2/") }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true) {
-            exclude group: 'trove', module: 'trove'
+        classpath(
+            group: "net.minecraftforge.gradle",
+            name: "ForgeGradle",
+            version: forgeGradleVersion,
+            changing: true
+        ) {
+            exclude group: "trove", module: "trove"
         }
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.30"
+        classpath(
+            "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        )
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'kotlin'
 
-version = '0.0.1'
-group = 'com.mairwunnx.projectessentials'
-archivesBaseName = 'Project Essentials'
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "kotlin"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-compileKotlin.kotlinOptions.jvmTarget = compileTestKotlin.kotlinOptions.jvmTarget = '1.8'
-
-repositories {
-    maven { url 'https://minecraft.curseforge.com/api/maven/' }
-    maven { url "https://libraries.minecraft.net" }
-}
+version = projectEssentialsVersion
+group = "com.mairwunnx.$projectEssentialsId"
+archivesBaseName = projectEssentialsName
 
 configurations {
-    mod
+    modDependencies
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings(
+        channel: mappingsChannelType,
+        version: mappingsChannelVersion
+    )
 
     runs {
         client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory(project.file(devRunClientPath))
+            property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
+            property("forge.logging.console.level", "debug")
             mods {
                 ProjectEssentials {
-                    source sourceSets.main
+                    source(sourceSets.main)
                 }
             }
         }
 
         server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
+            workingDirectory(project.file(devRunServerPath))
+            property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
+            property("forge.logging.console.level", "debug")
             mods {
                 ProjectEssentials {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'projectessentials', '--all', '--output', file('src/generated/resources/')
-            mods {
-                ProjectEssentials {
-                    source sourceSets.main
+                    source(sourceSets.main)
                 }
             }
         }
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url("https://minecraft.curseforge.com/api/maven/") }
+    maven { url("https://libraries.minecraft.net") }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.73'
-    compile "kottle:Kottle:$kottleVersion"
-    mod "kottle:Kottle:$kottleVersion"
-    compile 'com.mojang:brigadier:1.0.17'
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.3.30'
+    minecraft(group: "net.minecraftforge", name: "forge", version: forgeBaseVersion)
+    compile(group: "com.mojang", name: "brigadier", version: brigadierBaseVersion)
+    compile(group: "kottle", name: "Kottle", version: kottleBaseVersion)
+    modDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
+    compile(
+        group: "org.jetbrains.kotlin",
+        name: "kotlin-stdlib-$kotlinJdkVersionTarget",
+        version: kotlinVersion
+    )
 }
 
 task installMods(type: Copy, dependsOn: "deinstallMods") {
-    from { configurations.mod }
-    include "**/*.jar"
-    into file("run/mods")
+    from { configurations.modDependencies }
+    include("**/*.jar")
+    into(file("$devRunClientPath/mods"))
+    into(file("$devRunServerPath/mods"))
 }
 
 task deinstallMods(type: Delete) {
-    delete fileTree(dir: "run/mods", include: "*.jar")
+    delete(fileTree(dir: "$devRunClientPath/mods", include: "*.jar"))
+    delete(fileTree(dir: "$devRunServerPath/mods", include: "*.jar"))
 }
 
 project.afterEvaluate {
-    project.tasks['prepareRuns'].dependsOn(project.tasks['installMods'])
+    project.tasks["prepareRuns"].dependsOn(project.tasks["installMods"])
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "Project Essentials",
-                "Specification-Vendor"    : "MairwunNx (Pavel Erokhin)",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "MairwunNx (Pavel Erokhin)",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Specification-Title"     : projectEssentialsName,
+            "Specification-Vendor"    : projectEssentialsVendor,
+            "Specification-Version"   : projectEssentialsVersion,
+            "Implementation-Title"    : projectEssentialsName,
+            "Implementation-Version"  : projectEssentialsVersion,
+            "Implementation-Vendor"   : projectEssentialsVendor,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
+sourceCompatibility = targetCompatibility =
+    compileJava.sourceCompatibility =
+        compileJava.targetCompatibility = jvmVersionTarget
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact reobfArtifact
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
+compileKotlin.kotlinOptions.jvmTarget =
+    compileTestKotlin.kotlinOptions.jvmTarget = jvmVersionTarget
