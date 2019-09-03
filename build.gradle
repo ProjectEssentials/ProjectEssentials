@@ -13,7 +13,7 @@ buildscript {
             version: forgeGradleVersion,
             changing: true
         ) {
-            exclude group: "trove", module: "trove"
+            exclude(group: "trove", module: "trove")
         }
         classpath(
             "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -21,8 +21,8 @@ buildscript {
     }
 }
 
-apply plugin: "net.minecraftforge.gradle"
-apply plugin: "kotlin"
+apply(plugin: "net.minecraftforge.gradle")
+apply(plugin: "kotlin")
 
 version = projectEssentialsVersion
 group = "com.mairwunnx.$projectEssentialsId"
