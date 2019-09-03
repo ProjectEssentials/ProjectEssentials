@@ -8,5 +8,6 @@ class CommandsBase {
         commandDispatcher: CommandDispatcher<CommandSource>
     ) {
         HealCommand.register(commandDispatcher)
+        FeedCommand.register(commandDispatcher)
     }
 }

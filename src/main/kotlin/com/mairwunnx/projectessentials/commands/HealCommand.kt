@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.getString
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.util.text.TranslationTextComponent
@@ -28,11 +28,12 @@ class HealCommand {
                 dispatcher.register(
                     literal<CommandSource>(command)
                         .then(
-                            argument<CommandSource, String>(HEAL_ARG_NAME_COMMAND, string())
-                                .executes {
-                                    execute(it, true)
-                                    return@executes 1
-                                }
+                            RequiredArgumentBuilder.argument<CommandSource, String>(
+                                HEAL_ARG_NAME_COMMAND, string()
+                            ).executes {
+                                execute(it, true)
+                                return@executes 1
+                            }
                         )
                         .executes {
                             execute(it, false)
