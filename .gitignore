@@ -131,8 +131,8 @@ cmake-build-*/
 # IntelliJ
 out/
 run/
-runClient/
-runServer/
+run-client/
+run-server/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
