@@ -6,5 +6,12 @@
   "projectessentials.heal.player.success": "§6Вы исцелили игрока %s.",
   "projectessentials.heal.player.maxhealth": "§cИгрок %s уже полностью исцелен.",
   "projectessentials.heal.player.error": "§cУ вас нет разрешения исцелять игрока %s.",
-  "projectessentials.heal.player.recipient.success": "§6Вы были исцелены игроком %s."
+  "projectessentials.heal.player.recipient.success": "§6Вы были исцелены игроком %s.",
+  "projectessentials.feed.self.success": "§6Ваш аппетит был насыщен.",
+  "projectessentials.feed.self.maxfeed": "§cВаш аппетит уже полностью насыщен.",
+  "projectessentials.feed.self.error": "§cУ вас нет разрешения на насыщение своего аппетита.",
+  "projectessentials.feed.player.success": "§6Вы насытили аппетит игрока §c%s§6.",
+  "projectessentials.feed.player.maxfeed": "§cАппетит игрока %s уже полностью насыщен.",
+  "projectessentials.feed.player.error": "§cУ вас нет разрешения на насыщение аппетита игрока %s.",
+  "projectessentials.feed.player.recipient.success": "§6Ваш аппетит был насыщен игроком %s."
 }
