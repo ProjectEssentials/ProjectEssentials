@@ -12,6 +12,14 @@ import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
+/**
+ * **Description:** Satisfy the hunger of you or the given player.
+ *
+ * **Usage example:** `/feed`, `/eat`, `/eeat` and `/efeed`.
+ *
+ * **Available arguments:** &#91`player`&#93 - command executing
+ * target.
+ */
 class FeedCommand {
     companion object {
         private val logger: Logger = LogManager.getLogger()

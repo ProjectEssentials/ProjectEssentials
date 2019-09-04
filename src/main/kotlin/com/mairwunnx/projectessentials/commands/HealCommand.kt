@@ -11,6 +11,14 @@ import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
+/**
+ * **Description:** Heals you or the given player.
+ *
+ * **Usage example:** `/heal` and `/eheal`.
+ *
+ * **Available arguments:** &#91`player`&#93 - command executing
+ * target.
+ */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class HealCommand {
     companion object {
