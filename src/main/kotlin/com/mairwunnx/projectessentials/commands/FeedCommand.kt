@@ -47,21 +47,25 @@ class FeedCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
-            val sender: String = c.source.asPlayer().name.string
+            val commandSenderNickName: String = c.source.asPlayer().name.string
+            val commandSender: CommandSource = c.source
 
-            if (!c.source.asPlayer().hasPermissionLevel(2)) {
-                logger.info("Player ($sender) failed to executing \"/$FEED_COMMAND\" command")
+            if (!commandSender.asPlayer().hasPermissionLevel(2)) {
+                logger.info(
+                    "Player ($commandSenderNickName) failed to executing \"/$FEED_COMMAND\" command"
+                )
 
                 if (hasTarget) {
-                    val player: String = getString(c, FEED_ARG_NAME_COMMAND)
-                    c.source.sendFeedback(
+                    val playerNickNameAsTarget: String = getString(c, FEED_ARG_NAME_COMMAND)
+                    commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.error", player
+                            "projectessentials.feed.player.error",
+                            playerNickNameAsTarget
                         ),
                         true
                     )
                 } else {
-                    c.source.sendFeedback(
+                    commandSender.sendFeedback(
                         TranslationTextComponent(
                             "projectessentials.feed.self.error"
                         ),
@@ -72,51 +76,55 @@ class FeedCommand {
                 return
             }
 
-            logger.info("Executed command \"/$FEED_COMMAND\" from $sender")
+            logger.info("Executed command \"/$FEED_COMMAND\" from $commandSenderNickName")
             if (hasTarget) {
-                val player: String = getString(c, FEED_ARG_NAME_COMMAND)
-                c.source.world.players.forEach { targetAsPlayer ->
-                    if (targetAsPlayer.name.string != player ||
+                val playerNickNameAsTarget: String = getString(c, FEED_ARG_NAME_COMMAND)
+                commandSender.world.players.forEach { targetAsPlayer ->
+                    if (targetAsPlayer.name.string != playerNickNameAsTarget ||
                         targetAsPlayer.hasDisconnected()
                     ) {
-                        c.source.sendFeedback(
+                        commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.common.player.notonline", player
+                                "projectessentials.common.player.notonline",
+                                playerNickNameAsTarget
                             ),
                             true
                         )
                         return
                     }
                     if (!targetAsPlayer.foodStats.isNeedFood()) {
-                        c.source.sendFeedback(
+                        commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.feed.player.maxfeed", player
+                                "projectessentials.feed.player.maxfeed",
+                                playerNickNameAsTarget
                             ),
                             true
                         )
                         return
                     }
                     logger.info(
-                        "Player ($player) food level/saturation changed from ${targetAsPlayer.foodStats.foodLevel}/${targetAsPlayer.foodStats.saturationLevel} to 20/5.0 by $sender"
+                        "Player ($playerNickNameAsTarget) food level/saturation changed from ${targetAsPlayer.foodStats.foodLevel}/${targetAsPlayer.foodStats.saturationLevel} to 20/5.0 by $commandSenderNickName"
                     )
                     targetAsPlayer.foodStats.foodLevel = 20
                     targetAsPlayer.foodStats.setFoodSaturationLevel(5.0f)
-                    c.source.sendFeedback(
+                    commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.success", player
+                            "projectessentials.feed.player.success",
+                            playerNickNameAsTarget
                         ),
                         true
                     )
                     targetAsPlayer.commandSource.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.recipient.success", sender
+                            "projectessentials.feed.player.recipient.success",
+                            commandSenderNickName
                         ),
                         true
                     )
                 }
             } else {
-                if (!c.source.asPlayer().foodStats.isNeedFood()) {
-                    c.source.sendFeedback(
+                if (!commandSender.asPlayer().foodStats.isNeedFood()) {
+                    commandSender.sendFeedback(
                         TranslationTextComponent(
                             "projectessentials.feed.self.maxfeed"
                         ),
@@ -125,11 +133,11 @@ class FeedCommand {
                     return
                 }
                 logger.info(
-                    "Player ($sender) food level/saturation changed from ${c.source.asPlayer().foodStats.foodLevel}/${c.source.asPlayer().foodStats.saturationLevel} to 20/5.0"
+                    "Player ($commandSenderNickName) food level/saturation changed from ${commandSender.asPlayer().foodStats.foodLevel}/${commandSender.asPlayer().foodStats.saturationLevel} to 20/5.0"
                 )
-                c.source.asPlayer().foodStats.foodLevel = 20
-                c.source.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
-                c.source.sendFeedback(
+                commandSender.asPlayer().foodStats.foodLevel = 20
+                commandSender.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
+                commandSender.sendFeedback(
                     TranslationTextComponent(
                         "projectessentials.feed.self.success"
                     ),
