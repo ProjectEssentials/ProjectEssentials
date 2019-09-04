@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
+import net.minecraft.util.text.TranslationTextComponent
 import net.minecraft.world.gen.Heightmap
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -20,6 +21,8 @@ class TopCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val TOP_COMMAND: String = "top"
         private val topCommandAliases: Array<String> = arrayOf(TOP_COMMAND, "etop")
+        private const val topYPosModifier: Double = 1.4
+        private const val centerOfBlockPos: Double = 0.5
 
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
@@ -45,21 +48,39 @@ class TopCommand {
                 logger.info(
                     "Player ($commandSenderNickName) failed to executing \"/$TOP_COMMAND\" command"
                 )
+                commandSender.sendFeedback(
+                    TranslationTextComponent(
+                        "projectessentials.top.error"
+                    ),
+                    true
+                )
                 return
             }
 
+            logger.info("Executed command \"/$TOP_COMMAND\" from $commandSenderNickName")
+
             val position = commandSender.asPlayer().position
-            logger.info("current player pos: X: ${position.x}, Y: ${position.y}, Z: ${position.z}")
-            val heightTop = commandSender.asPlayer().world.getChunkAt(position)
+            val heightTop = commandSender.asPlayer().world
+                .getChunkAt(position)
                 .getTopBlockY(
                     Heightmap.Type.MOTION_BLOCKING,
                     position.x,
                     position.z
-                ) + 1.3
+                ) + topYPosModifier
+
+            logger.info(
+                "Player ($commandSenderNickName) top pos (y) changed from ${position.y.toDouble()} to $heightTop"
+            )
             commandSender.asPlayer().setPositionAndUpdate(
-                position.x + 0.5,
+                position.x + centerOfBlockPos,
                 heightTop,
-                position.z + 0.5
+                position.z + centerOfBlockPos
+            )
+            commandSender.sendFeedback(
+                TranslationTextComponent(
+                    "projectessentials.top.success"
+                ),
+                true
             )
         }
     }

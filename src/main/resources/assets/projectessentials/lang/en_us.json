@@ -13,5 +13,7 @@
   "projectessentials.feed.player.success": "§6You satiated the appetite of §c%s§6.",
   "projectessentials.feed.player.maxfeed": "§cPlayer %s appetite already fully sated.",
   "projectessentials.feed.player.error": "§cYou don't have permission to sated appetite player %s.",
-  "projectessentials.feed.player.recipient.success": "§6Your appetite was sated by player %s."
+  "projectessentials.feed.player.recipient.success": "§6Your appetite was sated by player %s.",
+  "projectessentials.top.error": "§cYou don't have permission to teleporting to top.",
+  "projectessentials.top.success": "§6You was teleported to top."
 }
