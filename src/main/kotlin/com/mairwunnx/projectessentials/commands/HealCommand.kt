@@ -17,14 +17,14 @@ class HealCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val HEAL_COMMAND: String = "heal"
         private const val HEAL_ARG_NAME_COMMAND: String = "player"
-        private val HealCommandAliases: Array<String> = arrayOf(HEAL_COMMAND, "eheal")
+        private val healCommandAliases: Array<String> = arrayOf(HEAL_COMMAND, "eheal")
 
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
             logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
 
-            HealCommandAliases.forEach { command ->
+            healCommandAliases.forEach { command ->
                 dispatcher.register(
                     literal<CommandSource>(command)
                         .then(

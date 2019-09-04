@@ -17,7 +17,7 @@ class FeedCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val FEED_COMMAND: String = "feed"
         private const val FEED_ARG_NAME_COMMAND: String = "player"
-        private val FeedCommandAliases: Array<String> = arrayOf(
+        private val feedCommandAliases: Array<String> = arrayOf(
             FEED_COMMAND, "eat", "eeat", "efeed"
         )
 
@@ -26,7 +26,7 @@ class FeedCommand {
         ) {
             logger.info("Starting register \"/$FEED_COMMAND\" command ...")
 
-            FeedCommandAliases.forEach { command ->
+            feedCommandAliases.forEach { command ->
                 dispatcher.register(
                     LiteralArgumentBuilder.literal<CommandSource>(command)
                         .then(
