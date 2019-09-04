@@ -132,6 +132,8 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     args("-F", "src/**/*.kt")
 }
 
+jar.dependsOn(ktlintFormat)
+
 jar {
     manifest {
         attributes([
