@@ -6,5 +6,12 @@
   "projectessentials.heal.player.success": "§6You have healed player %s.",
   "projectessentials.heal.player.maxhealth": "§cPlayer %s already fully healed.",
   "projectessentials.heal.player.error": "§cYou don't have permission to heal player %s.",
-  "projectessentials.heal.player.recipient.success": "§6You have been healed by player %s."
+  "projectessentials.heal.player.recipient.success": "§6You have been healed by player %s.",
+  "projectessentials.feed.self.success": "§6Your appetite was sated.",
+  "projectessentials.feed.self.maxfeed": "§cYour appetite already fully sated.",
+  "projectessentials.feed.self.error": "§cYou don't have permission to sated appetite yourself.",
+  "projectessentials.feed.player.success": "§6You satiated the appetite of §c%s§6.",
+  "projectessentials.feed.player.maxfeed": "§cPlayer %s appetite already fully sated.",
+  "projectessentials.feed.player.error": "§cYou don't have permission to sated appetite player %s.",
+  "projectessentials.feed.player.recipient.success": "§6Your appetite was sated by player %s."
 }
