@@ -13,5 +13,7 @@
   "projectessentials.feed.player.success": "§6Вы насытили аппетит игрока §c%s§6.",
   "projectessentials.feed.player.maxfeed": "§cАппетит игрока %s уже полностью насыщен.",
   "projectessentials.feed.player.error": "§cУ вас нет разрешения на насыщение аппетита игрока %s.",
-  "projectessentials.feed.player.recipient.success": "§6Ваш аппетит был насыщен игроком %s."
+  "projectessentials.feed.player.recipient.success": "§6Ваш аппетит был насыщен игроком %s.",
+  "projectessentials.top.error": "§cУ вас нет разрешения телепортироваться наверх.",
+  "projectessentials.top.success": "§6Вы были телепортированы наверх."
 }
