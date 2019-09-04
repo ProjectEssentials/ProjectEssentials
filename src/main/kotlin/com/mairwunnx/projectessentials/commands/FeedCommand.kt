@@ -8,9 +8,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
+import net.minecraft.util.FoodStats
 import net.minecraft.util.text.TranslationTextComponent
+import net.minecraftforge.api.distmarker.Dist
+import net.minecraftforge.fml.DistExecutor
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.lang.reflect.Field
 
 /**
  * **Description:** Satisfy the hunger of you or the given player.
@@ -28,6 +33,12 @@ class FeedCommand {
         private val feedCommandAliases: Array<String> = arrayOf(
             FEED_COMMAND, "eat", "eeat", "efeed"
         )
+        private val saturationLevel: Field by lazy {
+            return@lazy ObfuscationReflectionHelper.findField(
+                FoodStats::class.java,
+                "field_75125_b"
+            )
+        }
 
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
@@ -114,7 +125,18 @@ class FeedCommand {
                         "Player ($playerNickNameAsTarget) food level/saturation changed from ${targetAsPlayer.foodStats.foodLevel}/${targetAsPlayer.foodStats.saturationLevel} to 20/5.0 by $commandSenderNickName"
                     )
                     targetAsPlayer.foodStats.foodLevel = 20
-                    targetAsPlayer.foodStats.setFoodSaturationLevel(5.0f)
+
+                    val clientSideSaturationLevel = Runnable {
+                        targetAsPlayer.foodStats.setFoodSaturationLevel(5.0f)
+                    }
+
+                    val serverSideSaturationLevel = Runnable {
+                        saturationLevel.setFloat(targetAsPlayer.foodStats, 5.0f)
+                    }
+
+                    DistExecutor.runWhenOn(Dist.CLIENT) { clientSideSaturationLevel }
+                    DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) { serverSideSaturationLevel }
+
                     commandSender.sendFeedback(
                         TranslationTextComponent(
                             "projectessentials.feed.player.success",
@@ -144,7 +166,18 @@ class FeedCommand {
                     "Player ($commandSenderNickName) food level/saturation changed from ${commandSender.asPlayer().foodStats.foodLevel}/${commandSender.asPlayer().foodStats.saturationLevel} to 20/5.0"
                 )
                 commandSender.asPlayer().foodStats.foodLevel = 20
-                commandSender.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
+
+                val clientSideSaturationLevel = Runnable {
+                    commandSender.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
+                }
+
+                val serverSideSaturationLevel = Runnable {
+                    saturationLevel.setFloat(commandSender.asPlayer().foodStats, 5.0f)
+                }
+
+                DistExecutor.runWhenOn(Dist.CLIENT) { clientSideSaturationLevel }
+                DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) { serverSideSaturationLevel }
+
                 commandSender.sendFeedback(
                     TranslationTextComponent(
                         "projectessentials.feed.self.success"
