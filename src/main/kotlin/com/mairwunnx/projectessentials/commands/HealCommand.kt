@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.getString
 import com.mojang.brigadier.arguments.StringArgumentType.string
@@ -52,6 +53,13 @@ class HealCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
+            if (!c.isPlayerSender()) {
+                logger.warn(
+                    "\"/${HEAL_COMMAND}\" command should only be used by the player!"
+                )
+                return
+            }
+
             val commandSenderNickName: String = c.source.asPlayer().name.string
             val commandSender: CommandSource = c.source
 

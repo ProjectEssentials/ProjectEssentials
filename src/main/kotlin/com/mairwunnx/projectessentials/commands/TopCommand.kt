@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
@@ -41,6 +42,13 @@ class TopCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>) {
+            if (!c.isPlayerSender()) {
+                logger.warn(
+                    "\"/$TOP_COMMAND\" command should only be used by the player!"
+                )
+                return
+            }
+
             val commandSenderNickName: String = c.source.asPlayer().name.string
             val commandSender: CommandSource = c.source
 

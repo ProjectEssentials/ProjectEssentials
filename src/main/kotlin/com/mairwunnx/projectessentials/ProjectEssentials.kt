@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger
 
 const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
-const val MOD_VERSION = "1.14.4-0.0.1.0"
+const val MOD_VERSION = "1.14.4-0.0.1.1"
 
 @Mod(MOD_ID)
 object ProjectEssentials {
