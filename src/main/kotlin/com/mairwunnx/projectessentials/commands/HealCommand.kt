@@ -64,7 +64,7 @@ class HealCommand {
                     val playerNickNameAsTarget: String = getString(c, HEAL_ARG_NAME_COMMAND)
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.heal.player.error",
+                            "project_essentials.heal.player.error",
                             playerNickNameAsTarget
                         ),
                         true
@@ -72,7 +72,7 @@ class HealCommand {
                 } else {
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.heal.self.error"
+                            "project_essentials.heal.self.error"
                         ),
                         true
                     )
@@ -90,7 +90,7 @@ class HealCommand {
                     ) {
                         commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.common.player.notonline",
+                                "project_essentials.common.player.notonline",
                                 playerNickNameAsTarget
                             ),
                             true
@@ -100,7 +100,7 @@ class HealCommand {
                     if (targetAsPlayer.health == targetAsPlayer.maxHealth) {
                         commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.heal.player.maxhealth",
+                                "project_essentials.heal.player.maxhealth",
                                 playerNickNameAsTarget
                             ),
                             true
@@ -113,14 +113,14 @@ class HealCommand {
                     targetAsPlayer.health = targetAsPlayer.maxHealth
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.heal.player.success",
+                            "project_essentials.heal.player.success",
                             playerNickNameAsTarget
                         ),
                         true
                     )
                     targetAsPlayer.commandSource.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.heal.player.recipient.success",
+                            "project_essentials.heal.player.recipient.success",
                             commandSenderNickName
                         ),
                         true
@@ -130,7 +130,7 @@ class HealCommand {
                 if (commandSender.asPlayer().health == commandSender.asPlayer().maxHealth) {
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.heal.self.maxhealth"
+                            "project_essentials.heal.self.maxhealth"
                         ),
                         true
                     )
@@ -142,7 +142,7 @@ class HealCommand {
                 commandSender.asPlayer().health = commandSender.asPlayer().maxHealth
                 commandSender.sendFeedback(
                     TranslationTextComponent(
-                        "projectessentials.heal.self.success"
+                        "project_essentials.heal.self.success"
                     ),
                     true
                 )

@@ -78,7 +78,7 @@ class FeedCommand {
                     val playerNickNameAsTarget: String = getString(c, FEED_ARG_NAME_COMMAND)
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.error",
+                            "project_essentials.feed.player.error",
                             playerNickNameAsTarget
                         ),
                         true
@@ -86,7 +86,7 @@ class FeedCommand {
                 } else {
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.self.error"
+                            "project_essentials.feed.self.error"
                         ),
                         true
                     )
@@ -104,7 +104,7 @@ class FeedCommand {
                     ) {
                         commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.common.player.notonline",
+                                "project_essentials.common.player.notonline",
                                 playerNickNameAsTarget
                             ),
                             true
@@ -114,7 +114,7 @@ class FeedCommand {
                     if (!targetAsPlayer.foodStats.isNeedFood()) {
                         commandSender.sendFeedback(
                             TranslationTextComponent(
-                                "projectessentials.feed.player.maxfeed",
+                                "project_essentials.feed.player.maxfeed",
                                 playerNickNameAsTarget
                             ),
                             true
@@ -139,14 +139,14 @@ class FeedCommand {
 
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.success",
+                            "project_essentials.feed.player.success",
                             playerNickNameAsTarget
                         ),
                         true
                     )
                     targetAsPlayer.commandSource.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.player.recipient.success",
+                            "project_essentials.feed.player.recipient.success",
                             commandSenderNickName
                         ),
                         true
@@ -156,7 +156,7 @@ class FeedCommand {
                 if (!commandSender.asPlayer().foodStats.isNeedFood()) {
                     commandSender.sendFeedback(
                         TranslationTextComponent(
-                            "projectessentials.feed.self.maxfeed"
+                            "project_essentials.feed.self.maxfeed"
                         ),
                         true
                     )
@@ -180,7 +180,7 @@ class FeedCommand {
 
                 commandSender.sendFeedback(
                     TranslationTextComponent(
-                        "projectessentials.feed.self.success"
+                        "project_essentials.feed.self.success"
                     ),
                     true
                 )

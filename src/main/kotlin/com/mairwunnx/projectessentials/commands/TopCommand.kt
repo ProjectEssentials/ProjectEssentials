@@ -50,7 +50,7 @@ class TopCommand {
                 )
                 commandSender.sendFeedback(
                     TranslationTextComponent(
-                        "projectessentials.top.error"
+                        "project_essentials.top.error"
                     ),
                     true
                 )
@@ -78,7 +78,7 @@ class TopCommand {
             )
             commandSender.sendFeedback(
                 TranslationTextComponent(
-                    "projectessentials.top.success"
+                    "project_essentials.top.success"
                 ),
                 true
             )

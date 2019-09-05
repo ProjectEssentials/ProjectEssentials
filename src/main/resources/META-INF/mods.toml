@@ -7,7 +7,7 @@ authors="MairwunNx (Pavel Erokhin)"
 logoFile="logo.png"
 
 [[mods]]
-    modId="projectessentials"
+    modId="project_essentials"
     version="0.0.1.0"
     displayName="Project Essentials"
     updateJSONURL="http://myurl.me/"

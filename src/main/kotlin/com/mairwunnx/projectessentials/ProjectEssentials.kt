@@ -16,7 +16,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
-const val MOD_ID = "projectessentials"
+const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
 const val MOD_VERSION = "0.0.1.0"
 
