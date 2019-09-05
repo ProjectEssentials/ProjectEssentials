@@ -6,10 +6,8 @@ import com.mairwunnx.projectessentials.commands.CommandsBase
 import com.mairwunnx.projectessentials.proxy.ClientProxy
 import com.mairwunnx.projectessentials.proxy.CommonProxy
 import com.mairwunnx.projectessentials.proxy.ServerProxy
-import com.mojang.brigadier.CommandDispatcher
 import java.util.function.Supplier
 import net.alexwells.kottle.FMLKotlinModLoadingContext
-import net.minecraft.command.CommandSource
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.DistExecutor
@@ -30,7 +28,6 @@ object ProjectEssentials {
             { Supplier { ClientProxy() } },
             { Supplier { ServerProxy() } }
         )
-    private lateinit var commandDispatcher: CommandDispatcher<CommandSource>
 
     init {
         logger.info("$MOD_NAME $MOD_VERSION starting initializing ...")
@@ -40,19 +37,8 @@ object ProjectEssentials {
 
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
-        logger.info("$MOD_NAME $MOD_VERSION starting setup mod ...")
-        commandDispatcher = it.server.commandManager.dispatcher
-        var isRemote = false
-        logger.info("Getting isRemote state for worlds ...")
-        it.server.worlds.forEach {
-            logger.info(
-                "    world: ${it.world.worldInfo.worldName}/${it.world.dimension.type.registryName} has isRemote state: ${it.isRemote}"
-            )
-            if (it.isRemote) isRemote = true
-        }
-        logger.debug("Creating CommandsBase instance with isRemote ($isRemote) value ...")
+        logger.info("$MOD_NAME $MOD_VERSION starting mod loading ...")
         val commandsBase = CommandsBase()
-        logger.debug("Calling registerAll method from CommandsBase instance ...")
-        commandsBase.registerAll(commandDispatcher)
+        commandsBase.registerAll(it.server.commandManager.dispatcher)
     }
 }

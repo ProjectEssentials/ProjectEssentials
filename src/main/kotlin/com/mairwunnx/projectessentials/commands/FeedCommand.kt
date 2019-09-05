@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.StringArgumentType.getString
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import java.lang.reflect.Field
 import net.minecraft.command.CommandSource
 import net.minecraft.util.FoodStats
 import net.minecraft.util.text.TranslationTextComponent
@@ -15,7 +16,6 @@ import net.minecraftforge.fml.DistExecutor
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.lang.reflect.Field
 
 /**
  * **Description:** Satisfy the hunger of you or the given player.
