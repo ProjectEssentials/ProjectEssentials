@@ -78,7 +78,7 @@ dependencies {
     compile(group: "kottle", name: "Kottle", version: kottleBaseVersion)
     modClientDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
     modServerDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
-    ktlint(group: "com.pinterest", name: "ktlint", version: "0.34.2")
+    ktlint(group: "com.pinterest", name: "ktlint", version: ktlintVersion)
     compile(
         group: "org.jetbrains.kotlin",
         name: "kotlin-stdlib-$kotlinJdkVersionTarget",
