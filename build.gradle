@@ -21,6 +21,10 @@ buildscript {
     }
 }
 
+plugins {
+    id ("com.github.johnrengelman.shadow") version ("$shadowPluginVersion")
+}
+
 apply(plugin: "net.minecraftforge.gradle")
 apply(plugin: "kotlin")
 apply(plugin: "java")
@@ -67,6 +71,7 @@ minecraft {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
     maven { url("https://minecraft.curseforge.com/api/maven/") }
     maven { url("https://libraries.minecraft.net") }
@@ -79,6 +84,7 @@ dependencies {
     modClientDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
     modServerDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
     ktlint(group: "com.pinterest", name: "ktlint", version: ktlintVersion)
+    compile(group: "com.uchuhimo", name: "konf", version: konfVersion)
     compile(
         group: "org.jetbrains.kotlin",
         name: "kotlin-stdlib-$kotlinJdkVersionTarget",
@@ -146,6 +152,18 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('com.uchuhimo:konf-core:0.17.0'))
+    }
+}
+
+tasks.build.dependsOn shadowJar
+
+artifacts {
+    archives shadowJar
 }
 
 sourceCompatibility = targetCompatibility =
