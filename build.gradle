@@ -12,9 +12,7 @@ buildscript {
             name: "ForgeGradle",
             version: forgeGradleVersion,
             changing: true
-        ) {
-            exclude(group: "trove", module: "trove")
-        }
+        )
         classpath(
             "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         )
@@ -78,9 +76,6 @@ repositories {
 dependencies {
     minecraft(group: "net.minecraftforge", name: "forge", version: forgeBaseVersion)
     compile(group: "com.mojang", name: "brigadier", version: brigadierBaseVersion)
-    compile(group: "kottle", name: "Kottle", version: kottleBaseVersion)
-    modClientDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
-    modServerDependencies(group: "kottle", name: "Kottle", version: kottleBaseVersion)
     ktlint(group: "com.pinterest", name: "ktlint", version: ktlintVersion)
     compile(group: "com.uchuhimo", name: "konf", version: konfVersion)
     compile(
