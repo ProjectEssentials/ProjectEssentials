@@ -1,0 +1,2 @@
+*.gradle text diff=Groovy
+*.gradle linguist-language=Groovy
