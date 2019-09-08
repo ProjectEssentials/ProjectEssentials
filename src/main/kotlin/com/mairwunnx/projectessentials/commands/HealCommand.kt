@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.getString
@@ -26,12 +27,17 @@ class HealCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val HEAL_COMMAND: String = "heal"
         private const val HEAL_ARG_NAME_COMMAND: String = "player"
-        private val healCommandAliases: Array<String> = arrayOf(HEAL_COMMAND, "eheal")
+        private val healCommandAliases: MutableList<String> = mutableListOf(HEAL_COMMAND)
 
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
             logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
+            logger.info("Processing commands aliases for \"/$HEAL_COMMAND\" command ...")
+
+            healCommandAliases.addAll(
+                ModConfiguration.getCommandsConfig().commands.heal.commandAliases
+            )
 
             healCommandAliases.forEach { command ->
                 dispatcher.register(
