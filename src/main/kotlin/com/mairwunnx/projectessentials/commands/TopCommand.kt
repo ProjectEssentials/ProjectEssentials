@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -21,7 +22,7 @@ class TopCommand {
     companion object {
         private val logger: Logger = LogManager.getLogger()
         private const val TOP_COMMAND: String = "top"
-        private val topCommandAliases: Array<String> = arrayOf(TOP_COMMAND, "etop")
+        private val topCommandAliases: MutableList<String> = mutableListOf(TOP_COMMAND)
         private const val topYPosModifier: Double = 1.4
         private const val centerOfBlockPos: Double = 0.5
 
@@ -29,6 +30,11 @@ class TopCommand {
             dispatcher: CommandDispatcher<CommandSource>
         ) {
             logger.info("Starting register \"/$TOP_COMMAND\" command ...")
+            logger.info("Processing commands aliases for \"/$TOP_COMMAND\" command ...")
+
+            topCommandAliases.addAll(
+                ModConfiguration.getCommandsConfig().commands.top.commandAliases
+            )
 
             topCommandAliases.forEach { command ->
                 dispatcher.register(
@@ -42,6 +48,7 @@ class TopCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             if (!c.isPlayerSender()) {
                 logger.warn(
                     "\"/$TOP_COMMAND\" command should only be used by the player!"
@@ -52,7 +59,10 @@ class TopCommand {
             val commandSenderNickName: String = c.source.asPlayer().name.string
             val commandSender: CommandSource = c.source
 
-            if (!commandSender.asPlayer().hasPermissionLevel(2)) {
+            if (!commandSender.asPlayer().hasPermissionLevel(
+                    modConfig.commands.top.permissionLevel
+                )
+            ) {
                 logger.info(
                     "Player ($commandSenderNickName) failed to executing \"/$TOP_COMMAND\" command"
                 )
