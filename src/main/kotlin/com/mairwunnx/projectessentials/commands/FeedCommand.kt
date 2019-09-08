@@ -43,11 +43,12 @@ class FeedCommand {
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             logger.info("Starting register \"/$FEED_COMMAND\" command ...")
             logger.info("Processing commands aliases for \"/$FEED_COMMAND\" command ...")
 
             feedCommandAliases.addAll(
-                ModConfiguration.getCommandsConfig().commands.feed.commandAliases
+                modConfig.commands.feed.commandAliases
             )
 
             feedCommandAliases.forEach { command ->
@@ -58,7 +59,11 @@ class FeedCommand {
                                 FEED_ARG_NAME_COMMAND,
                                 StringArgumentType.string()
                             ).executes {
-                                execute(it, true)
+                                if (modConfig.commands.feed.enableArgs) {
+                                    execute(it, true)
+                                } else {
+                                    execute(it)
+                                }
                                 return@executes 1
                             }
                         )
