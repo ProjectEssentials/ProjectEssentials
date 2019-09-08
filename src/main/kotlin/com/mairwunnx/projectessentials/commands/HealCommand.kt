@@ -59,6 +59,7 @@ class HealCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             if (!c.isPlayerSender()) {
                 logger.warn(
                     "\"/${HEAL_COMMAND}\" command should only be used by the player!"
@@ -69,7 +70,10 @@ class HealCommand {
             val commandSenderNickName: String = c.source.asPlayer().name.string
             val commandSender: CommandSource = c.source
 
-            if (!commandSender.asPlayer().hasPermissionLevel(2)) {
+            if (!commandSender.asPlayer().hasPermissionLevel(
+                    modConfig.commands.heal.permissionLevel
+                )
+            ) {
                 logger.info(
                     "Player ($commandSenderNickName) failed to executing \"/$HEAL_COMMAND\" command"
                 )
