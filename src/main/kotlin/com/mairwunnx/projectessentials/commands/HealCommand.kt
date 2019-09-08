@@ -32,11 +32,12 @@ class HealCommand {
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
             logger.info("Processing commands aliases for \"/$HEAL_COMMAND\" command ...")
 
             healCommandAliases.addAll(
-                ModConfiguration.getCommandsConfig().commands.heal.commandAliases
+                modConfig.commands.heal.commandAliases
             )
 
             healCommandAliases.forEach { command ->
@@ -46,7 +47,11 @@ class HealCommand {
                             RequiredArgumentBuilder.argument<CommandSource, String>(
                                 HEAL_ARG_NAME_COMMAND, string()
                             ).executes {
-                                execute(it, true)
+                                if (modConfig.commands.heal.enableArgs) {
+                                    execute(it, true)
+                                } else {
+                                    execute(it)
+                                }
                                 return@executes 1
                             }
                         )
