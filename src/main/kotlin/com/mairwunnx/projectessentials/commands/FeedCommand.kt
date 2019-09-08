@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isNeedFood
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
@@ -31,9 +32,7 @@ class FeedCommand {
         private val logger: Logger = LogManager.getLogger()
         private const val FEED_COMMAND: String = "feed"
         private const val FEED_ARG_NAME_COMMAND: String = "player"
-        private val feedCommandAliases: Array<String> = arrayOf(
-            FEED_COMMAND, "eat", "eeat", "efeed"
-        )
+        private val feedCommandAliases: MutableList<String> = mutableListOf(FEED_COMMAND)
         private val saturationLevel: Field by lazy {
             return@lazy ObfuscationReflectionHelper.findField(
                 FoodStats::class.java,
@@ -45,6 +44,11 @@ class FeedCommand {
             dispatcher: CommandDispatcher<CommandSource>
         ) {
             logger.info("Starting register \"/$FEED_COMMAND\" command ...")
+            logger.info("Processing commands aliases for \"/$FEED_COMMAND\" command ...")
+
+            feedCommandAliases.addAll(
+                ModConfiguration.getCommandsConfig().commands.feed.commandAliases
+            )
 
             feedCommandAliases.forEach { command ->
                 dispatcher.register(
@@ -67,6 +71,7 @@ class FeedCommand {
         }
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             if (!c.isPlayerSender()) {
                 logger.warn(
                     "\"/$FEED_COMMAND\" command should only be used by the player!"
@@ -77,7 +82,10 @@ class FeedCommand {
             val commandSenderNickName: String = c.source.asPlayer().name.string
             val commandSender: CommandSource = c.source
 
-            if (!commandSender.asPlayer().hasPermissionLevel(2)) {
+            if (!commandSender.asPlayer().hasPermissionLevel(
+                    modConfig.commands.feed.permissionLevel
+                )
+            ) {
                 logger.info(
                     "Player ($commandSenderNickName) failed to executing \"/$FEED_COMMAND\" command"
                 )
