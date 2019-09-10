@@ -36,6 +36,8 @@ class TopCommand {
                 ModConfiguration.getCommandsConfig().commands.top.commandAliases
             )
 
+            registerAliases()
+
             topCommandAliases.forEach { command ->
                 dispatcher.register(
                     LiteralArgumentBuilder.literal<CommandSource>(command)
@@ -100,6 +102,10 @@ class TopCommand {
                 ),
                 true
             )
+        }
+
+        private fun registerAliases() {
+            CommandAliases.aliases[TOP_COMMAND] = topCommandAliases
         }
     }
 }

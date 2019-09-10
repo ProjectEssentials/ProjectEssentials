@@ -40,6 +40,8 @@ class HealCommand {
                 modConfig.commands.heal.commandAliases
             )
 
+            registerAliases()
+
             healCommandAliases.forEach { command ->
                 dispatcher.register(
                     literal<CommandSource>(command)
@@ -65,6 +67,7 @@ class HealCommand {
 
         private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
             val modConfig = ModConfiguration.getCommandsConfig()
+
             if (!c.isPlayerSender()) {
                 logger.warn(
                     "\"/${HEAL_COMMAND}\" command should only be used by the player!"
@@ -79,8 +82,10 @@ class HealCommand {
                     modConfig.commands.heal.permissionLevel
                 )
             ) {
-                logger.info(
-                    "Player ($commandSenderNickName) failed to executing \"/$HEAL_COMMAND\" command"
+                logger.warn(
+                    PERMISSION_LEVEL
+                        .replace("%0", commandSenderNickName)
+                        .replace("%1", HEAL_COMMAND)
                 )
 
                 if (hasTarget) {
@@ -170,6 +175,10 @@ class HealCommand {
                     true
                 )
             }
+        }
+
+        private fun registerAliases() {
+            CommandAliases.aliases[HEAL_COMMAND] = healCommandAliases
         }
     }
 }

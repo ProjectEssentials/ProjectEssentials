@@ -4,7 +4,14 @@ package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.CommandsBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.cooldowns.CooldownBase
+import com.mairwunnx.projectessentials.cooldowns.handleCooldown
+import com.mairwunnx.projectessentials.extensions.commandName
+import com.mairwunnx.projectessentials.extensions.player
+import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.CommandEvent
+import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent
@@ -34,12 +41,38 @@ class ProjectEssentials {
         commandsBase.registerAll(it.server.commandManager.dispatcher)
     }
 
-    // maybe serverStopping name
+    @Suppress("UNUSED_PARAMETER")
     @SubscribeEvent
     fun onServerStopping(it: FMLServerStoppingEvent) {
         logger.info("Shutting down Project Essentials mod ...")
         logger.info("    - Saving configuration ...")
         ModConfiguration.saveConfig()
         logger.info("Done, thanks for using")
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    fun onPlayerCommand(it: CommandEvent) {
+        if (it.parseResults.context.source.entity is ServerPlayerEntity) {
+            val commandName = it.commandName
+            val commandSender = it.player
+            val commandSenderNickName = commandSender.name.string
+            val cooldownsConfig = ModConfiguration.getCooldownsConfig()
+
+            try {
+                if (
+                    !cooldownsConfig.cooldownIgnoredPlayers.contains(commandSenderNickName) &&
+                    !commandSender.hasPermissionLevel(cooldownsConfig.cooldownBypassPermissionLevel)
+                ) {
+                    it.isCanceled = handleCooldown(
+                        commandName, commandSenderNickName, it
+                    )
+                }
+            } catch (knpe: KotlinNullPointerException) {
+                CooldownBase.addCooldown(
+                    commandSenderNickName,
+                    commandName
+                )
+            }
+        }
     }
 }

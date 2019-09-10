@@ -21,8 +21,6 @@ data class CommandsConfig(
         data class Heal(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
-            @SerialName("Cooldown")
-            val cooldown: Int = 60,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("CommandAliases")
@@ -33,8 +31,6 @@ data class CommandsConfig(
         data class Feed(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
-            @SerialName("Cooldown")
-            val cooldown: Int = 60,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("MaxFoodSaturationLevel")
@@ -51,8 +47,6 @@ data class CommandsConfig(
         data class Top(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
-            @SerialName("Cooldown")
-            val cooldown: Int = 10,
             @SerialName("CommandAliases")
             val commandAliases: List<String> = listOf("etop")
         )

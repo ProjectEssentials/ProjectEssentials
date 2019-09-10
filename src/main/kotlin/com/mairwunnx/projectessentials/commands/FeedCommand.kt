@@ -51,6 +51,8 @@ class FeedCommand {
                 modConfig.commands.feed.commandAliases
             )
 
+            registerAliases()
+
             feedCommandAliases.forEach { command ->
                 dispatcher.register(
                     LiteralArgumentBuilder.literal<CommandSource>(command)
@@ -206,6 +208,10 @@ class FeedCommand {
                     true
                 )
             }
+        }
+
+        private fun registerAliases() {
+            CommandAliases.aliases[FEED_COMMAND] = feedCommandAliases
         }
     }
 }
