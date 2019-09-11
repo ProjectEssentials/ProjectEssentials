@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CommandsConfig(
     @SerialName("Commands")
-    val commands: Commands = Commands()
+    val commands: Commands = Commands(),
+    @SerialName("DisabledCommands")
+    val disabledCommands: List<String> = listOf()
 ) {
     @Serializable
     data class Commands(

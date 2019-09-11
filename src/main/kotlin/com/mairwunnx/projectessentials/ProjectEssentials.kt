@@ -2,12 +2,14 @@
 
 package com.mairwunnx.projectessentials
 
+import com.mairwunnx.projectessentials.commands.CommandAliases
 import com.mairwunnx.projectessentials.commands.CommandsBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.commandName
 import com.mairwunnx.projectessentials.extensions.player
+import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
@@ -58,6 +60,15 @@ class ProjectEssentials {
             val commandSenderNickName = commandSender.name.string
             val cooldownsConfig = ModConfiguration.getCooldownsConfig()
 
+            if (isBlockedCommand(it)) {
+                logger.warn(
+                    DISABLED_COMMAND
+                        .replace("%0", commandSenderNickName)
+                        .replace("%1", commandName)
+                )
+                it.isCanceled = true
+            }
+
             try {
                 if (
                     !cooldownsConfig.ignoredPlayers.contains(commandSenderNickName) &&
@@ -73,6 +84,15 @@ class ProjectEssentials {
                     commandName
                 )
             }
+        }
+    }
+
+    private fun isBlockedCommand(event: CommandEvent): Boolean {
+        val commandName = event.commandName
+        val commandConfig = ModConfiguration.getCommandsConfig()
+        return when {
+            commandConfig.disabledCommands.contains(commandName) -> true
+            else -> CommandAliases.searchForAliases(commandName)
         }
     }
 }

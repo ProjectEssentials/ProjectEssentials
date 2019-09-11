@@ -34,7 +34,7 @@ fun processCooldownOfCommand(
         cooldownsConfig.commandCooldowns
     )
     val commandCooldown: Int = cooldownsMap[commandName]
-        ?: CommandAliases.searchForAliases(
+        ?: CommandAliases.searchForAliasesForCooldown(
             commandName, cooldownsMap
         ).let {
             originalCommand = it.second
