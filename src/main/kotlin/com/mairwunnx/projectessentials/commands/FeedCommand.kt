@@ -48,7 +48,7 @@ class FeedCommand {
             logger.info("Processing commands aliases for \"/$FEED_COMMAND\" command ...")
 
             feedCommandAliases.addAll(
-                modConfig.commands.feed.commandAliases
+                modConfig.commands.feed.aliases
             )
 
             registerAliases()

@@ -37,7 +37,7 @@ class HealCommand {
             logger.info("Processing commands aliases for \"/$HEAL_COMMAND\" command ...")
 
             healCommandAliases.addAll(
-                modConfig.commands.heal.commandAliases
+                modConfig.commands.heal.aliases
             )
 
             registerAliases()

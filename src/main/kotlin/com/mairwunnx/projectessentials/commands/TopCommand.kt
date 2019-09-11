@@ -33,7 +33,7 @@ class TopCommand {
             logger.info("Processing commands aliases for \"/$TOP_COMMAND\" command ...")
 
             topCommandAliases.addAll(
-                ModConfiguration.getCommandsConfig().commands.top.commandAliases
+                ModConfiguration.getCommandsConfig().commands.top.aliases
             )
 
             registerAliases()

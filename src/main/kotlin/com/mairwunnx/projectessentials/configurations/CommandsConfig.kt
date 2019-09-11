@@ -24,7 +24,7 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("CommandAliases")
-            val commandAliases: List<String> = listOf("eheal")
+            val aliases: List<String> = listOf("eheal")
         )
 
         @Serializable
@@ -38,7 +38,7 @@ data class CommandsConfig(
             @SerialName("MaxFoodLevel")
             val maxFoodLevel: Int = 20,
             @SerialName("CommandAliases")
-            val commandAliases: List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "eat", "eeat", "efeed"
             )
         )
@@ -48,7 +48,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
             @SerialName("CommandAliases")
-            val commandAliases: List<String> = listOf("etop")
+            val aliases: List<String> = listOf("etop")
         )
     }
 }
