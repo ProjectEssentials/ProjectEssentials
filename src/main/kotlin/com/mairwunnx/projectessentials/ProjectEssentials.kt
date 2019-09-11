@@ -5,7 +5,7 @@ package com.mairwunnx.projectessentials
 import com.mairwunnx.projectessentials.commands.CommandsBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
-import com.mairwunnx.projectessentials.cooldowns.handleCooldown
+import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.commandName
 import com.mairwunnx.projectessentials.extensions.player
 import net.minecraft.entity.player.ServerPlayerEntity
@@ -63,7 +63,7 @@ class ProjectEssentials {
                     !cooldownsConfig.ignoredPlayers.contains(commandSenderNickName) &&
                     !commandSender.hasPermissionLevel(cooldownsConfig.bypassPermissionLevel)
                 ) {
-                    it.isCanceled = handleCooldown(
+                    it.isCanceled = processCooldownOfCommand(
                         commandName, commandSenderNickName, it
                     )
                 }

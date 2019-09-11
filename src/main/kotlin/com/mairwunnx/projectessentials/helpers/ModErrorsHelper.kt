@@ -1,4 +1,4 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.helpers
 
 const val PERMISSION_LEVEL =
     "Player (%0) failed to executing \"/%1\" command".plus(

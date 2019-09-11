@@ -1,9 +1,9 @@
 package com.mairwunnx.projectessentials.cooldowns
 
-import com.mairwunnx.projectessentials.commands.COOLDOWN_NOT_EXPIRED
 import com.mairwunnx.projectessentials.commands.CommandAliases
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.source
+import com.mairwunnx.projectessentials.helpers.COOLDOWN_NOT_EXPIRED
 import net.minecraft.util.text.TranslationTextComponent
 import net.minecraftforge.event.CommandEvent
 import org.apache.logging.log4j.LogManager
@@ -23,7 +23,7 @@ fun processCooldownsCommandsList(
     return hashMap
 }
 
-fun handleCooldown(
+fun processCooldownOfCommand(
     commandName: String,
     commandSenderNickName: String,
     commandEvent: CommandEvent

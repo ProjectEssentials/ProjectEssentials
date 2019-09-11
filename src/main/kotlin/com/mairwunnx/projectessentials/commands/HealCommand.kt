@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.getString
 import com.mojang.brigadier.arguments.StringArgumentType.string
@@ -36,11 +37,10 @@ class HealCommand {
             logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
             logger.info("Processing commands aliases for \"/$HEAL_COMMAND\" command ...")
 
+            CommandAliases.aliases[HEAL_COMMAND] = modConfig.commands.heal.aliases.toMutableList()
             healCommandAliases.addAll(
                 modConfig.commands.heal.aliases
             )
-
-            registerAliases()
 
             healCommandAliases.forEach { command ->
                 dispatcher.register(
@@ -49,7 +49,11 @@ class HealCommand {
                             RequiredArgumentBuilder.argument<CommandSource, String>(
                                 HEAL_ARG_NAME_COMMAND, string()
                             ).executes {
-                                if (modConfig.commands.heal.enableArgs) {
+                                if (modConfig.commands.heal.enableArgs &&
+                                    it.source.asPlayer().hasPermissionLevel(
+                                        modConfig.commands.heal.argUsePermissionLevel
+                                    )
+                                ) {
                                     execute(it, true)
                                 } else {
                                     execute(it)
@@ -175,10 +179,6 @@ class HealCommand {
                     true
                 )
             }
-        }
-
-        private fun registerAliases() {
-            CommandAliases.aliases[HEAL_COMMAND] = healCommandAliases
         }
     }
 }

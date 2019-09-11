@@ -11,20 +11,18 @@ object CommandAliases {
         command: String,
         cooldownsMap: HashMap<String, Int>
     ): Pair<Int?, String> {
-        try {
+        return try {
             aliases.keys.forEach { baseCommand ->
                 val aliasesOfCommands = aliases[baseCommand]
-                if (aliasesOfCommands != null) {
-                    if (aliasesOfCommands.contains(command)) {
-                        return Pair(
-                            cooldownsMap[baseCommand], baseCommand
-                        )
-                    }
+                if (aliasesOfCommands != null &&
+                    aliasesOfCommands.contains(command)
+                ) {
+                    return cooldownsMap[baseCommand] to baseCommand
                 }
             }
-            return Pair(null, "")
+            null to ""
         } catch (ex: KotlinNullPointerException) {
-            return Pair(null, "")
+            null to ""
         }
     }
 }

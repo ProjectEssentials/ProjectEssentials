@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isNeedFood
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType.getString
@@ -47,11 +48,10 @@ class FeedCommand {
             logger.info("Starting register \"/$FEED_COMMAND\" command ...")
             logger.info("Processing commands aliases for \"/$FEED_COMMAND\" command ...")
 
+            CommandAliases.aliases[FEED_COMMAND] = modConfig.commands.feed.aliases.toMutableList()
             feedCommandAliases.addAll(
                 modConfig.commands.feed.aliases
             )
-
-            registerAliases()
 
             feedCommandAliases.forEach { command ->
                 dispatcher.register(
@@ -61,7 +61,11 @@ class FeedCommand {
                                 FEED_ARG_NAME_COMMAND,
                                 StringArgumentType.string()
                             ).executes {
-                                if (modConfig.commands.feed.enableArgs) {
+                                if (modConfig.commands.feed.enableArgs &&
+                                    it.source.asPlayer().hasPermissionLevel(
+                                        modConfig.commands.feed.argUsePermissionLevel
+                                    )
+                                ) {
                                     execute(it, true)
                                 } else {
                                     execute(it)
@@ -93,8 +97,10 @@ class FeedCommand {
                     modConfig.commands.feed.permissionLevel
                 )
             ) {
-                logger.info(
-                    "Player ($commandSenderNickName) failed to executing \"/$FEED_COMMAND\" command"
+                logger.warn(
+                    PERMISSION_LEVEL
+                        .replace("%0", commandSenderNickName)
+                        .replace("%1", FEED_COMMAND)
                 )
 
                 if (hasTarget) {
@@ -190,16 +196,16 @@ class FeedCommand {
                 )
                 commandSender.asPlayer().foodStats.foodLevel = 20
 
-                val clientSideSaturationLevel = Runnable {
-                    commandSender.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
+                DistExecutor.runWhenOn(Dist.CLIENT) {
+                    Runnable {
+                        commandSender.asPlayer().foodStats.setFoodSaturationLevel(5.0f)
+                    }
                 }
-
-                val serverSideSaturationLevel = Runnable {
-                    saturationLevel.setFloat(commandSender.asPlayer().foodStats, 5.0f)
+                DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) {
+                    Runnable {
+                        saturationLevel.setFloat(commandSender.asPlayer().foodStats, 5.0f)
+                    }
                 }
-
-                DistExecutor.runWhenOn(Dist.CLIENT) { clientSideSaturationLevel }
-                DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) { serverSideSaturationLevel }
 
                 commandSender.sendFeedback(
                     TranslationTextComponent(
@@ -208,10 +214,6 @@ class FeedCommand {
                     true
                 )
             }
-        }
-
-        private fun registerAliases() {
-            CommandAliases.aliases[FEED_COMMAND] = feedCommandAliases
         }
     }
 }

@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
@@ -29,14 +30,14 @@ class TopCommand {
         fun register(
             dispatcher: CommandDispatcher<CommandSource>
         ) {
+            val modConfig = ModConfiguration.getCommandsConfig()
             logger.info("Starting register \"/$TOP_COMMAND\" command ...")
             logger.info("Processing commands aliases for \"/$TOP_COMMAND\" command ...")
 
+            CommandAliases.aliases[TOP_COMMAND] = modConfig.commands.top.aliases.toMutableList()
             topCommandAliases.addAll(
-                ModConfiguration.getCommandsConfig().commands.top.aliases
+                modConfig.commands.top.aliases
             )
-
-            registerAliases()
 
             topCommandAliases.forEach { command ->
                 dispatcher.register(
@@ -65,8 +66,10 @@ class TopCommand {
                     modConfig.commands.top.permissionLevel
                 )
             ) {
-                logger.info(
-                    "Player ($commandSenderNickName) failed to executing \"/$TOP_COMMAND\" command"
+                logger.warn(
+                    PERMISSION_LEVEL
+                        .replace("%0", commandSenderNickName)
+                        .replace("%1", TOP_COMMAND)
                 )
                 commandSender.sendFeedback(
                     TranslationTextComponent(
@@ -102,10 +105,6 @@ class TopCommand {
                 ),
                 true
             )
-        }
-
-        private fun registerAliases() {
-            CommandAliases.aliases[TOP_COMMAND] = topCommandAliases
         }
     }
 }

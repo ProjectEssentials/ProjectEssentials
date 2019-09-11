@@ -21,9 +21,11 @@ data class CommandsConfig(
         data class Heal(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
-            @SerialName("CommandAliases")
+            @SerialName("Aliases")
             val aliases: List<String> = listOf("eheal")
         )
 
@@ -31,13 +33,15 @@ data class CommandsConfig(
         data class Feed(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("MaxFoodSaturationLevel")
             val maxFoodSaturationLevel: Float = 5.0f,
             @SerialName("MaxFoodLevel")
             val maxFoodLevel: Int = 20,
-            @SerialName("CommandAliases")
+            @SerialName("Aliases")
             val aliases: List<String> = listOf(
                 "eat", "eeat", "efeed"
             )
@@ -47,7 +51,7 @@ data class CommandsConfig(
         data class Top(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
-            @SerialName("CommandAliases")
+            @SerialName("Aliases")
             val aliases: List<String> = listOf("etop")
         )
     }
