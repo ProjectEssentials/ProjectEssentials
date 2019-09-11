@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CooldownsConfig(
+    @SerialName("BypassPermissionLevel")
+    val bypassPermissionLevel: Int = 2,
     @SerialName("CommandCooldowns")
     val commandCooldowns: MutableList<String> = mutableListOf(),
-    @SerialName("CooldownIgnoredPlayers")
-    val cooldownIgnoredPlayers: MutableList<String> = mutableListOf(),
-    @SerialName("CooldownBypassPermissionLevel")
-    val cooldownBypassPermissionLevel: Int = 2
+    @SerialName("IgnoredPlayers")
+    val ignoredPlayers: MutableList<String> = mutableListOf()
 )

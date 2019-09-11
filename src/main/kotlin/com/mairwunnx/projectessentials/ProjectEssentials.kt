@@ -60,14 +60,14 @@ class ProjectEssentials {
 
             try {
                 if (
-                    !cooldownsConfig.cooldownIgnoredPlayers.contains(commandSenderNickName) &&
-                    !commandSender.hasPermissionLevel(cooldownsConfig.cooldownBypassPermissionLevel)
+                    !cooldownsConfig.ignoredPlayers.contains(commandSenderNickName) &&
+                    !commandSender.hasPermissionLevel(cooldownsConfig.bypassPermissionLevel)
                 ) {
                     it.isCanceled = handleCooldown(
                         commandName, commandSenderNickName, it
                     )
                 }
-            } catch (knpe: KotlinNullPointerException) {
+            } catch (_: KotlinNullPointerException) {
                 CooldownBase.addCooldown(
                     commandSenderNickName,
                     commandName
