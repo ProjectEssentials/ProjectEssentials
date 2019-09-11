@@ -1,5 +1,6 @@
 {
   "project_essentials.common.player.notonline": "§cИгрок §7%s §cне в сети или отсутствует на сервере.",
+  "project_essentials.common.cooldown.error": "§cВы §7не можете использовать §cэту команду в течение §7%s §cсекунд.",
   "project_essentials.heal.self.success": "§6Вы §7были исцелены§6.",
   "project_essentials.heal.self.maxhealth": "§cВы уже §7полностью §cисцелены.",
   "project_essentials.heal.self.error": "§cУ вас §7нет разрешения §cисцелять себя.",
