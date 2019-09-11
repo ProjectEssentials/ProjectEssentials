@@ -1,6 +1,8 @@
 {
   "project_essentials.common.player.notonline": "§cPlayer §7%s §cnot online or not exists on server.",
   "project_essentials.common.cooldown.error": "§cYou §7cannot type §cthat command for §7%s §cseconds.",
+  "project_essentials.common.reload.error": "§cYou §7don't have permission §cto reload essentials configuration.",
+  "project_essentials.common.reload.success": "§6Essentials configuration §7successfully §6reloaded.",
   "project_essentials.heal.self.success": "§6You §7have been healed§6.",
   "project_essentials.heal.self.maxhealth": "§cYou already §7fully §chealed.",
   "project_essentials.heal.self.error": "§cYou §7don't have permission §cto heal yourself.",

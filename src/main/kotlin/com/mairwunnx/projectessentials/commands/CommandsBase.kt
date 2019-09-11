@@ -10,5 +10,6 @@ class CommandsBase {
         HealCommand.register(commandDispatcher)
         FeedCommand.register(commandDispatcher)
         TopCommand.register(commandDispatcher)
+        EssentialsCommand.register(commandDispatcher)
     }
 }

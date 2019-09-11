@@ -10,6 +10,8 @@ import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.commandName
 import com.mairwunnx.projectessentials.extensions.player
 import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
+import com.mojang.brigadier.CommandDispatcher
+import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
@@ -25,6 +27,9 @@ const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
 const val MOD_VERSION = "1.14.4-0.0.3.0"
 
+lateinit var commandsBase: CommandsBase
+lateinit var commandDispatcher: CommandDispatcher<CommandSource>
+
 @Mod(MOD_ID)
 class ProjectEssentials {
     private val logger: Logger = LogManager.getLogger()
@@ -39,7 +44,8 @@ class ProjectEssentials {
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
         logger.info("$MOD_NAME $MOD_VERSION starting mod loading ...")
-        val commandsBase = CommandsBase()
+        commandsBase = CommandsBase()
+        commandDispatcher = it.server.commandManager.dispatcher
         commandsBase.registerAll(it.server.commandManager.dispatcher)
     }
 
