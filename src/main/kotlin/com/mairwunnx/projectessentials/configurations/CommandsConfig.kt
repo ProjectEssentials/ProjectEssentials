@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 data class CommandsConfig(
     @SerialName("Commands")
     val commands: Commands = Commands(),
+    @SerialName("EssentialsCommands")
+    val essentialsCommands: EssentialsCommands = EssentialsCommands(),
     @SerialName("DisabledCommands")
     val disabledCommands: List<String> = listOf()
 ) {
@@ -57,4 +59,14 @@ data class CommandsConfig(
             val aliases: List<String> = listOf("etop")
         )
     }
+
+    @Serializable
+    data class EssentialsCommands(
+        @SerialName("VersionPermissionLevel")
+        val versionPermissionLevel: Int = 0,
+        @SerialName("ReloadPermissionLevel")
+        val reloadPermissionLevel: Int = 4,
+        @SerialName("SavePermissionLevel")
+        val savePermissionLevel: Int = 4
+    )
 }

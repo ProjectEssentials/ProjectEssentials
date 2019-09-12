@@ -3,6 +3,7 @@
   "project_essentials.common.cooldown.error": "§cYou §7cannot type §cthat command for §7%s §cseconds.",
   "project_essentials.common.reload.error": "§cYou §7don't have permission §cto reload essentials configuration.",
   "project_essentials.common.reload.success": "§6Essentials configuration §7successfully §6reloaded.",
+  "project_essentials.common.version.success": "          §6%s\n§cVersion: §7%s\n§cMaintainer: §7%s\n§cTarget Forge version: §7%s\n§cTarget Minecraft version: §7%s\n§cSource code: §7%s§7\n§cTelegram chat: §7%s",
   "project_essentials.heal.self.success": "§6You §7have been healed§6.",
   "project_essentials.heal.self.maxhealth": "§cYou already §7fully §chealed.",
   "project_essentials.heal.self.error": "§cYou §7don't have permission §cto heal yourself.",
