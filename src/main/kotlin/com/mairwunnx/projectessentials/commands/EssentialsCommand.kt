@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.commandDispatcher
 import com.mairwunnx.projectessentials.commandsBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.enums.EssentialsCommandArgs
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
@@ -14,10 +15,6 @@ import net.minecraft.command.CommandSource
 import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-
-enum class EssentialsCommandArgs {
-    VERSION, RELOAD, SAVE
-}
 
 class EssentialsCommand {
     companion object {

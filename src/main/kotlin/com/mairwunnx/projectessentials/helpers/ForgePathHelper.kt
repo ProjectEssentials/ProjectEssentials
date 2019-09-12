@@ -1,9 +1,8 @@
 package com.mairwunnx.projectessentials.helpers
 
+import com.mairwunnx.projectessentials.enums.ForgeRootPaths
 import java.io.File
 import net.minecraft.client.Minecraft
-
-enum class ForgeRootPaths { CLIENT, SERVER }
 
 private val clientRootDir by lazy {
     Minecraft.getInstance().gameDir.absolutePath
