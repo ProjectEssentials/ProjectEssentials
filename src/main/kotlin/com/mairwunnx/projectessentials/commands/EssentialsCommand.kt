@@ -34,7 +34,43 @@ object EssentialsCommand {
     }
 
     private fun executeReloadCommand(it: CommandContext<CommandSource>): Int {
-        return 1
+        var isServerSender = false
+        val commandSender = it.source
+        val commandSenderNickName = if (it.isPlayerSender()) {
+            it.source.asPlayer().name.string
+        } else {
+            isServerSender = true
+            "server"
+        }
+
+        if (it.source.asPlayer().hasPermissionLevel(
+                ModConfiguration.getCommandsConfig().essentialsCommands.reloadPermissionLevel
+            ) || isServerSender
+        ) {
+            ModConfiguration.loadConfig()
+            if (isServerSender) {
+                logger.info("Successfully reloaded Project Essentials configuration")
+            } else {
+                commandSender.sendFeedback(
+                    TranslationTextComponent(
+                        "project_essentials.common.reload.success"
+                    ), false
+                )
+            }
+            return 1
+        } else {
+            logger.warn(
+                PERMISSION_LEVEL
+                    .replace("%0", commandSenderNickName)
+                    .replace("%1", "essentials reload")
+            )
+            commandSender.sendFeedback(
+                TranslationTextComponent(
+                    "project_essentials.common.reload.error"
+                ), false
+            )
+            return 0
+        }
     }
 
     private fun buildEssentialsSaveCommand(): ArgumentBuilder<CommandSource, *>? {
@@ -171,12 +207,4 @@ object EssentialsCommand {
             ) as LiteralArgumentBuilder<CommandSource>?
         )
     }
-
-//    private fun reload(commandSender: CommandSource) {
-//        logger.info("Starting reloading configuration ...")
-//        ModConfiguration.loadConfig()
-//        logger.info("Starting reloading commands ...")
-//        commandsBase.registerAll(commandDispatcher)
-//        logger.info("Configuration successfully reloaded")
-//    }
 }
