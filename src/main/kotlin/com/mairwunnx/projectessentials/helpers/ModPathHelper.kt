@@ -1,6 +1,7 @@
 package com.mairwunnx.projectessentials.helpers
 
 import com.mairwunnx.projectessentials.MOD_NAME
+import com.mairwunnx.projectessentials.enums.ForgeRootPaths
 import java.io.File
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.fml.DistExecutor
