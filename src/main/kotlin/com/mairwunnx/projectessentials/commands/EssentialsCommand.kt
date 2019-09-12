@@ -1,12 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.MOD_MAINTAINER
-import com.mairwunnx.projectessentials.MOD_NAME
-import com.mairwunnx.projectessentials.MOD_SOURCES_LINK
-import com.mairwunnx.projectessentials.MOD_TARGET_FORGE
-import com.mairwunnx.projectessentials.MOD_TARGET_MC
-import com.mairwunnx.projectessentials.MOD_TELEGRAM_LINK
-import com.mairwunnx.projectessentials.MOD_VERSION
+import com.mairwunnx.projectessentials.*
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
@@ -50,7 +44,43 @@ object EssentialsCommand {
     }
 
     private fun executeSaveCommand(it: CommandContext<CommandSource>): Int {
-        return 1
+        var isServerSender = false
+        val commandSender = it.source
+        val commandSenderNickName = if (it.isPlayerSender()) {
+            it.source.asPlayer().name.string
+        } else {
+            isServerSender = true
+            "server"
+        }
+
+        if (it.source.asPlayer().hasPermissionLevel(
+                ModConfiguration.getCommandsConfig().essentialsCommands.savePermissionLevel
+            ) || isServerSender
+        ) {
+            ModConfiguration.saveConfig()
+            if (isServerSender) {
+                logger.info("Successfully saved Project Essentials configuration")
+            } else {
+                commandSender.sendFeedback(
+                    TranslationTextComponent(
+                        "project_essentials.common.save.success"
+                    ), false
+                )
+            }
+            return 1
+        } else {
+            logger.warn(
+                PERMISSION_LEVEL
+                    .replace("%0", commandSenderNickName)
+                    .replace("%1", "essentials save")
+            )
+            commandSender.sendFeedback(
+                TranslationTextComponent(
+                    "project_essentials.common.save.error"
+                ), false
+            )
+            return 0
+        }
     }
 
     private fun buildEssentialsVersionCommand(): ArgumentBuilder<CommandSource, *>? {
@@ -75,7 +105,7 @@ object EssentialsCommand {
             ) || isServerSender
         ) {
             if (isServerSender) {
-                logger.info(MOD_NAME)
+                logger.info("        $MOD_NAME")
                 logger.info("Version: $MOD_VERSION")
                 logger.info("Maintainer: $MOD_MAINTAINER")
                 logger.info("Target Forge version: $MOD_TARGET_FORGE")
@@ -102,6 +132,12 @@ object EssentialsCommand {
                 PERMISSION_LEVEL
                     .replace("%0", commandSenderNickName)
                     .replace("%1", "essentials version")
+            )
+            commandSender.sendFeedback(
+                TranslationTextComponent(
+                    "project_essentials.common.version.error"
+                ),
+                true
             )
             return 0
         }

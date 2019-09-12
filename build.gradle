@@ -140,7 +140,7 @@ task ktlint(type: JavaExec, group: "verification") {
     args("src/**/*.kt")
 }
 
-check.dependsOn(ktlint)
+//check.dependsOn(ktlint)
 
 task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations"
@@ -149,7 +149,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     args("-F", "src/**/*.kt")
 }
 
-jar.dependsOn(ktlintFormat)
+//jar.dependsOn(ktlintFormat)
 
 jar {
     manifest {
