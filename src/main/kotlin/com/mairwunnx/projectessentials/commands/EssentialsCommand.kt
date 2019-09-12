@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 enum class EssentialsCommandArgs {
-    VERSION, RELOAD, SOURCES, SAVE
+    VERSION, RELOAD, SAVE
 }
 
 class EssentialsCommand {
