@@ -17,18 +17,18 @@ import org.apache.logging.log4j.Logger
 object EssentialsCommand {
     private val logger: Logger = LogManager.getLogger()
     private const val ESSENTIALS_COMMAND: String = "essentials"
-    private val essentialsCommandAliases: MutableList<String> = mutableListOf(
-        ESSENTIALS_COMMAND, "ess", "eessentials", "eess"
-    )
+    private const val ESSENTIALS_COMMAND_VERSION: String = "version"
+    private const val ESSENTIALS_COMMAND_SAVE: String = "save"
+    private const val ESSENTIALS_COMMAND_RELOAD: String = "reload"
 
     private fun buildEssentialsCommand(): ArgumentBuilder<CommandSource, *>? {
-        return Commands.literal("essentials").executes {
+        return Commands.literal(ESSENTIALS_COMMAND).executes {
             executeVersionCommand(it)
         }
     }
 
     private fun buildEssentialsReloadCommand(): ArgumentBuilder<CommandSource, *>? {
-        return Commands.literal("reload").executes {
+        return Commands.literal(ESSENTIALS_COMMAND_RELOAD).executes {
             executeReloadCommand(it)
         }
     }
@@ -62,7 +62,7 @@ object EssentialsCommand {
             logger.warn(
                 PERMISSION_LEVEL
                     .replace("%0", commandSenderNickName)
-                    .replace("%1", "essentials reload")
+                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_RELOAD")
             )
             commandSender.sendFeedback(
                 TranslationTextComponent(
@@ -74,7 +74,7 @@ object EssentialsCommand {
     }
 
     private fun buildEssentialsSaveCommand(): ArgumentBuilder<CommandSource, *>? {
-        return Commands.literal("save").executes {
+        return Commands.literal(ESSENTIALS_COMMAND_SAVE).executes {
             executeSaveCommand(it)
         }
     }
@@ -108,7 +108,7 @@ object EssentialsCommand {
             logger.warn(
                 PERMISSION_LEVEL
                     .replace("%0", commandSenderNickName)
-                    .replace("%1", "essentials save")
+                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_SAVE")
             )
             commandSender.sendFeedback(
                 TranslationTextComponent(
@@ -120,7 +120,7 @@ object EssentialsCommand {
     }
 
     private fun buildEssentialsVersionCommand(): ArgumentBuilder<CommandSource, *>? {
-        return Commands.literal("version").executes {
+        return Commands.literal(ESSENTIALS_COMMAND_VERSION).executes {
             executeVersionCommand(it)
         }
     }
@@ -167,7 +167,7 @@ object EssentialsCommand {
             logger.warn(
                 PERMISSION_LEVEL
                     .replace("%0", commandSenderNickName)
-                    .replace("%1", "essentials version")
+                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_VERSION")
             )
             commandSender.sendFeedback(
                 TranslationTextComponent(
@@ -185,8 +185,6 @@ object EssentialsCommand {
     ) {
         logger.info("Starting register \"/$ESSENTIALS_COMMAND\" command ...")
         logger.info("Processing commands aliases for \"/$ESSENTIALS_COMMAND\" command ...")
-
-        CommandAliases.aliases[ESSENTIALS_COMMAND] = essentialsCommandAliases
 
         dispatcher.register(
             buildEssentialsCommand() as LiteralArgumentBuilder<CommandSource>?
