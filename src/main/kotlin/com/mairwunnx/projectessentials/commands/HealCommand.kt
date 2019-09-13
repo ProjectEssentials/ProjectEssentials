@@ -1,16 +1,19 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.extensions.empty
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND_ARG
+import com.mairwunnx.projectessentials.helpers.ONLY_PLAYER_CAN
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.getString
-import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.util.text.TranslationTextComponent
+import net.minecraft.command.Commands
+import net.minecraft.command.arguments.EntityArgument
+import net.minecraft.entity.player.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -21,6 +24,8 @@ import org.apache.logging.log4j.Logger
  *
  * **Available arguments:** &#91`player`&#93 - command executing
  * target.
+ *
+ * **Can server use it command?:** `false`
  */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 object HealCommand {
@@ -42,49 +47,63 @@ object HealCommand {
         )
 
         healCommandAliases.forEach { command ->
-            dispatcher.register(
-                literal<CommandSource>(command)
-                    .then(
-                        RequiredArgumentBuilder.argument<CommandSource, String>(
-                            HEAL_ARG_NAME_COMMAND, string()
-                        ).executes {
-                            if (modConfig.commands.heal.enableArgs &&
-                                it.source.asPlayer().hasPermissionLevel(
-                                    modConfig.commands.heal.argUsePermissionLevel
-                                )
-                            ) {
-                                execute(it, true)
-                            } else {
-                                execute(it)
-                            }
-                            return@executes 1
-                        }
-                    )
-                    .executes {
-                        execute(it)
+            dispatcher.register(literal<CommandSource>(command)
+                .then(
+                    Commands.argument(
+                        HEAL_ARG_NAME_COMMAND,
+                        EntityArgument.player()
+                    ).executes {
+                        execute(it, true)
                         return@executes 1
                     }
+                )
+                .executes {
+                    execute(it)
+                    return@executes 1
+                }
             )
         }
     }
 
-    private fun execute(c: CommandContext<CommandSource>, hasTarget: Boolean = false) {
+    private fun execute(
+        c: CommandContext<CommandSource>,
+        hasTarget: Boolean = false
+    ) {
         val modConfig = ModConfiguration.getCommandsConfig()
+        val permissionLevel = modConfig.commands.heal.permissionLevel
+        val argUsePermissionLevel = modConfig.commands.heal.argUsePermissionLevel
+        val isEnabledArgs = modConfig.commands.heal.enableArgs
+        val isPlayerSender = c.isPlayerSender()
+        lateinit var targetAsPlayer: ServerPlayerEntity
+        var playerNickNameAsTarget: String = String.empty
 
-        if (!c.isPlayerSender()) {
-            logger.warn(
-                "\"/${HEAL_COMMAND}\" command should only be used by the player!"
-            )
+        if (!isPlayerSender) {
+            logger.warn(ONLY_PLAYER_CAN.replace("%0", HEAL_COMMAND))
             return
         }
 
-        val commandSenderNickName: String = c.source.asPlayer().name.string
-        val commandSender: CommandSource = c.source
-
-        if (!commandSender.asPlayer().hasPermissionLevel(
-                modConfig.commands.heal.permissionLevel
+        if (hasTarget) {
+            targetAsPlayer = EntityArgument.getPlayer(
+                c, HEAL_ARG_NAME_COMMAND
             )
-        ) {
+            playerNickNameAsTarget = targetAsPlayer.name.string
+        }
+
+        val commandSender = c.source
+        val commandSenderPlayer = commandSender.asPlayer()
+        val commandSenderNickName = commandSenderPlayer.name.string
+
+        if (hasTarget && !isEnabledArgs) {
+            logger.warn(
+                DISABLED_COMMAND_ARG
+                    .replace("%0", commandSenderNickName)
+                    .replace("%1", HEAL_COMMAND)
+            )
+            sendMsg(commandSender, "common.arg.error", HEAL_COMMAND)
+            return
+        }
+
+        if (!commandSenderPlayer.hasPermissionLevel(permissionLevel)) {
             logger.warn(
                 PERMISSION_LEVEL
                     .replace("%0", commandSenderNickName)
@@ -92,91 +111,50 @@ object HealCommand {
             )
 
             if (hasTarget) {
-                val playerNickNameAsTarget: String = getString(c, HEAL_ARG_NAME_COMMAND)
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.heal.player.error",
-                        playerNickNameAsTarget
-                    ),
-                    true
-                )
+                sendMsg(commandSender, "heal.player.error", playerNickNameAsTarget)
             } else {
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.heal.self.error"
-                    ),
-                    true
-                )
+                sendMsg(commandSender, "heal.self.error")
             }
-
             return
         }
 
-        logger.info("Executed command \"/$HEAL_COMMAND\" from $commandSenderNickName")
         if (hasTarget) {
-            val playerNickNameAsTarget: String = getString(c, HEAL_ARG_NAME_COMMAND)
-            commandSender.world.players.forEach { targetAsPlayer ->
-                if (targetAsPlayer.name.string != playerNickNameAsTarget ||
-                    targetAsPlayer.hasDisconnected()
-                ) {
-                    commandSender.sendFeedback(
-                        TranslationTextComponent(
-                            "project_essentials.common.player.notonline",
-                            playerNickNameAsTarget
-                        ),
-                        true
-                    )
-                    return
-                }
-                if (targetAsPlayer.health == targetAsPlayer.maxHealth) {
-                    commandSender.sendFeedback(
-                        TranslationTextComponent(
-                            "project_essentials.heal.player.maxhealth",
-                            playerNickNameAsTarget
-                        ),
-                        true
-                    )
-                    return
-                }
-                logger.info(
-                    "Player ($playerNickNameAsTarget) Health changed from ${commandSender.asPlayer().health} to ${commandSender.asPlayer().maxHealth} by $commandSenderNickName"
+            if (!commandSenderPlayer.hasPermissionLevel(argUsePermissionLevel)) {
+                logger.warn(
+                    PERMISSION_LEVEL
+                        .replace("%0", commandSenderNickName)
+                        .replace("%1", HEAL_COMMAND)
                 )
-                targetAsPlayer.health = targetAsPlayer.maxHealth
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.heal.player.success",
-                        playerNickNameAsTarget
-                    ),
-                    true
-                )
-                targetAsPlayer.commandSource.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.heal.player.recipient.success",
-                        commandSenderNickName
-                    ),
-                    true
-                )
+                sendMsg(commandSender, "heal.player.error", playerNickNameAsTarget)
+                return
             }
-        } else {
-            if (commandSender.asPlayer().health == commandSender.asPlayer().maxHealth) {
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.heal.self.maxhealth"
-                    ),
-                    true
-                )
+
+            if (!targetAsPlayer.shouldHeal()) {
+                sendMsg(commandSender, "heal.player.maxhealth", playerNickNameAsTarget)
                 return
             }
             logger.info(
-                "Player ($commandSenderNickName) Health changed from ${commandSender.asPlayer().health} to ${commandSender.asPlayer().maxHealth}"
+                "Player ($playerNickNameAsTarget) Health changed from ${commandSenderPlayer.health} to ${commandSenderPlayer.maxHealth} by $commandSenderNickName"
             )
-            commandSender.asPlayer().health = commandSender.asPlayer().maxHealth
-            commandSender.sendFeedback(
-                TranslationTextComponent(
-                    "project_essentials.heal.self.success"
-                ),
-                true
+            targetAsPlayer.health = targetAsPlayer.maxHealth
+            sendMsg(commandSender, "heal.player.success", playerNickNameAsTarget)
+            sendMsg(
+                targetAsPlayer.commandSource,
+                "heal.player.recipient.success",
+                commandSenderNickName
             )
+        } else {
+            if (!commandSenderPlayer.shouldHeal()) {
+                sendMsg(commandSender, "heal.self.maxhealth")
+                return
+            }
+            logger.info(
+                "Player ($commandSenderNickName) Health changed from ${commandSenderPlayer.health} to ${commandSenderPlayer.maxHealth}"
+            )
+            commandSenderPlayer.health = commandSenderPlayer.maxHealth
+            sendMsg(commandSender, "heal.self.success")
         }
+
+        logger.info("Executed command \"/$HEAL_COMMAND\" from $commandSenderNickName")
     }
 }
