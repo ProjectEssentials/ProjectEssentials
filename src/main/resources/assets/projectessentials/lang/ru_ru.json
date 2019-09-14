@@ -23,5 +23,12 @@
   "project_essentials.feed.player.error": "§cУ вас §7нет разрешения §cна насыщение аппетита игрока §7%s§c.",
   "project_essentials.feed.player.recipient.success": "§6Ваш аппетит §7был насыщен §cигроком §7%s§6.",
   "project_essentials.top.error": "§cУ вас §7нет разрешения §cтелепортироваться наверх.",
-  "project_essentials.top.success": "§6Вы §7были телепортированы наверх§6."
+  "project_essentials.top.success": "§6Вы §7были телепортированы наверх§6.",
+  "project_essentials.air.self.success": "§6Вы §7избавились §6от удушья.",
+  "project_essentials.air.self.maxair": "§cВы имеете §7полный §cзапас воздуха.",
+  "project_essentials.air.self.error": "§cУ вас §7нет прав §cна §7пополнения §cзапаса воздуха.",
+  "project_essentials.air.player.success": "§6Вы §7спасли §6игрока §7%s§6 от удушья.",
+  "project_essentials.air.player.maxair": "§cИгрок §7%s §cимеет §7полный §cзапас воздуха.",
+  "project_essentials.air.player.error": "§cУ вас §7нет прав §cна спасение игрока §7%s§c от удушья.",
+  "project_essentials.air.player.recipient.success": "§6Вы §7спасены §6от удушья игроком §7%s§6."
 }
