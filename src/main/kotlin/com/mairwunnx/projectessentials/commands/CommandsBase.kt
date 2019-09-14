@@ -11,6 +11,7 @@ class CommandsBase {
         FeedCommand.register(commandDispatcher)
         TopCommand.register(commandDispatcher)
         AirCommand.register(commandDispatcher)
+        FlyCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }

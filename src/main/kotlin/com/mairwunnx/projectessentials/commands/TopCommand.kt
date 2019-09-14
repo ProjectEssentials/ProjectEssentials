@@ -36,9 +36,7 @@ object TopCommand {
         logger.info("Starting register \"/$TOP_COMMAND\" command ...")
 
         CommandAliases.aliases[TOP_COMMAND] = modConfig.commands.top.aliases.toMutableList()
-        topCommandAliases.addAll(
-            modConfig.commands.top.aliases
-        )
+        topCommandAliases.addAll(modConfig.commands.top.aliases)
 
         topCommandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)

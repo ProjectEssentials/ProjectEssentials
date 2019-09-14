@@ -4,17 +4,20 @@ package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.CommandAliases
 import com.mairwunnx.projectessentials.commands.CommandsBase
+import com.mairwunnx.projectessentials.commands.FlyCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.commandName
 import com.mairwunnx.projectessentials.extensions.player
+import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
 import com.mojang.brigadier.CommandDispatcher
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
@@ -105,6 +108,23 @@ class ProjectEssentials {
         return when {
             commandConfig.disabledCommands.contains(commandName) -> true
             else -> CommandAliases.searchForAliases(commandName)
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerJoin(event: PlayerLoggedInEvent) {
+        val config = ModConfiguration.getCommandsConfig().commands
+        if (config.fly.autoFlyEnabled) {
+            if (config.fly.autoFly.contains(event.player.name.string)) {
+                if (event.player.commandSource.asPlayer().hasPermissionLevel(
+                        config.fly.permissionLevel
+                    )
+                ) {
+                    if (FlyCommand.setFly(event.player.commandSource.asPlayer(), true)) {
+                        sendMsg(event.player.commandSource, "fly.auto.success")
+                    }
+                }
+            }
         }
     }
 }

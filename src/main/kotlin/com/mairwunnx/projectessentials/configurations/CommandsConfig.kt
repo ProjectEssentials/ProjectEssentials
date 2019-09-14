@@ -21,7 +21,9 @@ data class CommandsConfig(
         @SerialName("Top")
         val top: Top = Top(),
         @SerialName("Air")
-        val air: Air = Air()
+        val air: Air = Air(),
+        @SerialName("Fly")
+        val fly: Fly = Fly()
     ) {
         @Serializable
         data class Heal(
@@ -71,6 +73,22 @@ data class CommandsConfig(
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
             val aliases: List<String> = listOf("eair")
+        )
+
+        @Serializable
+        data class Fly(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
+            @SerialName("EnableArgs")
+            val enableArgs: Boolean = true,
+            @SerialName("Aliases")
+            val aliases: List<String> = listOf("efly"),
+            @SerialName("AutoFlyEnabled")
+            val autoFlyEnabled: Boolean = true,
+            @SerialName("AutoFly")
+            var autoFly: List<String> = listOf()
         )
     }
 

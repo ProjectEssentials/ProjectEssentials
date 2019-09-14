@@ -39,9 +39,7 @@ object AirCommand {
         logger.info("Starting register \"/$AIR_COMMAND\" command ...")
 
         CommandAliases.aliases[AIR_COMMAND] = modConfig.commands.air.aliases.toMutableList()
-        airCommandAliases.addAll(
-            modConfig.commands.air.aliases
-        )
+        airCommandAliases.addAll(modConfig.commands.air.aliases)
 
         airCommandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
@@ -130,7 +128,7 @@ object AirCommand {
                 return
             }
             logger.info(
-                "Player ($playerNickNameAsTarget) air level changed from ${commandSenderPlayer.air} to ${commandSenderPlayer.maxAir} by $commandSenderNickName"
+                "Player ($playerNickNameAsTarget) air level changed from ${targetAsPlayer.air} to ${targetAsPlayer.maxAir} by $commandSenderNickName"
             )
             targetAsPlayer.air = targetAsPlayer.maxAir
             sendMsg(commandSender, "air.player.success", playerNickNameAsTarget)

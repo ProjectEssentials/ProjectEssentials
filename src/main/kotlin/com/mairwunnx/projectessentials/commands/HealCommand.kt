@@ -41,9 +41,7 @@ object HealCommand {
         logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
 
         CommandAliases.aliases[HEAL_COMMAND] = modConfig.commands.heal.aliases.toMutableList()
-        healCommandAliases.addAll(
-            modConfig.commands.heal.aliases
-        )
+        healCommandAliases.addAll(modConfig.commands.heal.aliases)
 
         healCommandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
@@ -132,7 +130,7 @@ object HealCommand {
                 return
             }
             logger.info(
-                "Player ($playerNickNameAsTarget) Health changed from ${commandSenderPlayer.health} to ${commandSenderPlayer.maxHealth} by $commandSenderNickName"
+                "Player ($playerNickNameAsTarget) Health changed from ${targetAsPlayer.health} to ${targetAsPlayer.maxHealth} by $commandSenderNickName"
             )
             targetAsPlayer.health = targetAsPlayer.maxHealth
             sendMsg(commandSender, "heal.player.success", playerNickNameAsTarget)

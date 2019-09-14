@@ -54,9 +54,7 @@ object FeedCommand {
         logger.info("Starting register \"/$FEED_COMMAND\" command ...")
 
         CommandAliases.aliases[FEED_COMMAND] = modConfig.commands.feed.aliases.toMutableList()
-        feedCommandAliases.addAll(
-            modConfig.commands.feed.aliases
-        )
+        feedCommandAliases.addAll(modConfig.commands.feed.aliases)
 
         feedCommandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
