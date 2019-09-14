@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger
  * **Available arguments:** &#91`player`&#93 - command executing
  * target.
  *
- * **Can server use it command?:** `false`
+ * **Can server use it command?:** `false`.
  */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 object HealCommand {
@@ -39,7 +39,6 @@ object HealCommand {
     ) {
         val modConfig = ModConfiguration.getCommandsConfig()
         logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
-        logger.info("Processing commands aliases for \"/$HEAL_COMMAND\" command ...")
 
         CommandAliases.aliases[HEAL_COMMAND] = modConfig.commands.heal.aliases.toMutableList()
         healCommandAliases.addAll(
@@ -109,7 +108,6 @@ object HealCommand {
                     .replace("%0", commandSenderNickName)
                     .replace("%1", HEAL_COMMAND)
             )
-
             if (hasTarget) {
                 sendMsg(commandSender, "heal.player.error", playerNickNameAsTarget)
             } else {
