@@ -19,7 +19,9 @@ data class CommandsConfig(
         @SerialName("Feed")
         val feed: Feed = Feed(),
         @SerialName("Top")
-        val top: Top = Top()
+        val top: Top = Top(),
+        @SerialName("Air")
+        val air: Air = Air()
     ) {
         @Serializable
         data class Heal(
@@ -57,6 +59,18 @@ data class CommandsConfig(
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: List<String> = listOf("etop")
+        )
+
+        @Serializable
+        data class Air(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
+            @SerialName("EnableArgs")
+            val enableArgs: Boolean = true,
+            @SerialName("Aliases")
+            val aliases: List<String> = listOf("eair")
         )
     }
 

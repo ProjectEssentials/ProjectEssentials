@@ -23,5 +23,12 @@
   "project_essentials.feed.player.error": "§cYou §7don't have permission §cto sated appetite player §7%s§c.",
   "project_essentials.feed.player.recipient.success": "§6Your appetite §7was sated §6by player §7%s§6.",
   "project_essentials.top.error": "§cYou §7don't have permission §cto teleporting to top.",
-  "project_essentials.top.success": "§6You §7was teleported to top§6."
+  "project_essentials.top.success": "§6You §7was teleported to top§6.",
+  "project_essentials.air.self.success": "§6You §7got rid §6of choking.",
+  "project_essentials.air.self.maxair": "§cYou have a §7full §csupply of air.",
+  "project_essentials.air.self.error": "§cYou §7don't have permission §cto §7get rid §cof choking.",
+  "project_essentials.air.player.success": "§6You §7saved §6player §7%s§6 from choking.",
+  "project_essentials.air.player.maxair": "§cPlayer §7%s §chave a §7full §csupply of air.",
+  "project_essentials.air.player.error": "§cYou §7don't have permission §cto save player §7%s§c from choking.",
+  "project_essentials.air.player.recipient.success": "§6You §7saved §6from choking by player §7%s§6."
 }
