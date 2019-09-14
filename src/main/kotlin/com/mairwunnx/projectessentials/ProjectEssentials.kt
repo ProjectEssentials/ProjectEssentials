@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger
 
 const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
-const val MOD_VERSION = "1.14.4-0.0.4.0"
+const val MOD_VERSION = "1.14.4-0.0.5.0"
 const val MOD_DESCRIPTION = "minecraft command mod - adds commands for use in-game"
 const val MOD_MAINTAINER = "MairwunNx (Pavel Erokhin)"
 const val MOD_TARGET_FORGE = "28.0.X"

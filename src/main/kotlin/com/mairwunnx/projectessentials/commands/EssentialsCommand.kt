@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.*
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -10,9 +11,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
-import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+
+// todo: need to allow use it command by server.
 
 object EssentialsCommand {
     private val logger: Logger = LogManager.getLogger()
@@ -51,11 +53,7 @@ object EssentialsCommand {
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.common.reload.success"
-                    ), false
-                )
+                sendMsg(commandSender, "common.reload.success")
             }
             return 1
         } else {
@@ -64,11 +62,7 @@ object EssentialsCommand {
                     .replace("%0", commandSenderNickName)
                     .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_RELOAD")
             )
-            commandSender.sendFeedback(
-                TranslationTextComponent(
-                    "project_essentials.common.reload.error"
-                ), false
-            )
+            sendMsg(commandSender, "common.reload.error")
             return 0
         }
     }
@@ -97,11 +91,7 @@ object EssentialsCommand {
             if (isServerSender) {
                 logger.info("Successfully saved Project Essentials configuration")
             } else {
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.common.save.success"
-                    ), false
-                )
+                sendMsg(commandSender, "common.save.success")
             }
             return 1
         } else {
@@ -110,11 +100,7 @@ object EssentialsCommand {
                     .replace("%0", commandSenderNickName)
                     .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_SAVE")
             )
-            commandSender.sendFeedback(
-                TranslationTextComponent(
-                    "project_essentials.common.save.error"
-                ), false
-            )
+            sendMsg(commandSender, "common.save.error")
             return 0
         }
     }
@@ -149,17 +135,16 @@ object EssentialsCommand {
                 logger.info("Source code: $MOD_SOURCES_LINK")
                 logger.info("Telegram chat: $MOD_TELEGRAM_LINK")
             } else {
-                commandSender.sendFeedback(
-                    TranslationTextComponent(
-                        "project_essentials.common.version.success",
-                        MOD_NAME,
-                        MOD_VERSION,
-                        MOD_MAINTAINER,
-                        MOD_TARGET_FORGE,
-                        MOD_TARGET_MC,
-                        MOD_SOURCES_LINK,
-                        MOD_TELEGRAM_LINK
-                    ), true
+                sendMsg(
+                    commandSender,
+                    "common.version.success",
+                    MOD_NAME,
+                    MOD_VERSION,
+                    MOD_MAINTAINER,
+                    MOD_TARGET_FORGE,
+                    MOD_TARGET_MC,
+                    MOD_SOURCES_LINK,
+                    MOD_TELEGRAM_LINK
                 )
             }
             return 1
@@ -169,12 +154,7 @@ object EssentialsCommand {
                     .replace("%0", commandSenderNickName)
                     .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_VERSION")
             )
-            commandSender.sendFeedback(
-                TranslationTextComponent(
-                    "project_essentials.common.version.error"
-                ),
-                true
-            )
+            sendMsg(commandSender, "common.version.error")
             return 0
         }
     }
