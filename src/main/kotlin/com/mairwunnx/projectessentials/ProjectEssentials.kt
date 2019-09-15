@@ -191,7 +191,6 @@ class ProjectEssentials {
                     val data = UserData(lastWorld, lastWorldPos, list)
                     StorageBase.setData(uuidString, data)
                 } else if (!result.b) {
-                    logger.info("old player data not have duplicates")
                     val list = mutableListOf<UserData.World>()
                     oldPlayerData.forEach { world -> list.add(world) }
                     list.add(it)
