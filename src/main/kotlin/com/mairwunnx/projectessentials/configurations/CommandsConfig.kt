@@ -86,9 +86,7 @@ data class CommandsConfig(
             @SerialName("Aliases")
             val aliases: List<String> = listOf("efly"),
             @SerialName("AutoFlyEnabled")
-            val autoFlyEnabled: Boolean = true,
-            @SerialName("AutoFly")
-            var autoFly: List<String> = listOf()
+            val autoFlyEnabled: Boolean = true
         )
     }
 

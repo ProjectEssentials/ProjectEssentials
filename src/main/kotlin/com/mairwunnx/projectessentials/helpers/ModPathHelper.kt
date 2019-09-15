@@ -7,7 +7,8 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.fml.DistExecutor
 
 val CONFIG_FOLDER = root + File.separator + "config"
-val MOD_CONFIG_FOLDER = CONFIG_FOLDER + File.separator + MOD_NAME
+val MOD_CONFIG_FOLDER = CONFIG_FOLDER + File.separator + MOD_NAME.replace(" ", "")
+val USER_DATA_FOLDER = MOD_CONFIG_FOLDER + File.separator + "user-data"
 val COOLDOWNS_CONFIG = MOD_CONFIG_FOLDER + File.separator + "cooldowns.json"
 val COMMANDS_CONFIG = MOD_CONFIG_FOLDER + File.separator + "commands.json"
 

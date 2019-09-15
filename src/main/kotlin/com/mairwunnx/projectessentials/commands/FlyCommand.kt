@@ -1,13 +1,14 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.empty
+import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND_ARG
 import com.mairwunnx.projectessentials.helpers.ONLY_PLAYER_CAN
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
@@ -153,7 +154,6 @@ object FlyCommand {
     ): Boolean {
         val source = target.commandSource
         val abilities = target.abilities
-        val targetNickName = source.asPlayer().name.string
         val config = ModConfiguration.getCommandsConfig()
         if (source.asPlayer().isCreative || source.asPlayer().isSpectator) {
             if (!isAutoFly) {
@@ -163,13 +163,18 @@ object FlyCommand {
         }
 
         if (isAutoFly) {
-            if (config.commands.fly.autoFly.contains(targetNickName)) {
-                abilities.allowEdit = true
-                abilities.allowFlying = true
-                abilities.isFlying = true
-                source.asPlayer().sendPlayerAbilities()
-                return true
+            StorageBase.getData(target.uniqueID.toString()).worlds.forEach {
+                if (it.worldName == target.world.fullName()) {
+                    if (it.flyModeEnabled) {
+                        abilities.allowEdit = true
+                        abilities.allowFlying = true
+                        abilities.isFlying = true
+                        source.asPlayer().sendPlayerAbilities()
+                        return true
+                    }
+                }
             }
+            return false
         }
 
         abilities.allowEdit = true
@@ -184,15 +189,15 @@ object FlyCommand {
         if (config.commands.fly.autoFlyEnabled && !isAutoFly) {
             if (source.asPlayer().onGround) {
                 if (abilities.allowFlying) {
-                    saveToAutoFly(config, targetNickName)
+                    saveToAutoFly(target)
                 } else {
-                    removeFromAutoFly(config, targetNickName)
+                    removeFromAutoFly(target)
                 }
             } else {
                 if (abilities.isFlying) {
-                    saveToAutoFly(config, targetNickName)
+                    saveToAutoFly(target)
                 } else {
-                    removeFromAutoFly(config, targetNickName)
+                    removeFromAutoFly(target)
                 }
             }
         }
@@ -201,24 +206,24 @@ object FlyCommand {
     }
 
     private fun saveToAutoFly(
-        config: CommandsConfig,
-        targetNickName: String
+        target: ServerPlayerEntity
     ) {
-        if (!config.commands.fly.autoFly.contains(targetNickName)) {
-            val list = config.commands.fly.autoFly.toMutableList()
-            list.add(targetNickName)
-            config.commands.fly.autoFly = list.toList()
+        val data = StorageBase.getData(target.uniqueID.toString())
+        data.worlds.forEach {
+            if (it.worldName == target.world.fullName()) {
+                it.flyModeEnabled = true
+            }
         }
     }
 
     private fun removeFromAutoFly(
-        config: CommandsConfig,
-        targetNickName: String
+        target: ServerPlayerEntity
     ) {
-        if (config.commands.fly.autoFly.contains(targetNickName)) {
-            val list = config.commands.fly.autoFly.toMutableList()
-            list.remove(targetNickName)
-            config.commands.fly.autoFly = list.toList()
+        val data = StorageBase.getData(target.uniqueID.toString())
+        data.worlds.forEach {
+            if (it.worldName == target.world.fullName()) {
+                it.flyModeEnabled = false
+            }
         }
     }
 }

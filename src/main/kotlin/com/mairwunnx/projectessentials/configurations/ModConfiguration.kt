@@ -57,7 +57,6 @@ object ModConfiguration {
 
     @UseExperimental(UnstableDefault::class)
     fun saveConfig() {
-        logger.info("Saving Project Essentials configuration ...")
         val json = Json(
             JsonConfiguration(
                 encodeDefaults = true,

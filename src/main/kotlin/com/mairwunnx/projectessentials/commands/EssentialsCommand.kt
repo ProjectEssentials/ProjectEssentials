@@ -5,10 +5,12 @@ import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import org.apache.logging.log4j.LogManager
@@ -67,12 +69,14 @@ object EssentialsCommand {
         }
     }
 
+    @UnstableDefault
     private fun buildEssentialsSaveCommand(): ArgumentBuilder<CommandSource, *>? {
         return Commands.literal(ESSENTIALS_COMMAND_SAVE).executes {
             executeSaveCommand(it)
         }
     }
 
+    @UnstableDefault
     private fun executeSaveCommand(it: CommandContext<CommandSource>): Int {
         var isServerSender = false
         val commandSender = it.source
@@ -88,6 +92,7 @@ object EssentialsCommand {
             ) || isServerSender
         ) {
             ModConfiguration.saveConfig()
+            StorageBase.saveUserData()
             if (isServerSender) {
                 logger.info("Successfully saved Project Essentials configuration")
             } else {
@@ -159,6 +164,7 @@ object EssentialsCommand {
         }
     }
 
+    @UnstableDefault
     @Suppress("UNCHECKED_CAST")
     fun register(
         dispatcher: CommandDispatcher<CommandSource>

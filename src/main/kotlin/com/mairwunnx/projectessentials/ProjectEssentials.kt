@@ -9,15 +9,22 @@ import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.commandName
+import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.player
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
+import com.mairwunnx.projectessentials.storage.StorageBase
+import com.mairwunnx.projectessentials.storage.UserData
 import com.mojang.brigadier.CommandDispatcher
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
@@ -39,6 +46,7 @@ const val MOD_TELEGRAM_LINK = "https://t.me/minecraftforge"
 lateinit var commandsBase: CommandsBase
 lateinit var commandDispatcher: CommandDispatcher<CommandSource>
 
+@UnstableDefault
 @Mod(MOD_ID)
 class ProjectEssentials {
     private val logger: Logger = LogManager.getLogger()
@@ -48,6 +56,7 @@ class ProjectEssentials {
         MinecraftForge.EVENT_BUS.register(this)
         logger.info("Loading ProjectEssentials mod settings ...")
         ModConfiguration.loadConfig()
+        StorageBase.loadUserData()
     }
 
     @SubscribeEvent
@@ -58,12 +67,15 @@ class ProjectEssentials {
         commandsBase.registerAll(it.server.commandManager.dispatcher)
     }
 
+    @UnstableDefault
     @Suppress("UNUSED_PARAMETER")
     @SubscribeEvent
     fun onServerStopping(it: FMLServerStoppingEvent) {
         logger.info("Shutting down Project Essentials mod ...")
         logger.info("    - Saving configuration ...")
         ModConfiguration.saveConfig()
+        logger.info("    - Saving user data ...")
+        StorageBase.saveUserData()
         logger.info("Done, thanks for using")
     }
 
@@ -115,16 +127,88 @@ class ProjectEssentials {
     fun onPlayerJoin(event: PlayerLoggedInEvent) {
         val config = ModConfiguration.getCommandsConfig().commands
         if (config.fly.autoFlyEnabled) {
-            if (config.fly.autoFly.contains(event.player.name.string)) {
-                if (event.player.commandSource.asPlayer().hasPermissionLevel(
-                        config.fly.permissionLevel
-                    )
-                ) {
-                    if (FlyCommand.setFly(event.player.commandSource.asPlayer(), true)) {
-                        sendMsg(event.player.commandSource, "fly.auto.success")
+            StorageBase.getData(event.player.uniqueID.toString()).worlds.forEach {
+                if (it.worldName == event.player.world.fullName()) {
+                    if (it.flyModeEnabled) {
+                        if (event.player.commandSource.asPlayer().hasPermissionLevel(
+                                config.fly.permissionLevel
+                            )
+                        ) {
+                            if (FlyCommand.setFly(event.player.commandSource.asPlayer(), true)) {
+                                sendMsg(event.player.commandSource, "fly.auto.success")
+                            }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerChangedDimension(event: PlayerEvent.PlayerChangedDimensionEvent) {
+        saveOrUpdatePlayerData(event.player)
+    }
+
+    @SubscribeEvent
+    fun onPlayerLeave(event: PlayerLoggedOutEvent) {
+        saveOrUpdatePlayerData(event.player)
+    }
+
+    private fun saveOrUpdatePlayerData(player: PlayerEntity) {
+        val uuid = player.gameProfile.id
+        val uuidString = uuid.toString()
+
+        val lastWorld = player.world.fullName()
+        val lastWorldPos = "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}"
+        val oldPlayerData = StorageBase.getData(uuidString).worlds
+        val worldList = mutableListOf<UserData.World>()
+        player.world.server?.worlds?.forEach {
+            worldList.add(
+                UserData.World(
+                    it.fullName(),
+                    flyModeEnabled = getFly(it.getPlayerByUuid(uuid))
+                )
+            )
+        }
+
+        if (oldPlayerData.isEmpty()) {
+            val list = mutableListOf(*oldPlayerData.toTypedArray())
+            worldList.forEach { list.add(it) }
+            StorageBase.getData(uuidString).worlds = list
+            val data = UserData(lastWorld, lastWorldPos, list)
+            StorageBase.setData(uuidString, data)
+            return
+        }
+
+        if (oldPlayerData.isNotEmpty()) {
+            worldList.forEach {
+                val result = it.containsIn(oldPlayerData)
+                if (result.b) {
+                    val list = mutableListOf<UserData.World>()
+                    oldPlayerData.forEach { world -> list.add(world) }
+                    list[result.a] = it
+                    StorageBase.getData(uuidString).worlds = list
+                    val data = UserData(lastWorld, lastWorldPos, list)
+                    StorageBase.setData(uuidString, data)
+                } else if (!result.b) {
+                    logger.info("old player data not have duplicates")
+                    val list = mutableListOf<UserData.World>()
+                    oldPlayerData.forEach { world -> list.add(world) }
+                    list.add(it)
+                    StorageBase.getData(uuidString).worlds = list
+                    val data = UserData(lastWorld, lastWorldPos, list)
+                    StorageBase.setData(uuidString, data)
+                }
+            }
+        }
+    }
+
+    private fun getFly(player: PlayerEntity?): Boolean {
+        if (player == null) return false
+        return if (player.onGround) {
+            player.abilities.allowFlying
+        } else {
+            player.abilities.isFlying
         }
     }
 }

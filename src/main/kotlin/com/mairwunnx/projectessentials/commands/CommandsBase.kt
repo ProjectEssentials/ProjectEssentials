@@ -1,9 +1,11 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 
 class CommandsBase {
+    @UseExperimental(UnstableDefault::class)
     fun registerAll(
         commandDispatcher: CommandDispatcher<CommandSource>
     ) {
