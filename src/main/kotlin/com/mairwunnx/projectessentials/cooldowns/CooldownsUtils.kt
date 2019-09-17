@@ -2,9 +2,11 @@ package com.mairwunnx.projectessentials.cooldowns
 
 import com.mairwunnx.projectessentials.commands.CommandAliases
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.extensions.empty
+import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.extensions.source
 import com.mairwunnx.projectessentials.helpers.COOLDOWN_NOT_EXPIRED
-import net.minecraft.util.text.TranslationTextComponent
+import kotlinx.serialization.UnstableDefault
 import net.minecraftforge.event.CommandEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -23,51 +25,43 @@ fun processCooldownsCommandsList(
     return hashMap
 }
 
+@UnstableDefault
 fun processCooldownOfCommand(
     commandName: String,
     commandSenderNickName: String,
     commandEvent: CommandEvent
 ): Boolean {
-    var originalCommand = ""
+    var originalCommand = String.empty
     val cooldownsConfig = ModConfiguration.getCooldownsConfig()
     val cooldownsMap = processCooldownsCommandsList(
         cooldownsConfig.commandCooldowns
     )
+    val command = when {
+        originalCommand != String.empty -> originalCommand
+        else -> commandName
+    }
     val commandCooldown: Int = cooldownsMap[commandName]
         ?: CommandAliases.searchForAliasesForCooldown(
             commandName, cooldownsMap
         ).let {
-            originalCommand = it.second
-            return@let it.first
+            originalCommand = it.b
+            return@let it.a
         }
         ?: cooldownsMap[CooldownBase.DEFAULT_COOLDOWN_LITERAL]
         ?: CooldownBase.DEFAULT_COOLDOWN
 
-    val command = if (originalCommand != "") {
-        originalCommand
-    } else {
-        commandName
-    }
-
-    if (!CooldownBase.getCooldownIsExpired(
-            commandSenderNickName,
-            command,
-            commandCooldown
-        )
-    ) {
+    if (!CooldownBase.getCooldownIsExpired(commandSenderNickName, command, commandCooldown)) {
         logger.warn(
             COOLDOWN_NOT_EXPIRED
                 .replace("%0", commandSenderNickName)
                 .replace("%1", command)
         )
-
-        commandEvent.source.sendFeedback(
-            TranslationTextComponent(
-                "project_essentials.common.cooldown.error",
-                commandCooldown.minus(
-                    CooldownBase.getCooldown(commandSenderNickName, command)
-                ).toInt()
-            ), false
+        sendMsg(
+            commandEvent.source,
+            "common.cooldown.error",
+            commandCooldown.minus(
+                CooldownBase.getCooldown(commandSenderNickName, command)
+            ).toInt().toString()
         )
         return true
     } else {

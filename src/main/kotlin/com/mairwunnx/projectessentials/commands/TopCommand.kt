@@ -8,6 +8,7 @@ import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.world.gen.Heightmap
 import org.apache.logging.log4j.LogManager
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.Logger
  *
  * **Can server use it command?:** `false`.
  */
+@UnstableDefault
 object TopCommand {
     private val logger: Logger = LogManager.getLogger()
     private const val TOP_COMMAND: String = "top"
@@ -33,7 +35,7 @@ object TopCommand {
         dispatcher: CommandDispatcher<CommandSource>
     ) {
         val modConfig = ModConfiguration.getCommandsConfig()
-        logger.info("Starting register \"/$TOP_COMMAND\" command ...")
+        logger.info("    - register \"/$TOP_COMMAND\" command ...")
 
         CommandAliases.aliases[TOP_COMMAND] = modConfig.commands.top.aliases.toMutableList()
         topCommandAliases.addAll(modConfig.commands.top.aliases)

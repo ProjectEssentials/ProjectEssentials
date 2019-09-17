@@ -1,7 +1,13 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.extensions.empty
+import kotlinx.serialization.UnstableDefault
+import net.minecraft.util.Tuple
 
+@UnstableDefault
 object CommandAliases {
     /**
      * Where String - command for aliases.
@@ -12,19 +18,19 @@ object CommandAliases {
     fun searchForAliasesForCooldown(
         command: String,
         cooldownsMap: HashMap<String, Int>
-    ): Pair<Int?, String> {
+    ): Tuple<Int?, String> {
         return try {
             aliases.keys.forEach { baseCommand ->
                 val aliasesOfCommands = aliases[baseCommand]
                 if (aliasesOfCommands != null &&
                     aliasesOfCommands.contains(command)
                 ) {
-                    return cooldownsMap[baseCommand] to baseCommand
+                    Tuple(cooldownsMap[baseCommand], baseCommand)
                 }
             }
-            null to ""
+            Tuple(0, String.empty)
         } catch (ex: KotlinNullPointerException) {
-            null to ""
+            Tuple(0, String.empty)
         }
     }
 
@@ -35,7 +41,7 @@ object CommandAliases {
     fun searchForAliases(command: String): Boolean {
         val modConfig = ModConfiguration.getCommandsConfig()
         aliases.keys.forEach { baseCommand ->
-            val aliasesOfCommands = aliases[baseCommand] // heal
+            val aliasesOfCommands = aliases[baseCommand]
             if (aliasesOfCommands != null &&
                 aliasesOfCommands.contains(command) &&
                 modConfig.disabledCommands.contains(baseCommand)

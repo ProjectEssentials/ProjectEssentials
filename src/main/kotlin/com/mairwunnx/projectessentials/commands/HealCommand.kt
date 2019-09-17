@@ -10,6 +10,7 @@ import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.Logger
  *
  * **Can server use it command?:** `false`.
  */
+@UnstableDefault
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 object HealCommand {
     private val logger: Logger = LogManager.getLogger()
@@ -38,7 +40,7 @@ object HealCommand {
         dispatcher: CommandDispatcher<CommandSource>
     ) {
         val modConfig = ModConfiguration.getCommandsConfig()
-        logger.info("Starting register \"/$HEAL_COMMAND\" command ...")
+        logger.info("    - register \"/$HEAL_COMMAND\" command ...")
 
         CommandAliases.aliases[HEAL_COMMAND] = modConfig.commands.heal.aliases.toMutableList()
         healCommandAliases.addAll(modConfig.commands.heal.aliases)

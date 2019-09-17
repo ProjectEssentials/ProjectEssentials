@@ -10,6 +10,7 @@ import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.LogManager
  *
  * **Can server use it command?:** `false`.
  */
+@UnstableDefault
 object AirCommand {
     private val logger = LogManager.getLogger()
     private const val AIR_COMMAND = "air"
@@ -36,7 +38,7 @@ object AirCommand {
         dispatcher: CommandDispatcher<CommandSource>
     ) {
         val modConfig = ModConfiguration.getCommandsConfig()
-        logger.info("Starting register \"/$AIR_COMMAND\" command ...")
+        logger.info("    - register \"/$AIR_COMMAND\" command ...")
 
         CommandAliases.aliases[AIR_COMMAND] = modConfig.commands.air.aliases.toMutableList()
         airCommandAliases.addAll(modConfig.commands.air.aliases)

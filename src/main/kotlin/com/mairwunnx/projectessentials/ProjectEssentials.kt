@@ -13,25 +13,21 @@ import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.player
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
+import com.mairwunnx.projectessentials.helpers.validateForgeVersion
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
-import com.mojang.brigadier.CommandDispatcher
 import kotlinx.serialization.UnstableDefault
-import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
-import net.minecraftforge.event.entity.player.PlayerEvent
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
+import net.minecraftforge.event.entity.player.PlayerEvent.*
 import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
@@ -39,31 +35,41 @@ const val MOD_VERSION = "1.14.4-0.0.5.0"
 const val MOD_DESCRIPTION = "minecraft command mod - adds commands for use in-game"
 const val MOD_MAINTAINER = "MairwunNx (Pavel Erokhin)"
 const val MOD_TARGET_FORGE = "28.0.X"
+const val MOD_TARGET_FORGE_REGEX = "^28\\.0\\..\\d{1,}|28\\.0\\.[\\d]\$"
 const val MOD_TARGET_MC = "1.14.4"
 const val MOD_SOURCES_LINK = "https://github.com/MairwunNx/ProjectEssentials/"
 const val MOD_TELEGRAM_LINK = "https://t.me/minecraftforge"
 
-lateinit var commandsBase: CommandsBase
-lateinit var commandDispatcher: CommandDispatcher<CommandSource>
-
 @UnstableDefault
 @Mod(MOD_ID)
 class ProjectEssentials {
-    private val logger: Logger = LogManager.getLogger()
+    private val logger = LogManager.getLogger()
 
     init {
-        logger.info("$MOD_NAME $MOD_VERSION starting initializing ...")
+        logBaseInfo()
+        validateForgeVersion()
+        logger.debug("Register event bus for $MOD_NAME mod ...")
         MinecraftForge.EVENT_BUS.register(this)
-        logger.info("Loading ProjectEssentials mod settings ...")
+        logger.info("Loading $MOD_NAME modification settings ...")
         ModConfiguration.loadConfig()
         StorageBase.loadUserData()
     }
 
+    private fun logBaseInfo() {
+        logger.info("$MOD_NAME starting initializing ...")
+        logger.info("    - Mod Id: $MOD_ID")
+        logger.info("    - Version: $MOD_VERSION")
+        logger.info("    - Maintainer: $MOD_MAINTAINER")
+        logger.info("    - Target Forge version: $MOD_TARGET_FORGE")
+        logger.info("    - Target Minecraft version: $MOD_TARGET_MC")
+        logger.info("    - Source code: $MOD_SOURCES_LINK")
+        logger.info("    - Telegram chat: $MOD_TELEGRAM_LINK")
+    }
+
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
-        logger.info("$MOD_NAME $MOD_VERSION starting mod loading ...")
-        commandsBase = CommandsBase()
-        commandDispatcher = it.server.commandManager.dispatcher
+        logger.info("$MOD_NAME starting mod loading ...")
+        val commandsBase = CommandsBase()
         commandsBase.registerAll(it.server.commandManager.dispatcher)
     }
 
@@ -71,12 +77,11 @@ class ProjectEssentials {
     @Suppress("UNUSED_PARAMETER")
     @SubscribeEvent
     fun onServerStopping(it: FMLServerStoppingEvent) {
-        logger.info("Shutting down Project Essentials mod ...")
-        logger.info("    - Saving configuration ...")
+        logger.info("Shutting down $MOD_NAME mod ...")
+        logger.info("    - Saving modification configuration ...")
         ModConfiguration.saveConfig()
-        logger.info("    - Saving user data ...")
+        logger.info("    - Saving modification user data ...")
         StorageBase.saveUserData()
-        logger.info("Done, thanks for using")
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -93,7 +98,9 @@ class ProjectEssentials {
                         .replace("%0", commandSenderNickName)
                         .replace("%1", commandName)
                 )
+                sendMsg(commandSender.commandSource, "common.command.blocked")
                 it.isCanceled = true
+                return
             }
 
             try {
@@ -104,12 +111,10 @@ class ProjectEssentials {
                     it.isCanceled = processCooldownOfCommand(
                         commandName, commandSenderNickName, it
                     )
+                    return
                 }
             } catch (_: KotlinNullPointerException) {
-                CooldownBase.addCooldown(
-                    commandSenderNickName,
-                    commandName
-                )
+                CooldownBase.addCooldown(commandSenderNickName, commandName)
             }
         }
     }
@@ -125,81 +130,58 @@ class ProjectEssentials {
 
     @SubscribeEvent
     fun onPlayerJoin(event: PlayerLoggedInEvent) {
+        processFlyAbility(event.player)
+    }
+
+    @SubscribeEvent
+    fun onPlayerLeave(event: PlayerLoggedOutEvent) = savePlayerData(event.player)
+
+    @SubscribeEvent
+    fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) {
+        processFlyAbility(event.player)
+    }
+
+    private fun processFlyAbility(player: PlayerEntity) {
         val config = ModConfiguration.getCommandsConfig().commands
+        val playerCommandSource = player.commandSource
+        val serverPlayerEntity = player.commandSource.asPlayer()
         if (config.fly.autoFlyEnabled) {
-            StorageBase.getData(event.player.uniqueID.toString()).worlds.forEach {
-                if (it.worldName == event.player.world.fullName()) {
-                    if (it.flyModeEnabled) {
-                        if (event.player.commandSource.asPlayer().hasPermissionLevel(
-                                config.fly.permissionLevel
-                            )
-                        ) {
-                            if (FlyCommand.setFly(event.player.commandSource.asPlayer(), true)) {
-                                sendMsg(event.player.commandSource, "fly.auto.success")
-                            }
-                        }
-                    }
+            if (serverPlayerEntity.hasPermissionLevel(config.fly.permissionLevel)) {
+                if (FlyCommand.setFly(serverPlayerEntity, true)) {
+                    sendMsg(playerCommandSource, "fly.auto.success")
                 }
             }
         }
     }
 
-    @SubscribeEvent
-    fun onPlayerChangedDimension(event: PlayerEvent.PlayerChangedDimensionEvent) {
-        saveOrUpdatePlayerData(event.player)
-    }
-
-    @SubscribeEvent
-    fun onPlayerLeave(event: PlayerLoggedOutEvent) {
-        saveOrUpdatePlayerData(event.player)
-    }
-
-    private fun saveOrUpdatePlayerData(player: PlayerEntity) {
+    private fun savePlayerData(player: PlayerEntity) {
         val uuid = player.gameProfile.id
         val uuidString = uuid.toString()
-
-        val lastWorld = player.world.fullName()
-        val lastWorldPos = "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}"
-        val oldPlayerData = StorageBase.getData(uuidString).worlds
-        val worldList = mutableListOf<UserData.World>()
-        player.world.server?.worlds?.forEach {
-            worldList.add(
-                UserData.World(
-                    it.fullName(),
-                    flyModeEnabled = getFly(it.getPlayerByUuid(uuid))
-                )
+        StorageBase.setData(
+            uuidString, UserData(
+                player.world.fullName(),
+                "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}",
+                getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyEnabledInWorlds)
             )
-        }
+        )
+    }
 
-        if (oldPlayerData.isEmpty()) {
-            val list = mutableListOf(*oldPlayerData.toTypedArray())
-            worldList.forEach { list.add(it) }
-            StorageBase.getData(uuidString).worlds = list
-            val data = UserData(lastWorld, lastWorldPos, list)
-            StorageBase.setData(uuidString, data)
-            return
-        }
-
-        if (oldPlayerData.isNotEmpty()) {
-            worldList.forEach {
-                val result = it.containsIn(oldPlayerData)
-                if (result.b) {
-                    val list = mutableListOf<UserData.World>()
-                    oldPlayerData.forEach { world -> list.add(world) }
-                    list[result.a] = it
-                    StorageBase.getData(uuidString).worlds = list
-                    val data = UserData(lastWorld, lastWorldPos, list)
-                    StorageBase.setData(uuidString, data)
-                } else if (!result.b) {
-                    val list = mutableListOf<UserData.World>()
-                    oldPlayerData.forEach { world -> list.add(world) }
-                    list.add(it)
-                    StorageBase.getData(uuidString).worlds = list
-                    val data = UserData(lastWorld, lastWorldPos, list)
-                    StorageBase.setData(uuidString, data)
-                }
+    private fun getFlyEnabledWorlds(
+        player: PlayerEntity,
+        flyAbleWorlds: List<String>
+    ): List<String> {
+        if (getFly(player)) {
+            if (!flyAbleWorlds.contains(player.world.worldInfo.worldName)) {
+                val list = flyAbleWorlds.toMutableList()
+                list.add(player.world.worldInfo.worldName)
+                return list
             }
+        } else {
+            val list = flyAbleWorlds.toMutableList()
+            list.remove(player.world.worldInfo.worldName)
+            return list
         }
+        return flyAbleWorlds
     }
 
     private fun getFly(player: PlayerEntity?): Boolean {
@@ -207,7 +189,7 @@ class ProjectEssentials {
         return if (player.onGround) {
             player.abilities.allowFlying
         } else {
-            player.abilities.isFlying
+            player.abilities.isFlying || player.abilities.allowFlying
         }
     }
 }

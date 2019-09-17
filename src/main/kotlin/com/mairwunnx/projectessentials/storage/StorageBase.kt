@@ -5,31 +5,35 @@ import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.io.File
 import kotlin.system.measureTimeMillis
 
+@UnstableDefault
 object StorageBase {
-    private val logger: Logger = LogManager.getLogger()
+    private val logger = LogManager.getLogger()
     private val userData = hashMapOf<String, UserData>()
 
     fun getData(uuid: String): UserData {
         if (userData.containsKey(uuid)) {
-            return userData[uuid] ?: UserData()
+            val requestedData = userData[uuid] ?: UserData()
+            logger.debug("Requested data ($requestedData) for UUID ($uuid).")
+            return requestedData
         }
+        logger.debug("Requested data not found for UUID ($uuid), will be used default data.")
         return UserData()
     }
 
     fun setData(uuid: String, data: UserData) {
         userData[uuid] = data
+        logger.debug("Installed data (${data}) for UUID ($uuid).")
     }
 
-    @UnstableDefault
     @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun loadUserData() {
-        logger.info("Starting loading user-data for ProjectEssentials mod ...")
-        val configDirectory = File(USER_DATA_FOLDER)
-        if (!configDirectory.exists()) configDirectory.mkdirs()
+        logger.info("    - loading user data configurations ...")
+
+        createConfigDirs(USER_DATA_FOLDER)
+
         val users = File(USER_DATA_FOLDER).list().filter {
             if (File(it).isFile) return@filter false
             return@filter true
@@ -37,6 +41,7 @@ object StorageBase {
 
         val elapsedTime = measureTimeMillis {
             users.forEach {
+                logger.debug("        - processing $it user data ...")
                 val userId = it
                 val userDataRaw = File(
                     USER_DATA_FOLDER + File.separator + it + File.separator + "data.json"
@@ -45,18 +50,23 @@ object StorageBase {
                 userData[userId] = userDataClass
             }
         }
-        logger.info("Loading user data done with ${elapsedTime}ms")
+        logger.info("Loading user data done configurations with ${elapsedTime}ms")
     }
 
-    @UnstableDefault
     fun saveUserData() {
         createConfigDirs(USER_DATA_FOLDER)
+
         userData.keys.forEach {
+            logger.debug("        - processing $it user data ...")
+
             val userId = it
             val userDataClass = userData[userId]!!
             val dataFolder = USER_DATA_FOLDER + File.separator + userId
-            createConfigDirs(dataFolder)
             val dataPath = dataFolder + File.separator + "data.json"
+
+            createConfigDirs(dataFolder)
+
+            logger.debug("        - setup json configuration for parsing ...")
             val json = Json(
                 JsonConfiguration(
                     encodeDefaults = true,
@@ -68,7 +78,6 @@ object StorageBase {
                 )
             )
             val userDataRaw = json.stringify(UserData.serializer(), userDataClass)
-
             try {
                 File(dataPath).writeText(userDataRaw)
             } catch (ex: SecurityException) {
@@ -78,7 +87,7 @@ object StorageBase {
     }
 
     private fun createConfigDirs(path: String) {
-        logger.info("Creating config directories for user data ($path)")
+        logger.info("        - creating config directory for user data ($path)")
         val configDirectory = File(path)
         if (!configDirectory.exists()) configDirectory.mkdirs()
     }

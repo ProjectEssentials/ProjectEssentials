@@ -9,8 +9,7 @@ import kotlin.time.toKotlinDuration
 object CooldownBase {
     const val DEFAULT_COOLDOWN = 5
     const val DEFAULT_COOLDOWN_LITERAL = "*"
-    private val cooldownTable: HashBasedTable<String, String, ZonedDateTime> =
-        HashBasedTable.create()
+    private val cooldownTable = HashBasedTable.create<String, String, ZonedDateTime>()
 
     fun addCooldown(nickname: String, command: String) {
         if (cooldownTable.get(nickname, command) != null) {

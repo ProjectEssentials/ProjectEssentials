@@ -11,6 +11,7 @@ import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
+import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
@@ -33,6 +34,7 @@ import java.lang.reflect.Field
  *
  * **Can server use it command?:** `false`.
  */
+@UnstableDefault
 object FeedCommand {
     private val logger: Logger = LogManager.getLogger()
     private const val FEED_COMMAND: String = "feed"
@@ -51,7 +53,7 @@ object FeedCommand {
         dispatcher: CommandDispatcher<CommandSource>
     ) {
         val modConfig = ModConfiguration.getCommandsConfig()
-        logger.info("Starting register \"/$FEED_COMMAND\" command ...")
+        logger.info("    - register \"/$FEED_COMMAND\" command ...")
 
         CommandAliases.aliases[FEED_COMMAND] = modConfig.commands.feed.aliases.toMutableList()
         feedCommandAliases.addAll(modConfig.commands.feed.aliases)

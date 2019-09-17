@@ -14,16 +14,14 @@ import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
-// todo: need to allow use it command by server.
-
+@UnstableDefault
 object EssentialsCommand {
-    private val logger: Logger = LogManager.getLogger()
-    private const val ESSENTIALS_COMMAND: String = "essentials"
-    private const val ESSENTIALS_COMMAND_VERSION: String = "version"
-    private const val ESSENTIALS_COMMAND_SAVE: String = "save"
-    private const val ESSENTIALS_COMMAND_RELOAD: String = "reload"
+    private val logger = LogManager.getLogger()
+    private const val ESSENTIALS_COMMAND = "essentials"
+    private const val ESSENTIALS_COMMAND_VERSION = "version"
+    private const val ESSENTIALS_COMMAND_SAVE = "save"
+    private const val ESSENTIALS_COMMAND_RELOAD = "reload"
 
     private fun buildEssentialsCommand(): ArgumentBuilder<CommandSource, *>? {
         return Commands.literal(ESSENTIALS_COMMAND).executes {
@@ -47,9 +45,9 @@ object EssentialsCommand {
             "server"
         }
 
-        if (it.source.asPlayer().hasPermissionLevel(
+        if (isServerSender || it.source.asPlayer().hasPermissionLevel(
                 ModConfiguration.getCommandsConfig().essentialsCommands.reloadPermissionLevel
-            ) || isServerSender
+            )
         ) {
             ModConfiguration.loadConfig()
             if (isServerSender) {
@@ -87,9 +85,9 @@ object EssentialsCommand {
             "server"
         }
 
-        if (it.source.asPlayer().hasPermissionLevel(
+        if (isServerSender || it.source.asPlayer().hasPermissionLevel(
                 ModConfiguration.getCommandsConfig().essentialsCommands.savePermissionLevel
-            ) || isServerSender
+            )
         ) {
             ModConfiguration.saveConfig()
             StorageBase.saveUserData()
@@ -127,9 +125,9 @@ object EssentialsCommand {
             "server"
         }
 
-        if (it.source.asPlayer().hasPermissionLevel(
+        if (isServerSender || it.source.asPlayer().hasPermissionLevel(
                 commandsConfig.essentialsCommands.versionPermissionLevel
-            ) || isServerSender
+            )
         ) {
             if (isServerSender) {
                 logger.info("        $MOD_NAME")
@@ -164,13 +162,11 @@ object EssentialsCommand {
         }
     }
 
-    @UnstableDefault
     @Suppress("UNCHECKED_CAST")
     fun register(
         dispatcher: CommandDispatcher<CommandSource>
     ) {
-        logger.info("Starting register \"/$ESSENTIALS_COMMAND\" command ...")
-        logger.info("Processing commands aliases for \"/$ESSENTIALS_COMMAND\" command ...")
+        logger.info("    - register \"/$ESSENTIALS_COMMAND\" command ...")
 
         dispatcher.register(
             buildEssentialsCommand() as LiteralArgumentBuilder<CommandSource>?
