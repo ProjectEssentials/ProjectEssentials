@@ -34,6 +34,7 @@
   "project_essentials.air.player.recipient.success": "§6You §7saved §6from choking by player §7%s§6.",
   "project_essentials.fly.self.success": "§6Fly mode successfully §7changed§6.",
   "project_essentials.fly.self.error": "§cYou §7don't have permission §cto enable fly yourself.",
+  "project_essentials.fly.self.restricted": "§cYou §7can't enable fly mode §cin this world; §7reason: §crestricted by configuration.",
   "project_essentials.fly.creative": "§cYou §7can't change §cfly mode, because you have §7creative §cor §7spectator §cmode.",
   "project_essentials.fly.auto.success": "§6Fly mode was automatically §7enabled§6.",
   "project_essentials.fly.player.success": "§6You §7changed fly mode §6of player §7%s§6.",

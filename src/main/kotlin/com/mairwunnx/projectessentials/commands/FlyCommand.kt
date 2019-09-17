@@ -1,6 +1,7 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.extensions.dimName
 import com.mairwunnx.projectessentials.extensions.empty
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -151,35 +152,51 @@ object FlyCommand {
 
     fun setFly(
         target: ServerPlayerEntity,
-        isAutoFly: Boolean = false
+        isAutoFly: Boolean = false,
+        isHasTarget: Boolean = false
     ): Boolean {
         val source = target.commandSource
         val abilities = target.abilities
+
         if (source.asPlayer().isCreative || source.asPlayer().isSpectator) {
-            if (!isAutoFly) {
+            if (!isAutoFly && !isHasTarget) {
                 sendMsg(source, "fly.creative")
             }
             return false
         }
 
-        if (isAutoFly) {
-            abilities.allowEdit = true
-            return if (StorageBase.getData(target.uniqueID.toString()).flyEnabledInWorlds.contains(
-                    target.world.worldInfo.worldName
-                )
-            ) {
-                abilities.allowFlying = true
-                abilities.isFlying = true
+        val store = StorageBase.getData(target.uniqueID.toString())
+
+        abilities.allowEdit = true
+        fun installFly(install: Boolean) {
+            if (!target.isCreative && !target.isSpectator) {
+                abilities.allowFlying = install
+                abilities.isFlying = install
                 source.asPlayer().sendPlayerAbilities()
-                true
-            } else {
-                if (!target.isCreative && !target.isSpectator) {
-                    abilities.allowFlying = false
-                    abilities.isFlying = false
-                    source.asPlayer().sendPlayerAbilities()
+            }
+        }
+
+        if (isAutoFly) {
+            return if (store.flyEnabledInWorlds.contains(target.world.worldInfo.worldName)) {
+                if (isRestrictedWorld(target)) {
+                    installFly(false)
+                    false
+                } else {
+                    installFly(true)
+                    true
                 }
+            } else {
+                installFly(false)
                 false
             }
+        }
+
+        if (isRestrictedWorld(target)) {
+            installFly(false)
+            if (!isHasTarget) {
+                sendMsg(target.commandSource, "fly.self.restricted")
+            }
+            return false
         }
 
         abilities.allowEdit = true
@@ -192,5 +209,16 @@ object FlyCommand {
         }
         source.asPlayer().sendPlayerAbilities()
         return true
+    }
+
+    private fun isRestrictedWorld(
+        target: ServerPlayerEntity
+    ): Boolean {
+        val flyConfig = ModConfiguration.getCommandsConfig().commands.fly
+        return if (flyConfig.flyDisabledWorlds.contains(target.world.dimName())) {
+            !target.hasPermissionLevel(flyConfig.disabledWorldsBypassPermLevel)
+        } else {
+            false
+        }
     }
 }

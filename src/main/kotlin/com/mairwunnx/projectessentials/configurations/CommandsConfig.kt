@@ -86,7 +86,11 @@ data class CommandsConfig(
             @SerialName("Aliases")
             val aliases: List<String> = listOf("efly"),
             @SerialName("AutoFlyEnabled")
-            val autoFlyEnabled: Boolean = true
+            val autoFlyEnabled: Boolean = true,
+            @SerialName("FlyDisabledWorlds")
+            val flyDisabledWorlds: List<String> = listOf(),
+            @SerialName("DisabledWorldsBypassPermLevel")
+            val disabledWorldsBypassPermLevel: Int = 3
         )
     }
 
