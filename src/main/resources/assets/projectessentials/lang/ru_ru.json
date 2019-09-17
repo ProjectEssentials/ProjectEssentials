@@ -34,6 +34,7 @@
   "project_essentials.air.player.recipient.success": "§6Вы §7спасены §6от удушья игроком §7%s§6.",
   "project_essentials.fly.self.success": "§6Режим полета успешно §7изменен§6.",
   "project_essentials.fly.self.error": "§cУ вас §7нет прав §cна включение \\ выключение полета.",
+  "project_essentials.fly.self.restricted": "§cВы §7не можете включить режим полета §cв этом мире; §7причина: §cзапрещено конфигурацией.",
   "project_essentials.fly.creative": "§cВы §7не можете изменить §cрежим полета, потому что у вас §7creative §cили §7spectator §cрежим.",
   "project_essentials.fly.auto.success": "§6Режим полета был автоматически §7включен§6.",
   "project_essentials.fly.player.success": "§6Вы §7изменили режим полета §6игрока §7%s§6.",
