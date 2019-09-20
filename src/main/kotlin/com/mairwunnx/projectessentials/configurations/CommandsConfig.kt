@@ -23,7 +23,9 @@ data class CommandsConfig(
         @SerialName("Air")
         val air: Air = Air(),
         @SerialName("Fly")
-        val fly: Fly = Fly()
+        val fly: Fly = Fly(),
+        @SerialName("God")
+        val god: God = God()
     ) {
         @Serializable
         data class Heal(
@@ -89,6 +91,24 @@ data class CommandsConfig(
             val autoFlyEnabled: Boolean = true,
             @SerialName("FlyDisabledWorlds")
             val flyDisabledWorlds: List<String> = listOf(),
+            @SerialName("DisabledWorldsBypassPermLevel")
+            val disabledWorldsBypassPermLevel: Int = 3
+        )
+
+        @Serializable
+        data class God(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
+            @SerialName("EnableArgs")
+            val enableArgs: Boolean = true,
+            @SerialName("Aliases")
+            val aliases: List<String> = listOf("egod", "tgm"),
+            @SerialName("AutoGodModeEnabled")
+            val autoGodModeEnabled: Boolean = true,
+            @SerialName("GodModeDisabledWorlds")
+            val godModeDisabledWorlds: List<String> = listOf(),
             @SerialName("DisabledWorldsBypassPermLevel")
             val disabledWorldsBypassPermLevel: Int = 3
         )

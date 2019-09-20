@@ -19,4 +19,6 @@ const val DISABLED_COMMAND_ARG =
 const val ONLY_PLAYER_CAN =
     "Server failed to executing \"/%0\" command".plus(
         "\n    - Reason: command should only be used by the player."
+    ).plus(
+        "\n    - Solution: try use command with argument or target."
     )

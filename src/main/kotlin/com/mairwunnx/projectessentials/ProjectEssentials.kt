@@ -5,6 +5,7 @@ package com.mairwunnx.projectessentials
 import com.mairwunnx.projectessentials.commands.CommandAliases
 import com.mairwunnx.projectessentials.commands.CommandsBase
 import com.mairwunnx.projectessentials.commands.FlyCommand
+import com.mairwunnx.projectessentials.commands.GodCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
@@ -130,7 +131,7 @@ class ProjectEssentials {
 
     @SubscribeEvent
     fun onPlayerJoin(event: PlayerLoggedInEvent) {
-        processFlyAbility(event.player)
+        processAbilities(event.player)
     }
 
     @SubscribeEvent
@@ -138,10 +139,10 @@ class ProjectEssentials {
 
     @SubscribeEvent
     fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) {
-        processFlyAbility(event.player)
+        processAbilities(event.player)
     }
 
-    private fun processFlyAbility(player: PlayerEntity) {
+    private fun processAbilities(player: PlayerEntity) {
         val config = ModConfiguration.getCommandsConfig().commands
         val playerCommandSource = player.commandSource
         val serverPlayerEntity = player.commandSource.asPlayer()
@@ -149,6 +150,13 @@ class ProjectEssentials {
             if (serverPlayerEntity.hasPermissionLevel(config.fly.permissionLevel)) {
                 if (FlyCommand.setFly(serverPlayerEntity, true)) {
                     sendMsg(playerCommandSource, "fly.auto.success")
+                }
+            }
+        }
+        if (config.god.autoGodModeEnabled) {
+            if (serverPlayerEntity.hasPermissionLevel(config.god.permissionLevel)) {
+                if (GodCommand.setGod(serverPlayerEntity, true)) {
+                    sendMsg(playerCommandSource, "god.auto.success")
                 }
             }
         }
@@ -161,7 +169,8 @@ class ProjectEssentials {
             uuidString, UserData(
                 player.world.fullName(),
                 "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}",
-                getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyEnabledInWorlds)
+                getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyEnabledInWorlds),
+                getGodEnabledWorlds(player, StorageBase.getData(uuidString).godEnabledWorlds)
             )
         )
     }
@@ -184,6 +193,24 @@ class ProjectEssentials {
         return flyAbleWorlds
     }
 
+    private fun getGodEnabledWorlds(
+        player: PlayerEntity,
+        godAbleWorlds: List<String>
+    ): List<String> {
+        if (getGod(player)) {
+            if (!godAbleWorlds.contains(player.world.worldInfo.worldName)) {
+                val list = godAbleWorlds.toMutableList()
+                list.add(player.world.worldInfo.worldName)
+                return list
+            }
+        } else {
+            val list = godAbleWorlds.toMutableList()
+            list.remove(player.world.worldInfo.worldName)
+            return list
+        }
+        return godAbleWorlds
+    }
+
     private fun getFly(player: PlayerEntity?): Boolean {
         if (player == null) return false
         return if (player.onGround) {
@@ -191,5 +218,10 @@ class ProjectEssentials {
         } else {
             player.abilities.isFlying || player.abilities.allowFlying
         }
+    }
+
+    private fun getGod(player: PlayerEntity?): Boolean {
+        if (player == null) return false
+        return player.abilities.disableDamage
     }
 }

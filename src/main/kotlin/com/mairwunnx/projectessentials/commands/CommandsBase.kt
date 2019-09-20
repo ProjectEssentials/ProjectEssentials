@@ -18,6 +18,7 @@ class CommandsBase {
         TopCommand.register(commandDispatcher)
         AirCommand.register(commandDispatcher)
         FlyCommand.register(commandDispatcher)
+        GodCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
