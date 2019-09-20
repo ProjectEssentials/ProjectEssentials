@@ -39,5 +39,13 @@
   "project_essentials.fly.auto.success": "§6Fly mode was automatically §7enabled§6.",
   "project_essentials.fly.player.success": "§6You §7changed fly mode §6of player §7%s§6.",
   "project_essentials.fly.player.error": "§cYou §7don't have permission §cto change fly mode player §7%s§c.",
-  "project_essentials.fly.player.recipient.success": "§6Your fly mode §7was changed §6by player §7%s§6."
+  "project_essentials.fly.player.recipient.success": "§6Your fly mode §7was changed §6by player §7%s§6.",
+  "project_essentials.god.self.success": "§6God mode successfully §7changed§6.",
+  "project_essentials.god.self.error": "§cYou §7don't have permission §cto enable god yourself.",
+  "project_essentials.god.self.restricted": "§cYou §7can't enable god mode §cin this world; §7reason: §crestricted by configuration.",
+  "project_essentials.god.creative": "§cYou §7can't change §cgod mode, because you have §7creative §cor §7spectator §cmode.",
+  "project_essentials.god.auto.success": "§6God mode was automatically §7enabled§6.",
+  "project_essentials.god.player.success": "§6You §7changed god mode §6of player §7%s§6.",
+  "project_essentials.god.player.error": "§cYou §7don't have permission §cto change god mode player §7%s§c.",
+  "project_essentials.god.player.recipient.success": "§6Your god mode §7was changed §6by player §7%s§6."
 }

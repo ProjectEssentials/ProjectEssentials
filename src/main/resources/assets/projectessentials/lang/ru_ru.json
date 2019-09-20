@@ -39,5 +39,13 @@
   "project_essentials.fly.auto.success": "§6Режим полета был автоматически §7включен§6.",
   "project_essentials.fly.player.success": "§6Вы §7изменили режим полета §6игрока §7%s§6.",
   "project_essentials.fly.player.error": "§cУ вас §7нет прав §cна изменение режима полета игрока §7%s§c.",
-  "project_essentials.fly.player.recipient.success": "§6Ваш режим полета §7был изменен §6игроком §7%s§6."
+  "project_essentials.fly.player.recipient.success": "§6Ваш режим полета §7был изменен §6игроком §7%s§6.",
+  "project_essentials.god.self.success": "§6Режим бога успешно §7изменен§6.",
+  "project_essentials.god.self.error": "§cУ вас §7нет прав §cна включение \\ выключение режима бога.",
+  "project_essentials.god.self.restricted": "§cВы §7не можете включить режим бога §cв этом мире; §7причина: §cзапрещено конфигурацией.",
+  "project_essentials.god.creative": "§cВы §7не можете изменить §cрежим бога, потому что у вас §7creative §cили §7spectator §cрежим.",
+  "project_essentials.god.auto.success": "§6Режим бога был автоматически §7включен§6.",
+  "project_essentials.god.player.success": "§6Вы §7изменили режим бога §6игрока §7%s§6.",
+  "project_essentials.god.player.error": "§cУ вас §7нет прав §cна изменение режима бога игрока §7%s§c.",
+  "project_essentials.god.player.recipient.success": "§6Ваш режим бога §7был изменен §6игроком §7%s§6."
 }
