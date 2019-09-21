@@ -47,5 +47,6 @@
   "project_essentials.god.auto.success": "§6God mode was automatically §7enabled§6.",
   "project_essentials.god.player.success": "§6You §7changed god mode §6of player §7%s§6.",
   "project_essentials.god.player.error": "§cYou §7don't have permission §cto change god mode player §7%s§c.",
-  "project_essentials.god.player.recipient.success": "§6Your god mode §7was changed §6by player §7%s§6."
+  "project_essentials.god.player.recipient.success": "§6Your god mode §7was changed §6by player §7%s§6.",
+  "project_essentials.list.out": "§6Players online (§7%s§6/§7%s§6)§6: §7%s"
 }

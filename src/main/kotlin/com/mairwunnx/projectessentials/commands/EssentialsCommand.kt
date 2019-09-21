@@ -51,6 +51,7 @@ object EssentialsCommand {
         ) {
             ModConfiguration.loadConfig()
             GodCommand.reload()
+            ListCommand.reload()
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {

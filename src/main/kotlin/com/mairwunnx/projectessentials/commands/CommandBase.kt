@@ -22,6 +22,7 @@ abstract class CommandBase<T : Any>(
     private val commandInstance: T,
     private val aliasesIsExists: Boolean = true,
     private val hasArguments: Boolean = true,
+    private val canServerExecuteWhenArgNone: Boolean = false,
     val commandAliases: MutableList<String> = mutableListOf(),
     val commandArgName: String = "Player"
 ) {
@@ -100,9 +101,13 @@ abstract class CommandBase<T : Any>(
     }
 
     private fun assignCommandArgUsePermissionLevel() {
-        cmdArgUsePermissionLevel = commandInstance.javaClass.getMethod(
-            "getArgUsePermissionLevel"
-        ).invoke(commandInstance) as Int
+        if (hasArguments) {
+            cmdArgUsePermissionLevel = commandInstance.javaClass.getMethod(
+                "getArgUsePermissionLevel"
+            ).invoke(commandInstance) as Int
+        } else {
+            logger.info("        - assigning \"/$commandName\" command arg use perm level param skipped")
+        }
     }
 
     open fun register(dispatcher: CommandDispatcher<CommandSource>) = Unit
@@ -155,11 +160,13 @@ abstract class CommandBase<T : Any>(
             }
             return true
         } else {
+            sender = c.source
             senderNickName = "server"
             return if (hasTarget) {
                 assignTargets(c)
                 true
             } else {
+                if (!hasArguments && canServerExecuteWhenArgNone) return true
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", commandName))
                 false
             }

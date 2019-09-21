@@ -25,7 +25,9 @@ data class CommandsConfig(
         @SerialName("Fly")
         val fly: Fly = Fly(),
         @SerialName("God")
-        val god: God = God()
+        val god: God = God(),
+        @SerialName("List")
+        val list: List = List()
     ) {
         @Serializable
         data class Heal(
@@ -36,7 +38,7 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf("eheal")
+            val aliases: kotlin.collections.List<String> = listOf("eheal")
         )
 
         @Serializable
@@ -52,7 +54,7 @@ data class CommandsConfig(
             @SerialName("MaxFoodLevel")
             val maxFoodLevel: Int = 20,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf(
+            val aliases: kotlin.collections.List<String> = listOf(
                 "eat", "eeat", "efeed"
             )
         )
@@ -62,7 +64,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf("etop")
+            val aliases: kotlin.collections.List<String> = listOf("etop")
         )
 
         @Serializable
@@ -74,7 +76,7 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf("eair")
+            val aliases: kotlin.collections.List<String> = listOf("eair")
         )
 
         @Serializable
@@ -86,11 +88,11 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf("efly"),
+            val aliases: kotlin.collections.List<String> = listOf("efly"),
             @SerialName("AutoFlyEnabled")
             val autoFlyEnabled: Boolean = true,
             @SerialName("FlyDisabledWorlds")
-            val flyDisabledWorlds: List<String> = listOf(),
+            val flyDisabledWorlds: kotlin.collections.List<String> = listOf(),
             @SerialName("DisabledWorldsBypassPermLevel")
             val disabledWorldsBypassPermLevel: Int = 3
         )
@@ -104,13 +106,33 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: List<String> = listOf("egod", "tgm"),
+            val aliases: kotlin.collections.List<String> = listOf("egod", "tgm"),
             @SerialName("AutoGodModeEnabled")
             val autoGodModeEnabled: Boolean = true,
             @SerialName("GodModeDisabledWorlds")
-            val godModeDisabledWorlds: List<String> = listOf(),
+            val godModeDisabledWorlds: kotlin.collections.List<String> = listOf(),
             @SerialName("DisabledWorldsBypassPermLevel")
             val disabledWorldsBypassPermLevel: Int = 3
+        )
+
+        @Serializable
+        data class List(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("MaxDisplayedPlayers")
+            val maxDisplayedPlayers: Int = 16,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "elist",
+                "online",
+                "eonline",
+                "playerlist",
+                "eplayerlist",
+                "plist",
+                "eplist",
+                "who",
+                "ewho"
+            )
         )
     }
 
