@@ -20,6 +20,7 @@ class CommandsBase {
         FlyCommand.register(commandDispatcher)
         GodCommand.register(commandDispatcher)
         ListCommand.register(commandDispatcher)
+        BreakCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }

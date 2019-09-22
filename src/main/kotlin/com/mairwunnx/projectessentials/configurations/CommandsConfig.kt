@@ -27,7 +27,9 @@ data class CommandsConfig(
         @SerialName("God")
         val god: God = God(),
         @SerialName("List")
-        val list: List = List()
+        val list: List = List(),
+        @SerialName("Break")
+        val `break`: Break = Break()
     ) {
         @Serializable
         data class Heal(
@@ -133,6 +135,18 @@ data class CommandsConfig(
                 "who",
                 "ewho"
             )
+        )
+
+        @Serializable
+        data class Break(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("RestrictedBlockByPassPermLevel")
+            val restrictedBlockByPassPermLevel: Int = 3,
+            @SerialName("RestrictedBlocks")
+            val restrictedBlocks: kotlin.collections.List<String> = listOf("minecraft:bedrock"),
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("ebreak")
         )
     }
 
