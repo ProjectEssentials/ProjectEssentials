@@ -8,13 +8,14 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
+import net.minecraft.command.Commands
+import net.minecraft.command.arguments.EntityArgument
 import org.apache.logging.log4j.LogManager
+import kotlin.math.roundToInt
 
 @UnstableDefault
-object ListCommand : CommandBase<CommandsConfig.Commands.List>(
-    getCommandsConfig().commands.list,
-    hasArguments = false,
-    canServerExecuteWhenArgNone = true
+object GetPosCommand : CommandBase<CommandsConfig.Commands.GetPos>(
+    getCommandsConfig().commands.getPos
 ) {
     private val logger = LogManager.getLogger()
 
@@ -22,6 +23,15 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
         super.register(dispatcher)
         commandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
+                .then(
+                    Commands.argument(
+                        commandArgName,
+                        EntityArgument.player()
+                    ).executes {
+                        execute(it, true)
+                        return@executes 0
+                    }
+                )
                 .executes {
                     execute(it)
                     return@executes 0
@@ -37,34 +47,38 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
         val code = super.execute(c, hasTarget)
         if (!code) return false
 
-        val maxListNodes = getCommandsConfig().commands.list.maxDisplayedPlayers
-        val online = sender.server.onlinePlayerNames.count()
-        val maxOnline = sender.server.maxPlayers
-        val onlinePlayers = fun(): List<String> {
-            return if (online > maxListNodes) {
-                sender.server.onlinePlayerNames.slice(
-                    IntRange(0, maxListNodes)
-                )
+        if (hasTarget) {
+            val posX = targetPlayer.posX.roundToInt()
+            val posY = targetPlayer.posY.roundToInt()
+            val posZ = targetPlayer.posZ.roundToInt()
+            if (senderNickName == "server") {
+                logger.info("Player $targetPlayerName current position XYZ: $posX / $posY / $posZ")
             } else {
-                sender.server.onlinePlayerNames.toList()
+                sendMsg(
+                    sender,
+                    "getpos.player.out",
+                    targetPlayerName,
+                    posX.toString(),
+                    posY.toString(),
+                    posZ.toString()
+                )
             }
-        }
-
-        if (senderNickName == "server") {
-            logger.info("Players online ($online/$maxOnline): ${onlinePlayers()}")
         } else {
             sendMsg(
-                sender, "list.out",
-                online.toString(), maxOnline.toString(),
-                onlinePlayers().toString()
+                sender,
+                "getpos.self.out",
+                senderPlayer.posX.roundToInt().toString(),
+                senderPlayer.posY.roundToInt().toString(),
+                senderPlayer.posZ.roundToInt().toString()
             )
         }
+
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
     }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.list
+        commandInstance = getCommandsConfig().commands.getPos
         super.reload()
     }
 }

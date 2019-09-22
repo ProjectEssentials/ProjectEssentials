@@ -67,4 +67,9 @@ object BreakCommand : CommandBase<CommandsConfig.Commands.Break>(
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
     }
+
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.`break`
+        super.reload()
+    }
 }

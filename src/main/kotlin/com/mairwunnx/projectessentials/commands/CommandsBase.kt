@@ -21,6 +21,7 @@ class CommandsBase {
         GodCommand.register(commandDispatcher)
         ListCommand.register(commandDispatcher)
         BreakCommand.register(commandDispatcher)
+        GetPosCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }

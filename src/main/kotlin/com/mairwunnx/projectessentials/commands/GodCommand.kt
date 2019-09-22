@@ -142,4 +142,9 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
             false
         }
     }
+
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.god
+        super.reload()
+    }
 }

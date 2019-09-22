@@ -29,7 +29,9 @@ data class CommandsConfig(
         @SerialName("List")
         val list: List = List(),
         @SerialName("Break")
-        val `break`: Break = Break()
+        val `break`: Break = Break(),
+        @SerialName("GetPos")
+        val getPos: GetPos = GetPos()
     ) {
         @Serializable
         data class Heal(
@@ -147,6 +149,21 @@ data class CommandsConfig(
             val restrictedBlocks: kotlin.collections.List<String> = listOf("minecraft:bedrock"),
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("ebreak")
+        )
+
+        @Serializable
+        data class GetPos(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("ArgUsePermissionLevel")
+            val argUsePermissionLevel: Int = 3,
+            @SerialName("EnableArgs")
+            val enableArgs: Boolean = true,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "eposition",
+                "mypos"
+            )
         )
     }
 

@@ -1,7 +1,7 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
-import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.empty
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -16,22 +16,22 @@ import net.minecraft.command.CommandSource
 import net.minecraft.command.arguments.EntityArgument
 import net.minecraft.entity.player.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
+import kotlin.properties.Delegates
 
 @UnstableDefault
 abstract class CommandBase<T : Any>(
-    private val commandInstance: T,
+    var commandInstance: T,
     private val aliasesIsExists: Boolean = true,
     private val hasArguments: Boolean = true,
     private val canServerExecuteWhenArgNone: Boolean = false,
     val commandAliases: MutableList<String> = mutableListOf(),
     val commandArgName: String = "Player"
 ) {
-    val config: CommandsConfig get() = ModConfiguration.getCommandsConfig()
-    val cmdConfig: T = commandInstance
+    val config: CommandsConfig get() = getCommandsConfig()
     var cmdAliases = mutableListOf<String>()
     var cmdIsEnabledArgs = true
-    var cmdPermissionLevel = 3
-    var cmdArgUsePermissionLevel = 4
+    private var cmdPermissionLevel by Delegates.notNull<Int>()
+    private var cmdArgUsePermissionLevel by Delegates.notNull<Int>()
 
     lateinit var targetPlayer: ServerPlayerEntity
     var targetPlayerName = String.empty
@@ -41,7 +41,7 @@ abstract class CommandBase<T : Any>(
 
     private val logger = LogManager.getLogger()
     val commandName by lazy {
-        commandInstance.javaClass.simpleName.decapitalize()
+        commandInstance.javaClass.simpleName.toLowerCase()
     }
 
     init {
@@ -54,7 +54,7 @@ abstract class CommandBase<T : Any>(
         commandAliases.add(commandName)
     }
 
-    fun reload() {
+    open fun reload() {
         logger.info("    - reloading \"/$commandName\" command ...")
         assignCommandEnabledArgs()
         assignCommandPermissionLevel()
