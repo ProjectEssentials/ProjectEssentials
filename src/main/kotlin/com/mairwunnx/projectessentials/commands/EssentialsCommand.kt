@@ -54,6 +54,7 @@ object EssentialsCommand {
             ListCommand.reload()
             BreakCommand.reload()
             GetPosCommand.reload()
+            MoreCommand.reload()
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {

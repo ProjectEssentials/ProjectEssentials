@@ -31,7 +31,9 @@ data class CommandsConfig(
         @SerialName("Break")
         val `break`: Break = Break(),
         @SerialName("GetPos")
-        val getPos: GetPos = GetPos()
+        val getPos: GetPos = GetPos(),
+        @SerialName("More")
+        val more: More = More()
     ) {
         @Serializable
         data class Heal(
@@ -163,6 +165,17 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "eposition",
                 "mypos"
+            )
+        )
+
+        @Serializable
+        data class More(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 3,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "emore",
+                "dupe"
             )
         )
     }
