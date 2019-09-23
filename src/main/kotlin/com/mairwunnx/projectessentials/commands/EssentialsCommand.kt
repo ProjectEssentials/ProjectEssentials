@@ -55,6 +55,11 @@ object EssentialsCommand {
             BreakCommand.reload()
             GetPosCommand.reload()
             MoreCommand.reload()
+            DayCommand.reload()
+            NightCommand.reload()
+            MidnightCommand.reload()
+            NoonCommand.reload()
+            SunsetCommand.reload()
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {

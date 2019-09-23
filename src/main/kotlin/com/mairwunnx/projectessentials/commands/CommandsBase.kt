@@ -27,6 +27,7 @@ class CommandsBase {
         NightCommand.register(commandDispatcher)
         MidnightCommand.register(commandDispatcher)
         NoonCommand.register(commandDispatcher)
+        SunsetCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
