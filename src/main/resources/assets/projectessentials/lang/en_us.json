@@ -58,5 +58,7 @@
   "project_essentials.getpos.player.error": "§cYou §7don't have permission §cto see current player (§7%s§c) position.",
   "project_essentials.more.out": "§6Amount of §7active item §6has §7been increased §6to the stack size.",
   "project_essentials.more.fullstack": "§cYou already have a §7full stack§c.",
-  "project_essentials.more.self.error": "§cYou §7don't have permission §cto increase item count."
+  "project_essentials.more.self.error": "§cYou §7don't have permission §cto increase item count.",
+  "project_essentials.day.installed": "§6Day time §7has been §6installed.",
+  "project_essentials.day.self.error": "§cYou §7don't have permission §cto change world time."
 }

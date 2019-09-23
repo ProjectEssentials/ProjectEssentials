@@ -33,7 +33,9 @@ data class CommandsConfig(
         @SerialName("GetPos")
         val getPos: GetPos = GetPos(),
         @SerialName("More")
-        val more: More = More()
+        val more: More = More(),
+        @SerialName("Day")
+        val day: Day = Day()
     ) {
         @Serializable
         data class Heal(
@@ -176,6 +178,16 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "emore",
                 "dupe"
+            )
+        )
+
+        @Serializable
+        data class Day(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "eday"
             )
         )
     }
