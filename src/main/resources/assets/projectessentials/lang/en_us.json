@@ -62,5 +62,7 @@
   "project_essentials.day.installed": "§6Day time §7has been §6installed.",
   "project_essentials.day.self.error": "§cYou §7don't have permission §cto change world time.",
   "project_essentials.night.installed": "§6Night time §7has been §6installed.",
-  "project_essentials.night.self.error": "§cYou §7don't have permission §cto change world time."
+  "project_essentials.night.self.error": "§cYou §7don't have permission §cto change world time.",
+  "project_essentials.midnight.installed": "§6Midnight time §7has been §6installed.",
+  "project_essentials.midnight.self.error": "§cYou §7don't have permission §cto change world time."
 }
