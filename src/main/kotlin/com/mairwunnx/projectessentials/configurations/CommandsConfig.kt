@@ -43,7 +43,9 @@ data class CommandsConfig(
         @SerialName("Noon")
         val noon: Noon = Noon(),
         @SerialName("Sunset")
-        val sunset: Sunset = Sunset()
+        val sunset: Sunset = Sunset(),
+        @SerialName("Sunrise")
+        val sunrise: Sunrise = Sunrise()
     ) {
         @Serializable
         data class Heal(
@@ -235,7 +237,17 @@ data class CommandsConfig(
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
-                "esunset", "dusk", "sundown"
+                "esunset", "dusk", "sundown", "evening"
+            )
+        )
+
+        @Serializable
+        data class Sunrise(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "esunrise", "dawn", "morning", "morn"
             )
         )
     }

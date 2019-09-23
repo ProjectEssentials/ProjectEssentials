@@ -60,6 +60,7 @@ object EssentialsCommand {
             MidnightCommand.reload()
             NoonCommand.reload()
             SunsetCommand.reload()
+            SunriseCommand.reload()
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {
