@@ -24,6 +24,7 @@ class CommandsBase {
         GetPosCommand.register(commandDispatcher)
         MoreCommand.register(commandDispatcher)
         DayCommand.register(commandDispatcher)
+        NightCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
