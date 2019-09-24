@@ -47,7 +47,9 @@ data class CommandsConfig(
         @SerialName("Sunrise")
         val sunrise: Sunrise = Sunrise(),
         @SerialName("Time")
-        val time: Time = Time()
+        val time: Time = Time(),
+        @SerialName("Suicide")
+        val suicide: Suicide = Suicide()
     ) {
         @Serializable
         data class Heal(
@@ -250,6 +252,14 @@ data class CommandsConfig(
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etime")
+        )
+
+        @Serializable
+        data class Suicide(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 3,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("esuicide")
         )
     }
 

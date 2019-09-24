@@ -81,6 +81,7 @@ object EssentialsCommand {
         SunsetCommand.reload()
         SunriseCommand.reload()
         TimeCommand.reload()
+        SuicideCommand.reload()
     }
 
     @UnstableDefault

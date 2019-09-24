@@ -30,6 +30,7 @@ class CommandsBase {
         SunsetCommand.register(commandDispatcher)
         SunriseCommand.register(commandDispatcher)
         TimeCommand.register(commandDispatcher)
+        SuicideCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
