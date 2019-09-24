@@ -1,6 +1,7 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.*
+import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand

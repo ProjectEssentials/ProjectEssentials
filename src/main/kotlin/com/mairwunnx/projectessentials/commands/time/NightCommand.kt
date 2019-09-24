@@ -1,9 +1,9 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.time
 
+import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.helpers.get24TimeFromTicks
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
@@ -12,15 +12,14 @@ import net.minecraft.command.CommandSource
 import org.apache.logging.log4j.LogManager
 
 @UnstableDefault
-object TimeCommand : CommandBase<CommandsConfig.Commands.Time>(
-    getCommandsConfig().commands.time,
-    hasArguments = false,
-    serverCanExecute = false
+object NightCommand : CommandBase<CommandsConfig.Commands.Night>(
+    getCommandsConfig().commands.night,
+    hasArguments = false
 ) {
     private val logger = LogManager.getLogger()
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.time
+        commandInstance = getCommandsConfig().commands.night
         super.reload()
     }
 
@@ -42,15 +41,9 @@ object TimeCommand : CommandBase<CommandsConfig.Commands.Time>(
     ): Boolean {
         val code = super.execute(c, hasTarget)
         if (!code) return false
-        val commandName = c.input.drop(1)
 
-        if (commandName == "time") {
-            sendMsg(
-                sender,
-                "time.out",
-                get24TimeFromTicks(sender.world.worldInfo.dayTime)
-            )
-        }
+        sender.world.dayTime = 13000
+        sendMsg(sender, "night.installed")
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true

@@ -1,5 +1,6 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.time
 
+import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -11,14 +12,14 @@ import net.minecraft.command.CommandSource
 import org.apache.logging.log4j.LogManager
 
 @UnstableDefault
-object NoonCommand : CommandBase<CommandsConfig.Commands.Noon>(
-    getCommandsConfig().commands.noon,
+object MidnightCommand : CommandBase<CommandsConfig.Commands.MidNight>(
+    getCommandsConfig().commands.midNight,
     hasArguments = false
 ) {
     private val logger = LogManager.getLogger()
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.noon
+        commandInstance = getCommandsConfig().commands.midNight
         super.reload()
     }
 
@@ -41,8 +42,8 @@ object NoonCommand : CommandBase<CommandsConfig.Commands.Noon>(
         val code = super.execute(c, hasTarget)
         if (!code) return false
 
-        sender.world.dayTime = 6000
-        sendMsg(sender, "noon.installed")
+        sender.world.dayTime = 18000
+        sendMsg(sender, "midnight.installed")
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
