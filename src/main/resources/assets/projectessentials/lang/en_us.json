@@ -75,5 +75,7 @@
   "project_essentials.time.self.error": "§cYou §7don't have permission §cto change or see world time.",
   "project_essentials.suicide.success": "§6Goodbye cruel world...",
   "project_essentials.suicide.self.error": "§cYou §7don't have permission §cto kill your self.",
-  "death.attack.suicide": "§cKilled of his own free will."
+  "death.attack.suicide": "§cKilled of his own free will.",
+  "project_essentials.rain.installed": "§6Rain weather §7has been §6installed.",
+  "project_essentials.rain.self.error": "§cYou §7don't have permission §cto change world weather."
 }

@@ -29,8 +29,8 @@ abstract class CommandBase<T : Any>(
     val commandArgName: String = "Player"
 ) {
     val config: CommandsConfig get() = getCommandsConfig()
-    var cmdAliases = mutableListOf<String>()
-    var cmdIsEnabledArgs = true
+    private var cmdAliases = mutableListOf<String>()
+    private var cmdIsEnabledArgs = true
     private var cmdPermissionLevel by Delegates.notNull<Int>()
     private var cmdArgUsePermissionLevel by Delegates.notNull<Int>()
 
@@ -127,7 +127,7 @@ abstract class CommandBase<T : Any>(
             senderNickName = senderPlayer.name.string
 
             when {
-                hasTarget && !cmdIsEnabledArgs -> {
+                hasTarget && hasArguments && !cmdIsEnabledArgs -> {
                     logger.warn(
                         DISABLED_COMMAND_ARG
                             .replace("%0", senderNickName)
@@ -136,7 +136,7 @@ abstract class CommandBase<T : Any>(
                     sendMsg(sender, "common.arg.error", commandName)
                     return false
                 }
-                hasTarget && cmdIsEnabledArgs -> assignTargets(c)
+                hasTarget && hasArguments && cmdIsEnabledArgs -> assignTargets(c)
             }
 
             if (!hasTarget) {
@@ -155,7 +155,7 @@ abstract class CommandBase<T : Any>(
                     else -> sendMsg(sender, "$commandName.self.error")
                 }
                 return false
-            } else if (hasTarget && !senderPlayer.hasPermissionLevel(cmdArgUsePermissionLevel)) {
+            } else if (hasTarget && hasArguments && !senderPlayer.hasPermissionLevel(cmdArgUsePermissionLevel)) {
                 sendMsg(sender, "$commandName.player.error", targetPlayerName)
                 return false
             }
@@ -163,7 +163,7 @@ abstract class CommandBase<T : Any>(
         } else {
             sender = c.source
             senderNickName = "server"
-            return if (hasTarget && serverCanExecute) {
+            return if (hasTarget && hasArguments && serverCanExecute) {
                 assignTargets(c)
                 true
             } else {

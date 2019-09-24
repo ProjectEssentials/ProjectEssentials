@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mojang.brigadier.CommandDispatcher
 import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
@@ -31,6 +32,7 @@ class CommandsBase {
         SunriseCommand.register(commandDispatcher)
         TimeCommand.register(commandDispatcher)
         SuicideCommand.register(commandDispatcher)
+        RainCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
