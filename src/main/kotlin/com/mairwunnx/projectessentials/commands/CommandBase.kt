@@ -24,6 +24,7 @@ abstract class CommandBase<T : Any>(
     private val aliasesIsExists: Boolean = true,
     private val hasArguments: Boolean = true,
     private val canServerExecuteWhenArgNone: Boolean = false,
+    private val serverCanExecute: Boolean = true,
     val commandAliases: MutableList<String> = mutableListOf(),
     val commandArgName: String = "Player"
 ) {
@@ -162,7 +163,7 @@ abstract class CommandBase<T : Any>(
         } else {
             sender = c.source
             senderNickName = "server"
-            return if (hasTarget) {
+            return if (hasTarget && serverCanExecute) {
                 assignTargets(c)
                 true
             } else {

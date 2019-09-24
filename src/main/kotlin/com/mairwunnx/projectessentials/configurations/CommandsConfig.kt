@@ -45,7 +45,9 @@ data class CommandsConfig(
         @SerialName("Sunset")
         val sunset: Sunset = Sunset(),
         @SerialName("Sunrise")
-        val sunrise: Sunrise = Sunrise()
+        val sunrise: Sunrise = Sunrise(),
+        @SerialName("Time")
+        val time: Time = Time()
     ) {
         @Serializable
         data class Heal(
@@ -185,10 +187,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 3,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "emore",
-                "dupe"
-            )
+            val aliases: kotlin.collections.List<String> = listOf("emore", "dupe")
         )
 
         @Serializable
@@ -196,9 +195,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "eday"
-            )
+            val aliases: kotlin.collections.List<String> = listOf("eday")
         )
 
         @Serializable
@@ -206,9 +203,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "enight"
-            )
+            val aliases: kotlin.collections.List<String> = listOf("enight")
         )
 
         @Serializable
@@ -216,9 +211,7 @@ data class CommandsConfig(
             @SerialName("PermissionLevel")
             val permissionLevel: Int = 2,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "emidnight"
-            )
+            val aliases: kotlin.collections.List<String> = listOf("emidnight")
         )
 
         @Serializable
@@ -249,6 +242,14 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "esunrise", "dawn", "morning", "morn"
             )
+        )
+
+        @Serializable
+        data class Time(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 2,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etime")
         )
     }
 

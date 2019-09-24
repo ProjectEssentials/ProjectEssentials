@@ -70,5 +70,7 @@
   "project_essentials.sunset.installed": "§6Sunset time §7has been §6installed.",
   "project_essentials.sunset.self.error": "§cYou §7don't have permission §cto change world time.",
   "project_essentials.sunrise.installed": "§6Sunrise time §7has been §6installed.",
-  "project_essentials.sunrise.self.error": "§cYou §7don't have permission §cto change world time."
+  "project_essentials.sunrise.self.error": "§cYou §7don't have permission §cto change world time.",
+  "project_essentials.time.out": "§6Current world time is§7 %s§6.",
+  "project_essentials.time.self.error": "§cYou §7don't have permission §cto change or see world time."
 }

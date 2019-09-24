@@ -50,17 +50,7 @@ object EssentialsCommand {
             )
         ) {
             ModConfiguration.loadConfig()
-            GodCommand.reload()
-            ListCommand.reload()
-            BreakCommand.reload()
-            GetPosCommand.reload()
-            MoreCommand.reload()
-            DayCommand.reload()
-            NightCommand.reload()
-            MidnightCommand.reload()
-            NoonCommand.reload()
-            SunsetCommand.reload()
-            SunriseCommand.reload()
+            reloadCommandsConfigs()
             if (isServerSender) {
                 logger.info("Successfully reloaded Project Essentials configuration")
             } else {
@@ -76,6 +66,21 @@ object EssentialsCommand {
             sendMsg(commandSender, "common.reload.error")
             return 0
         }
+    }
+
+    private fun reloadCommandsConfigs() {
+        GodCommand.reload()
+        ListCommand.reload()
+        BreakCommand.reload()
+        GetPosCommand.reload()
+        MoreCommand.reload()
+        DayCommand.reload()
+        NightCommand.reload()
+        MidnightCommand.reload()
+        NoonCommand.reload()
+        SunsetCommand.reload()
+        SunriseCommand.reload()
+        TimeCommand.reload()
     }
 
     @UnstableDefault
