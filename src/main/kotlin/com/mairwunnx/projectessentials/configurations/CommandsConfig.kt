@@ -51,7 +51,9 @@ data class CommandsConfig(
         @SerialName("Suicide")
         val suicide: Suicide = Suicide(),
         @SerialName("Rain")
-        val rain: Rain = Rain()
+        val rain: Rain = Rain(),
+        @SerialName("Storm")
+        val storm: Storm = Storm()
     ) {
         @Serializable
         data class Heal(
@@ -272,6 +274,18 @@ data class CommandsConfig(
             val defaultDuration: Int = 13000,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("erain")
+        )
+
+        @Serializable
+        data class Storm(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 3,
+            @SerialName("DefaultDuration")
+            val defaultDuration: Int = 13000,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "estorm", "thunder", "ethunder", "goodweather"
+            )
         )
     }
 

@@ -14,14 +14,14 @@ import net.minecraft.command.Commands
 import org.apache.logging.log4j.LogManager
 
 @UnstableDefault
-object RainCommand : CommandBase<CommandsConfig.Commands.Rain>(
-    getCommandsConfig().commands.rain,
+object StormCommand : CommandBase<CommandsConfig.Commands.Storm>(
+    getCommandsConfig().commands.storm,
     hasArguments = false
 ) {
     private val logger = LogManager.getLogger()
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.rain
+        commandInstance = getCommandsConfig().commands.storm
         super.reload()
     }
 
@@ -57,20 +57,20 @@ object RainCommand : CommandBase<CommandsConfig.Commands.Rain>(
         if (hasTarget) {
             val duration = IntegerArgumentType.getInteger(c, "duration")
             when {
-                duration <= 0 -> sender.world.worldInfo.rainTime =
-                    config.commands.rain.defaultDuration
-                else -> sender.world.worldInfo.rainTime = duration
+                duration <= 0 -> sender.world.worldInfo.thunderTime =
+                    config.commands.storm.defaultDuration
+                else -> sender.world.worldInfo.thunderTime = duration
             }
-            sender.world.worldInfo.thunderTime = 0
-            sender.world.worldInfo.isRaining = true
-            sender.world.worldInfo.isThundering = false
+            sender.world.worldInfo.rainTime = 0
+            sender.world.worldInfo.isRaining = false
+            sender.world.worldInfo.isThundering = true
         } else {
-            sender.world.worldInfo.rainTime = config.commands.rain.defaultDuration
-            sender.world.worldInfo.thunderTime = 0
-            sender.world.worldInfo.isRaining = true
-            sender.world.worldInfo.isThundering = false
+            sender.world.worldInfo.thunderTime = config.commands.storm.defaultDuration
+            sender.world.worldInfo.rainTime = 0
+            sender.world.worldInfo.isRaining = false
+            sender.world.worldInfo.isThundering = true
         }
-        sendMsg(sender, "rain.installed")
+        sendMsg(sender, "storm.installed")
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
