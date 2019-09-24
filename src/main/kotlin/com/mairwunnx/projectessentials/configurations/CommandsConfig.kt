@@ -53,7 +53,9 @@ data class CommandsConfig(
         @SerialName("Rain")
         val rain: Rain = Rain(),
         @SerialName("Storm")
-        val storm: Storm = Storm()
+        val storm: Storm = Storm(),
+        @SerialName("Sun")
+        val sun: Sun = Sun()
     ) {
         @Serializable
         data class Heal(
@@ -285,6 +287,16 @@ data class CommandsConfig(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "estorm", "thunder", "ethunder", "goodweather"
+            )
+        )
+
+        @Serializable
+        data class Sun(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 3,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "esun", "weatherclear", "clearsky", "sky", "esky"
             )
         )
     }

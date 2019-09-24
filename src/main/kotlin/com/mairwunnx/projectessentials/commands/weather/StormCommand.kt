@@ -61,13 +61,17 @@ object StormCommand : CommandBase<CommandsConfig.Commands.Storm>(
                     config.commands.storm.defaultDuration
                 else -> sender.world.worldInfo.thunderTime = duration
             }
-            sender.world.worldInfo.rainTime = 0
-            sender.world.worldInfo.isRaining = false
+            when {
+                duration <= 0 -> sender.world.worldInfo.rainTime =
+                    config.commands.storm.defaultDuration
+                else -> sender.world.worldInfo.rainTime = duration
+            }
+            sender.world.worldInfo.isRaining = true
             sender.world.worldInfo.isThundering = true
         } else {
             sender.world.worldInfo.thunderTime = config.commands.storm.defaultDuration
-            sender.world.worldInfo.rainTime = 0
-            sender.world.worldInfo.isRaining = false
+            sender.world.worldInfo.rainTime = config.commands.storm.defaultDuration
+            sender.world.worldInfo.isRaining = true
             sender.world.worldInfo.isThundering = true
         }
         sendMsg(sender, "storm.installed")

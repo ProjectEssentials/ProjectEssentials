@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
+import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mojang.brigadier.CommandDispatcher
 import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
@@ -35,6 +36,7 @@ class CommandsBase {
         SuicideCommand.register(commandDispatcher)
         RainCommand.register(commandDispatcher)
         StormCommand.register(commandDispatcher)
+        SunCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }

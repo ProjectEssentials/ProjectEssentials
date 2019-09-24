@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
+import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -86,6 +87,7 @@ object EssentialsCommand {
         SuicideCommand.reload()
         RainCommand.reload()
         StormCommand.reload()
+        SunCommand.reload()
     }
 
     @UnstableDefault
