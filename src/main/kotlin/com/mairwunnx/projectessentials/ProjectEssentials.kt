@@ -2,10 +2,11 @@
 
 package com.mairwunnx.projectessentials
 
-import com.mairwunnx.projectessentials.commands.CommandAliases
-import com.mairwunnx.projectessentials.commands.CommandsBase
-import com.mairwunnx.projectessentials.commands.FlyCommand
-import com.mairwunnx.projectessentials.commands.GodCommand
+import com.mairwunnx.projectessentials.commands.*
+import com.mairwunnx.projectessentials.commands.time.*
+import com.mairwunnx.projectessentials.commands.weather.RainCommand
+import com.mairwunnx.projectessentials.commands.weather.StormCommand
+import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
@@ -17,7 +18,9 @@ import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
 import com.mairwunnx.projectessentials.helpers.validateForgeVersion
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
+import com.mojang.brigadier.CommandDispatcher
 import kotlinx.serialization.UnstableDefault
+import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
@@ -32,7 +35,7 @@ import org.apache.logging.log4j.LogManager
 
 const val MOD_ID = "project_essentials"
 const val MOD_NAME = "Project Essentials"
-const val MOD_VERSION = "1.14.4-0.1.0.0"
+const val MOD_VERSION = "1.14.4-0.1.1.0"
 const val MOD_DESCRIPTION = "minecraft command mod - adds commands for use in-game"
 const val MOD_MAINTAINER = "MairwunNx (Pavel Erokhin)"
 const val MOD_TARGET_FORGE = "28.0.X"
@@ -70,8 +73,36 @@ class ProjectEssentials {
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
         logger.info("$MOD_NAME starting mod loading ...")
-        val commandsBase = CommandsBase()
-        commandsBase.registerAll(it.server.commandManager.dispatcher)
+        registerCommands(it.server.commandManager.dispatcher)
+    }
+
+    private fun registerCommands(
+        cmdDispatcher: CommandDispatcher<CommandSource>
+    ) {
+        logger.info("Command registering is starting ...")
+        HealCommand.register(cmdDispatcher)
+        FeedCommand.register(cmdDispatcher)
+        TopCommand.register(cmdDispatcher)
+        AirCommand.register(cmdDispatcher)
+        FlyCommand.register(cmdDispatcher)
+        GodCommand.register(cmdDispatcher)
+        ListCommand.register(cmdDispatcher)
+        BreakCommand.register(cmdDispatcher)
+        GetPosCommand.register(cmdDispatcher)
+        MoreCommand.register(cmdDispatcher)
+        DayCommand.register(cmdDispatcher)
+        NightCommand.register(cmdDispatcher)
+        MidnightCommand.register(cmdDispatcher)
+        NoonCommand.register(cmdDispatcher)
+        SunsetCommand.register(cmdDispatcher)
+        SunriseCommand.register(cmdDispatcher)
+        TimeCommand.register(cmdDispatcher)
+        SuicideCommand.register(cmdDispatcher)
+        RainCommand.register(cmdDispatcher)
+        StormCommand.register(cmdDispatcher)
+        SunCommand.register(cmdDispatcher)
+        RepairCommand.register(cmdDispatcher)
+        EssentialsCommand.register(cmdDispatcher)
     }
 
     @UnstableDefault
