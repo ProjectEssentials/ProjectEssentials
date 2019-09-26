@@ -83,6 +83,7 @@
   "project_essentials.sun.installed": "§6Clear weather §7has been §6installed.",
   "project_essentials.sun.self.error": "§cYou §7don't have permission §cto change world weather.",
   "project_essentials.repair.out": "§6Item you are holding in your hand §7has been repaired§6.",
+  "project_essentials.repair.out.all": "§6All items in your inventory §7has been repaired§6.",
   "project_essentials.repair.fulldamage": "§cThis item §7does not need §crepairs.",
   "project_essentials.repair.self.error": "§cYou §7don't have permission §cto repair item."
 }

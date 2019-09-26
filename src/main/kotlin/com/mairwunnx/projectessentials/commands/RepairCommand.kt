@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
+import net.minecraft.command.Commands
 import net.minecraft.util.Hand
 import org.apache.logging.log4j.LogManager
 
@@ -27,6 +28,14 @@ object RepairCommand : CommandBase<CommandsConfig.Commands.Repair>(
         super.register(dispatcher)
         commandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
+                .then(Commands.literal("all").executes {
+                    execute(it, true)
+                    return@executes 0
+                })
+                .then(Commands.literal("hand").executes {
+                    execute(it)
+                    return@executes 0
+                })
                 .executes {
                     execute(it)
                     return@executes 0
@@ -42,12 +51,26 @@ object RepairCommand : CommandBase<CommandsConfig.Commands.Repair>(
         val code = super.execute(c, hasTarget)
         if (!code) return false
 
-        val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
-        if (item.isDamaged) {
-            item.damage = 0
-            sendMsg(sender, "repair.out")
+        if (hasTarget) {
+            val inventory = senderPlayer.inventory
+            inventory.armorInventory.forEach {
+                if (it.isDamaged) it.damage = 0
+            }
+            inventory.mainInventory.forEach {
+                if (it.isDamaged) it.damage = 0
+            }
+            inventory.offHandInventory.forEach {
+                if (it.isDamaged) it.damage = 0
+            }
+            sendMsg(sender, "repair.out.all")
         } else {
-            sendMsg(sender, "repair.fulldamage")
+            val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
+            if (item.isDamaged) {
+                item.damage = 0
+                sendMsg(sender, "repair.out")
+            } else {
+                sendMsg(sender, "repair.fulldamage")
+            }
         }
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
