@@ -89,6 +89,7 @@ object EssentialsCommand {
         RainCommand.reload()
         StormCommand.reload()
         SunCommand.reload()
+        RepairCommand.reload()
     }
 
     @UnstableDefault

@@ -12,14 +12,14 @@ import net.minecraft.util.Hand
 import org.apache.logging.log4j.LogManager
 
 @UnstableDefault
-object MoreCommand : CommandBase<CommandsConfig.Commands.More>(
-    getCommandsConfig().commands.more,
+object RepairCommand : CommandBase<CommandsConfig.Commands.Repair>(
+    getCommandsConfig().commands.repair,
     hasArguments = false
 ) {
     private val logger = LogManager.getLogger()
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.more
+        commandInstance = getCommandsConfig().commands.repair
         super.reload()
     }
 
@@ -43,11 +43,11 @@ object MoreCommand : CommandBase<CommandsConfig.Commands.More>(
         if (!code) return false
 
         val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
-        if (item.count < item.maxStackSize) {
-            item.count = item.maxStackSize
-            sendMsg(sender, "more.out")
+        if (item.isDamaged) {
+            item.damage = 0
+            sendMsg(sender, "repair.out")
         } else {
-            sendMsg(sender, "more.fullstack")
+            sendMsg(sender, "repair.fulldamage")
         }
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")

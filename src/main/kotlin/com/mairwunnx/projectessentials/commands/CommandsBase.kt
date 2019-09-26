@@ -38,6 +38,7 @@ class CommandsBase {
         RainCommand.register(commandDispatcher)
         StormCommand.register(commandDispatcher)
         SunCommand.register(commandDispatcher)
+        RepairCommand.register(commandDispatcher)
         EssentialsCommand.register(commandDispatcher)
     }
 }
