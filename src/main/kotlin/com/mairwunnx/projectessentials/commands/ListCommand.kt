@@ -18,6 +18,11 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
 ) {
     private val logger = LogManager.getLogger()
 
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.list
+        super.reload()
+    }
+
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
         commandAliases.forEach { command ->
@@ -61,10 +66,5 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
         }
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
-    }
-
-    override fun reload() {
-        commandInstance = getCommandsConfig().commands.list
-        super.reload()
     }
 }
