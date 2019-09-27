@@ -119,10 +119,7 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
         }
         DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) {
             Runnable {
-                saturationLevel.setFloat(
-                    target.foodStats,
-                    maxSaturateLevel
-                )
+                saturationLevel.setFloat(target.foodStats, maxSaturateLevel)
             }
         }
     }

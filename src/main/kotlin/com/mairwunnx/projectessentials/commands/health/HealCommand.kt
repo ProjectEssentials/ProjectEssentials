@@ -32,10 +32,7 @@ object HealCommand : CommandBase<CommandsConfig.Commands.Heal>(
                     Commands.argument(
                         commandArgName, EntityArgument.player()
                     ).executes {
-                        execute(
-                            it,
-                            true
-                        )
+                        execute(it, true)
                         return@executes 0
                     }
                 )

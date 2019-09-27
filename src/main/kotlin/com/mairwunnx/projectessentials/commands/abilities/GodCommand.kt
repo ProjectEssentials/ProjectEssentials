@@ -35,13 +35,9 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        commandArgName,
-                        EntityArgument.player()
+                        commandArgName, EntityArgument.player()
                     ).executes {
-                        execute(
-                            it,
-                            true
-                        )
+                        execute(it, true)
                         return@executes 0
                     }
                 )
@@ -65,11 +61,7 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
             logger.info(
                 "Player ($targetPlayerName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderNickName"
             )
-            if (!setGod(
-                    targetPlayer,
-                    isHasTarget = true
-                )
-            ) return false
+            if (!setGod(targetPlayer, isHasTarget = true)) return false
             if (senderNickName == "server") {
                 logger.info("You changed god mode of player $targetPlayerName.")
             } else {
@@ -122,10 +114,7 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
 
         if (isAutoGod) {
             return if (store.godEnabledWorlds.contains(target.world.worldInfo.worldName)) {
-                if (isRestrictedWorld(
-                        target
-                    )
-                ) {
+                if (isRestrictedWorld(target)) {
                     installGod(false)
                     false
                 } else {
