@@ -1,5 +1,6 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.health
 
+import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.isNeedFood
@@ -45,7 +46,10 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
                     Commands.argument(
                         commandArgName, EntityArgument.player()
                     ).executes {
-                        execute(it, true)
+                        execute(
+                            it,
+                            true
+                        )
                         return@executes 0
                     }
                 )
@@ -75,7 +79,8 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
             logger.info(
                 "Player ($targetPlayerName) food level/saturation changed from ${targetPlayer.foodStats.foodLevel}/${targetPlayer.foodStats.saturationLevel} to 20/5.0 by $senderNickName"
             )
-            targetPlayer.foodStats.foodLevel = maxFoodLevel
+            targetPlayer.foodStats.foodLevel =
+                maxFoodLevel
             saturateTarget(targetPlayer)
             sendMsg(sender, "feed.player.success", targetPlayerName)
             sendMsg(
@@ -91,7 +96,8 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
             logger.info(
                 "Player ($senderNickName) food level/saturation changed from ${senderPlayer.foodStats.foodLevel}/${senderPlayer.foodStats.saturationLevel} to 20/5.0"
             )
-            senderPlayer.foodStats.foodLevel = maxFoodLevel
+            senderPlayer.foodStats.foodLevel =
+                maxFoodLevel
             saturateTarget(senderPlayer)
             sendMsg(sender, "feed.self.success")
         }
@@ -108,7 +114,10 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
         }
         DistExecutor.runWhenOn(Dist.DEDICATED_SERVER) {
             Runnable {
-                saturationLevel.setFloat(target.foodStats, maxSaturateLevel)
+                saturationLevel.setFloat(
+                    target.foodStats,
+                    maxSaturateLevel
+                )
             }
         }
     }

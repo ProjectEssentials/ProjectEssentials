@@ -5,6 +5,10 @@ package com.mairwunnx.projectessentials
 import com.mairwunnx.projectessentials.commands.*
 import com.mairwunnx.projectessentials.commands.abilities.FlyCommand
 import com.mairwunnx.projectessentials.commands.abilities.GodCommand
+import com.mairwunnx.projectessentials.commands.health.AirCommand
+import com.mairwunnx.projectessentials.commands.health.FeedCommand
+import com.mairwunnx.projectessentials.commands.health.HealCommand
+import com.mairwunnx.projectessentials.commands.health.SuicideCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
