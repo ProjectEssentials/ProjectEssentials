@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/MairwunNx/ProjectEssentials/issues"
 
 [[mods]]
     modId="project_essentials"
-    version="1.14.4-0.1.1.0"
+    version="1.14.4-0.2.0.0"
     displayName="Project Essentials"
     credits="Thanks JetBrains for Intellij IDEA license!"
     authors="MairwunNx (Pavel Erokhin)"
