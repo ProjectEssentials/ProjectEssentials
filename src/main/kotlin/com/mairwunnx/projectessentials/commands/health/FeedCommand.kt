@@ -46,10 +46,7 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
                     Commands.argument(
                         commandArgName, EntityArgument.player()
                     ).executes {
-                        execute(
-                            it,
-                            true
-                        )
+                        execute(it, true)
                         return@executes 0
                     }
                 )
@@ -73,7 +70,11 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
 
         if (hasTarget) {
             if (!targetPlayer.foodStats.isNeedFood()) {
-                sendMsg(sender, "feed.player.maxfeed", targetPlayerName)
+                if (senderNickName == "server") {
+                    logger.info("Player $targetPlayerName appetite already fully sated.")
+                } else {
+                    sendMsg(sender, "feed.player.maxfeed", targetPlayerName)
+                }
                 return false
             }
             logger.info(
@@ -82,7 +83,11 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
             targetPlayer.foodStats.foodLevel =
                 maxFoodLevel
             saturateTarget(targetPlayer)
-            sendMsg(sender, "feed.player.success", targetPlayerName)
+            if (senderNickName == "server") {
+                logger.info("You satiated the appetite of player $targetPlayerName.")
+            } else {
+                sendMsg(sender, "feed.player.success", targetPlayerName)
+            }
             sendMsg(
                 targetPlayer.commandSource,
                 "feed.player.recipient.success",
