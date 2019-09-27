@@ -1,6 +1,4 @@
-@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.helpers
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.empty
@@ -25,7 +23,7 @@ object CommandAliases {
                 if (aliasesOfCommands != null &&
                     aliasesOfCommands.contains(command)
                 ) {
-                    Tuple(cooldownsMap[baseCommand], baseCommand)
+                    Tuple(cooldownsMap[baseCommand]!!, baseCommand)
                 }
             }
             Tuple(0, String.empty)

@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg

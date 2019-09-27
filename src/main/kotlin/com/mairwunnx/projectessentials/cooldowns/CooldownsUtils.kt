@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.cooldowns
 
-import com.mairwunnx.projectessentials.commands.CommandAliases
+import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.empty
 import com.mairwunnx.projectessentials.extensions.sendMsg
