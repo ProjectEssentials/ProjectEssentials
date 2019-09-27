@@ -19,6 +19,11 @@ object GetPosCommand : CommandBase<CommandsConfig.Commands.GetPos>(
 ) {
     private val logger = LogManager.getLogger()
 
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.getPos
+        super.reload()
+    }
+
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
         commandAliases.forEach { command ->
@@ -75,10 +80,5 @@ object GetPosCommand : CommandBase<CommandsConfig.Commands.GetPos>(
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
-    }
-
-    override fun reload() {
-        commandInstance = getCommandsConfig().commands.getPos
-        super.reload()
     }
 }

@@ -20,6 +20,11 @@ object BreakCommand : CommandBase<CommandsConfig.Commands.Break>(
 ) {
     private val logger = LogManager.getLogger()
 
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.`break`
+        super.reload()
+    }
+
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
         commandAliases.forEach { command ->
@@ -66,10 +71,5 @@ object BreakCommand : CommandBase<CommandsConfig.Commands.Break>(
 
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
-    }
-
-    override fun reload() {
-        commandInstance = getCommandsConfig().commands.`break`
-        super.reload()
     }
 }

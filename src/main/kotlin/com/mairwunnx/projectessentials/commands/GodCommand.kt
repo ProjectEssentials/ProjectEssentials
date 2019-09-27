@@ -21,6 +21,11 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
 ) {
     private val logger = LogManager.getLogger()
 
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.god
+        super.reload()
+    }
+
     override fun register(
         dispatcher: CommandDispatcher<CommandSource>
     ) {
@@ -141,10 +146,5 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
         } else {
             false
         }
-    }
-
-    override fun reload() {
-        commandInstance = getCommandsConfig().commands.god
-        super.reload()
     }
 }
