@@ -1,14 +1,9 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
-import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.configurations.CommandsConfig
+import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.dimName
-import com.mairwunnx.projectessentials.extensions.empty
-import com.mairwunnx.projectessentials.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND_ARG
-import com.mairwunnx.projectessentials.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.helpers.PERMISSION_LEVEL
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
@@ -20,135 +15,67 @@ import net.minecraft.command.arguments.EntityArgument
 import net.minecraft.entity.player.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
-/**
- * **Description:** Add ability fly for player or target player.
- *
- * **Usage example:** `/fly` and `/efly`.
- *
- * **Available arguments:** &#91`player`&#93 - command executing
- * target.
- *
- * **Can server use it command?:** `false`.
- */
 @UnstableDefault
-object FlyCommand {
+object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
+    getCommandsConfig().commands.fly
+) {
     private val logger = LogManager.getLogger()
-    private const val FLY_COMMAND = "fly"
-    private const val FLY_ARG_NAME_COMMAND = "player"
-    private val flyCommandAliases = mutableListOf(FLY_COMMAND)
 
-    fun register(
-        dispatcher: CommandDispatcher<CommandSource>
-    ) {
-        val modConfig = ModConfiguration.getCommandsConfig()
-        logger.info("    - register \"/$FLY_COMMAND\" command ...")
+    override fun reload() {
+        commandInstance = getCommandsConfig().commands.fly
+        super.reload()
+    }
 
-        CommandAliases.aliases[FLY_COMMAND] = modConfig.commands.fly.aliases.toMutableList()
-        flyCommandAliases.addAll(modConfig.commands.fly.aliases)
-
-        flyCommandAliases.forEach { command ->
+    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
+        super.register(dispatcher)
+        commandAliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        FLY_ARG_NAME_COMMAND,
-                        EntityArgument.player()
+                        commandArgName, EntityArgument.player()
                     ).executes {
                         execute(it, true)
-                        return@executes 1
+                        return@executes 0
                     }
                 )
                 .executes {
                     execute(it)
-                    return@executes 1
+                    return@executes 0
                 }
             )
         }
     }
 
-    private fun execute(
+    override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean = false
-    ) {
-        val modConfig = ModConfiguration.getCommandsConfig()
-        val permissionLevel = modConfig.commands.fly.permissionLevel
-        val argUsePermissionLevel = modConfig.commands.fly.argUsePermissionLevel
-        val isEnabledArgs = modConfig.commands.fly.enableArgs
-        val isPlayerSender = c.isPlayerSender()
-        lateinit var targetAsPlayer: ServerPlayerEntity
-        var playerNickNameAsTarget = String.empty
-
-        if (!isPlayerSender) {
-            logger.warn(ONLY_PLAYER_CAN.replace("%0", FLY_COMMAND))
-            return
-        }
+        hasTarget: Boolean
+    ): Boolean {
+        val code = super.execute(c, hasTarget)
+        if (!code) return false
 
         if (hasTarget) {
-            targetAsPlayer = EntityArgument.getPlayer(
-                c, FLY_ARG_NAME_COMMAND
-            )
-            playerNickNameAsTarget = targetAsPlayer.name.string
-        }
-
-        val commandSender = c.source
-        val commandSenderPlayer = commandSender.asPlayer()
-        val commandSenderNickName = commandSenderPlayer.name.string
-
-        if (hasTarget && !isEnabledArgs) {
-            logger.warn(
-                DISABLED_COMMAND_ARG
-                    .replace("%0", commandSenderNickName)
-                    .replace("%1", FLY_COMMAND)
-            )
-            sendMsg(commandSender, "common.arg.error", FLY_COMMAND)
-            return
-        }
-
-        if (!commandSenderPlayer.hasPermissionLevel(permissionLevel)) {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", commandSenderNickName)
-                    .replace("%1", FLY_COMMAND)
-            )
-            if (hasTarget) {
-                sendMsg(commandSender, "fly.player.error", playerNickNameAsTarget)
-            } else {
-                sendMsg(commandSender, "fly.self.error")
-            }
-            return
-        }
-
-        if (hasTarget) {
-            val playerAbilities = targetAsPlayer.abilities
-            if (!commandSenderPlayer.hasPermissionLevel(argUsePermissionLevel)) {
-                logger.warn(
-                    PERMISSION_LEVEL
-                        .replace("%0", commandSenderNickName)
-                        .replace("%1", FLY_COMMAND)
-                )
-                sendMsg(commandSender, "fly.player.error", playerNickNameAsTarget)
-                return
-            }
-
+            val playerAbilities = targetPlayer.abilities
             logger.info(
-                "Player ($playerNickNameAsTarget) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $commandSenderNickName"
+                "Player ($targetPlayerName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderNickName"
             )
-            if (!setFly(targetAsPlayer)) return
-            sendMsg(commandSender, "fly.player.success", playerNickNameAsTarget)
+            if (!setFly(targetPlayer)) return false
+            sendMsg(sender, "fly.player.success", targetPlayerName)
             sendMsg(
-                targetAsPlayer.commandSource,
+                targetPlayer.commandSource,
                 "fly.player.recipient.success",
-                commandSenderNickName
+                senderNickName
             )
         } else {
-            val playerAbilities = commandSenderPlayer.abilities
+            val playerAbilities = senderPlayer.abilities
             logger.info(
-                "Player ($commandSenderNickName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying}"
+                "Player ($senderNickName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying}"
             )
-            if (!setFly(commandSenderPlayer)) return
-            sendMsg(commandSender, "fly.self.success")
+            if (!setFly(senderPlayer)) return false
+            sendMsg(sender, "fly.self.success")
         }
 
-        logger.info("Executed command \"/$FLY_COMMAND\" from $commandSenderNickName")
+        logger.info("Executed command \"/$commandName\" from $senderNickName")
+        return true
     }
 
     fun setFly(
@@ -215,7 +142,7 @@ object FlyCommand {
     private fun isRestrictedWorld(
         target: ServerPlayerEntity
     ): Boolean {
-        val flyConfig = ModConfiguration.getCommandsConfig().commands.fly
+        val flyConfig = getCommandsConfig().commands.fly
         return if (flyConfig.flyDisabledWorlds.contains(target.world.dimName())) {
             !target.hasPermissionLevel(flyConfig.disabledWorldsBypassPermLevel)
         } else {

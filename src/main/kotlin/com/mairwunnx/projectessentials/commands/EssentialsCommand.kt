@@ -77,6 +77,7 @@ object EssentialsCommand {
         HealCommand.reload()
         TopCommand.reload()
         FeedCommand.reload()
+        FlyCommand.reload()
         GodCommand.reload()
         ListCommand.reload()
         BreakCommand.reload()
