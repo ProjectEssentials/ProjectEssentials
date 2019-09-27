@@ -53,14 +53,22 @@ object AirCommand : CommandBase<CommandsConfig.Commands.Air>(
 
         if (hasTarget) {
             if (targetPlayer.air == targetPlayer.maxAir) {
-                sendMsg(sender, "air.player.maxair", targetPlayerName)
+                if (senderNickName == "server") {
+                    logger.info("Player $targetPlayerName have a full supply of air.")
+                } else {
+                    sendMsg(sender, "air.player.maxair", targetPlayerName)
+                }
                 return false
             }
             logger.info(
                 "Player ($targetPlayerName) air level changed from ${targetPlayer.air} to ${targetPlayer.maxAir} by $senderNickName"
             )
             targetPlayer.air = targetPlayer.maxAir
-            sendMsg(sender, "air.player.success", targetPlayerName)
+            if (senderNickName == "server") {
+                logger.info("You saved player $targetPlayerName from choking.")
+            } else {
+                sendMsg(sender, "air.player.success", targetPlayerName)
+            }
             sendMsg(
                 targetPlayer.commandSource,
                 "air.player.recipient.success",
