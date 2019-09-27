@@ -56,14 +56,22 @@ object HealCommand : CommandBase<CommandsConfig.Commands.Heal>(
 
         if (hasTarget) {
             if (!targetPlayer.shouldHeal()) {
-                sendMsg(sender, "heal.player.maxhealth", targetPlayerName)
+                if (senderNickName == "server") {
+                    logger.info("Player $targetPlayerName already fully healed.")
+                } else {
+                    sendMsg(sender, "heal.player.maxhealth", targetPlayerName)
+                }
                 return false
             }
             logger.info(
                 "Player ($targetPlayerName) Health changed from ${targetPlayer.health} to ${targetPlayer.maxHealth} by $senderNickName"
             )
             targetPlayer.health = targetPlayer.maxHealth
-            sendMsg(sender, "heal.player.success", targetPlayerName)
+            if (senderNickName == "server") {
+                logger.info("You have healed player $targetPlayerName.")
+            } else {
+                sendMsg(sender, "heal.player.success", targetPlayerName)
+            }
             sendMsg(
                 targetPlayer.commandSource,
                 "heal.player.recipient.success",
