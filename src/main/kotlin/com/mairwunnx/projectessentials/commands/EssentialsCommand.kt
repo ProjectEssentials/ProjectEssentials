@@ -73,6 +73,7 @@ object EssentialsCommand {
     }
 
     private fun reloadCommandsConfigs() {
+        AirCommand.reload()
         GodCommand.reload()
         ListCommand.reload()
         BreakCommand.reload()
