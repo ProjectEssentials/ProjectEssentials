@@ -1,5 +1,6 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.abilities
 
+import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.dimName
@@ -34,7 +35,10 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
                     Commands.argument(
                         commandArgName, EntityArgument.player()
                     ).executes {
-                        execute(it, true)
+                        execute(
+                            it,
+                            true
+                        )
                         return@executes 0
                     }
                 )
@@ -106,7 +110,10 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
 
         if (isAutoFly) {
             return if (store.flyEnabledInWorlds.contains(target.world.worldInfo.worldName)) {
-                if (isRestrictedWorld(target)) {
+                if (isRestrictedWorld(
+                        target
+                    )
+                ) {
                     installFly(false)
                     false
                 } else {
