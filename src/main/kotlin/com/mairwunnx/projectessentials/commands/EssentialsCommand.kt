@@ -75,6 +75,7 @@ object EssentialsCommand {
     private fun reloadCommandsConfigs() {
         AirCommand.reload()
         HealCommand.reload()
+        TopCommand.reload()
         GodCommand.reload()
         ListCommand.reload()
         BreakCommand.reload()
