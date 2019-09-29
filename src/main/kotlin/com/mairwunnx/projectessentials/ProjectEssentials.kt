@@ -112,6 +112,7 @@ class ProjectEssentials {
         SunCommand.register(cmdDispatcher)
         RepairCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
+        PingCommand.register(cmdDispatcher)
     }
 
     @UnstableDefault

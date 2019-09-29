@@ -57,7 +57,9 @@ data class CommandsConfig(
         @SerialName("Sun")
         val sun: Sun = Sun(),
         @SerialName("Repair")
-        val repair: Repair = Repair()
+        val repair: Repair = Repair(),
+        @SerialName("Ping")
+        val ping: Ping = Ping()
     ) {
         @Serializable
         data class Heal(
@@ -310,6 +312,14 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "fix", "efix", "erepair"
             )
+        )
+
+        @Serializable
+        data class Ping(
+            @SerialName("PermissionLevel")
+            val permissionLevel: Int = 0,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("eping")
         )
     }
 

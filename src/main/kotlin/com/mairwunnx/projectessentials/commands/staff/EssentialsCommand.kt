@@ -1,16 +1,12 @@
 package com.mairwunnx.projectessentials.commands.staff
 
 import com.mairwunnx.projectessentials.*
-import com.mairwunnx.projectessentials.commands.general.BreakCommand
-import com.mairwunnx.projectessentials.commands.general.MoreCommand
-import com.mairwunnx.projectessentials.commands.general.RepairCommand
 import com.mairwunnx.projectessentials.commands.abilities.FlyCommand
 import com.mairwunnx.projectessentials.commands.abilities.GodCommand
-import com.mairwunnx.projectessentials.commands.general.ListCommand
+import com.mairwunnx.projectessentials.commands.general.*
 import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
-import com.mairwunnx.projectessentials.commands.general.SuicideCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.commands.time.*
@@ -109,6 +105,7 @@ object EssentialsCommand {
         StormCommand.reload()
         SunCommand.reload()
         RepairCommand.reload()
+        PingCommand.reload()
     }
 
     @UnstableDefault
