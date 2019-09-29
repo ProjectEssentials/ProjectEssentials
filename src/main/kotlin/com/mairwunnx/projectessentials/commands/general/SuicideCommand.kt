@@ -1,5 +1,6 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.general
 
+import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -8,18 +9,18 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
+import net.minecraft.util.DamageSource
 import org.apache.logging.log4j.LogManager
 
 @UnstableDefault
-object ListCommand : CommandBase<CommandsConfig.Commands.List>(
-    getCommandsConfig().commands.list,
-    hasArguments = false,
-    canServerExecuteWhenArgNone = true
+object SuicideCommand : CommandBase<CommandsConfig.Commands.Suicide>(
+    getCommandsConfig().commands.suicide,
+    hasArguments = false
 ) {
     private val logger = LogManager.getLogger()
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.list
+        commandInstance = getCommandsConfig().commands.suicide
         super.reload()
     }
 
@@ -42,28 +43,14 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
         val code = super.execute(c, hasTarget)
         if (!code) return false
 
-        val maxListNodes = getCommandsConfig().commands.list.maxDisplayedPlayers
-        val online = sender.server.onlinePlayerNames.count()
-        val maxOnline = sender.server.maxPlayers
-        val onlinePlayers = fun(): List<String> {
-            return if (online > maxListNodes) {
-                sender.server.onlinePlayerNames.slice(
-                    IntRange(0, maxListNodes)
-                )
-            } else {
-                sender.server.onlinePlayerNames.toList()
-            }
-        }
+        senderPlayer.attackEntityFrom(
+            DamageSource("suicide")
+                .setDamageBypassesArmor()
+                .setDamageAllowedInCreativeMode(),
+            Float.MAX_VALUE
+        )
+        sendMsg(sender, "suicide.success")
 
-        if (senderNickName == "server") {
-            logger.info("Players online ($online/$maxOnline): ${onlinePlayers()}")
-        } else {
-            sendMsg(
-                sender, "list.out",
-                online.toString(), maxOnline.toString(),
-                onlinePlayers().toString()
-            )
-        }
         logger.info("Executed command \"/$commandName\" from $senderNickName")
         return true
     }

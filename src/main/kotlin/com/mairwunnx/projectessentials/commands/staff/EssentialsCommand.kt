@@ -1,12 +1,18 @@
-package com.mairwunnx.projectessentials.commands
+package com.mairwunnx.projectessentials.commands.staff
 
 import com.mairwunnx.projectessentials.*
+import com.mairwunnx.projectessentials.commands.general.BreakCommand
+import com.mairwunnx.projectessentials.commands.general.MoreCommand
+import com.mairwunnx.projectessentials.commands.general.RepairCommand
 import com.mairwunnx.projectessentials.commands.abilities.FlyCommand
 import com.mairwunnx.projectessentials.commands.abilities.GodCommand
+import com.mairwunnx.projectessentials.commands.general.ListCommand
 import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
-import com.mairwunnx.projectessentials.commands.health.SuicideCommand
+import com.mairwunnx.projectessentials.commands.general.SuicideCommand
+import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
+import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
@@ -35,7 +41,9 @@ object EssentialsCommand {
 
     private fun buildEssentialsCommand(): ArgumentBuilder<CommandSource, *>? {
         return Commands.literal(ESSENTIALS_COMMAND).executes {
-            executeVersionCommand(it)
+            executeVersionCommand(
+                it
+            )
         }
     }
 
@@ -146,7 +154,9 @@ object EssentialsCommand {
 
     private fun buildEssentialsVersionCommand(): ArgumentBuilder<CommandSource, *>? {
         return Commands.literal(ESSENTIALS_COMMAND_VERSION).executes {
-            executeVersionCommand(it)
+            executeVersionCommand(
+                it
+            )
         }
     }
 
