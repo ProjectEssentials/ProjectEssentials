@@ -16,6 +16,20 @@ issueTrackerURL="https://github.com/MairwunNx/ProjectEssentials/issues"
     '''
 
 [[dependencies.projectessentials]]
+    modId="project_essentials_core"
+    mandatory=true
+    versionRange="[1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.projectessentials]]
+    modId="project_essentials_permissions"
+    mandatory=true
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.projectessentials]]
     modId="forge"
     mandatory=true
     versionRange="[28,)"
