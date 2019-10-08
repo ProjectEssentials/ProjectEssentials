@@ -2,11 +2,10 @@ package com.mairwunnx.projectessentials.cooldowns
 
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentials.extensions.empty
 import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.extensions.source
-import com.mairwunnx.projectessentials.helpers.COOLDOWN_NOT_EXPIRED
-import kotlinx.serialization.UnstableDefault
+import com.mairwunnx.projectessentialscore.extensions.empty
+import com.mairwunnx.projectessentialscore.extensions.source
+import com.mairwunnx.projectessentialscore.helpers.COOLDOWN_NOT_EXPIRED
 import net.minecraftforge.event.CommandEvent
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -25,7 +24,6 @@ fun processCooldownsCommandsList(
     return hashMap
 }
 
-@UnstableDefault
 fun processCooldownOfCommand(
     commandName: String,
     commandSenderNickName: String,
