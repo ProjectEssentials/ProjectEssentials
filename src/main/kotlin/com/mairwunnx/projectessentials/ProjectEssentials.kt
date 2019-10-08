@@ -9,6 +9,7 @@ import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
+import com.mairwunnx.projectessentials.commands.moderator.ClearCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
@@ -19,16 +20,17 @@ import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.cooldowns.CooldownBase
 import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
-import com.mairwunnx.projectessentials.extensions.commandName
 import com.mairwunnx.projectessentials.extensions.fullName
-import com.mairwunnx.projectessentials.extensions.player
 import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.helpers.DISABLED_COMMAND
-import com.mairwunnx.projectessentials.helpers.validateForgeVersion
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
+import com.mairwunnx.projectessentialscore.EssBase
+import com.mairwunnx.projectessentialscore.extensions.commandName
+import com.mairwunnx.projectessentialscore.extensions.player
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND
+import com.mairwunnx.projectessentialscore.helpers.MOD_CONFIG_FOLDER
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
@@ -41,47 +43,30 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent
 import org.apache.logging.log4j.LogManager
+import java.io.File
 
-const val MOD_ID = "project_essentials"
-const val MOD_NAME = "Project Essentials"
-const val MOD_VERSION = "1.14.4-0.2.0.0"
-const val MOD_DESCRIPTION = "minecraft command mod - adds commands for use in-game"
-const val MOD_MAINTAINER = "MairwunNx (Pavel Erokhin)"
-const val MOD_TARGET_FORGE = "28.0.X"
-const val MOD_TARGET_FORGE_REGEX = "^28\\.0\\..\\d{1,}|28\\.0\\.[\\d]\$"
-const val MOD_TARGET_MC = "1.14.4"
-const val MOD_SOURCES_LINK = "https://github.com/MairwunNx/ProjectEssentials/"
-const val MOD_TELEGRAM_LINK = "https://t.me/minecraftforge"
+val USER_DATA_FOLDER = MOD_CONFIG_FOLDER + File.separator + "user-data"
+val COOLDOWNS_CONFIG = MOD_CONFIG_FOLDER + File.separator + "cooldowns.json"
+val COMMANDS_CONFIG = MOD_CONFIG_FOLDER + File.separator + "commands.json"
 
-@UnstableDefault
-@Mod(MOD_ID)
-class ProjectEssentials {
+@Mod("project_essentials")
+class ProjectEssentials : EssBase() {
     private val logger = LogManager.getLogger()
 
     init {
+        modVersion = "1.14.4-0.2.0.0"
         logBaseInfo()
         validateForgeVersion()
-        logger.debug("Register event bus for $MOD_NAME mod ...")
+        logger.debug("Register event bus for $modName mod ...")
         MinecraftForge.EVENT_BUS.register(this)
-        logger.info("Loading $MOD_NAME modification settings ...")
+        logger.info("Loading $modName modification settings ...")
         ModConfiguration.loadConfig()
         StorageBase.loadUserData()
     }
 
-    private fun logBaseInfo() {
-        logger.info("$MOD_NAME starting initializing ...")
-        logger.info("    - Mod Id: $MOD_ID")
-        logger.info("    - Version: $MOD_VERSION")
-        logger.info("    - Maintainer: $MOD_MAINTAINER")
-        logger.info("    - Target Forge version: $MOD_TARGET_FORGE")
-        logger.info("    - Target Minecraft version: $MOD_TARGET_MC")
-        logger.info("    - Source code: $MOD_SOURCES_LINK")
-        logger.info("    - Telegram chat: $MOD_TELEGRAM_LINK")
-    }
-
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
-        logger.info("$MOD_NAME starting mod loading ...")
+        logger.info("$modName starting mod loading ...")
         registerCommands(it.server.commandManager.dispatcher)
     }
 
@@ -113,13 +98,13 @@ class ProjectEssentials {
         RepairCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
+        ClearCommand.register(cmdDispatcher)
     }
 
-    @UnstableDefault
     @Suppress("UNUSED_PARAMETER")
     @SubscribeEvent
     fun onServerStopping(it: FMLServerStoppingEvent) {
-        logger.info("Shutting down $MOD_NAME mod ...")
+        logger.info("Shutting down $modName mod ...")
         logger.info("    - Saving modification configuration ...")
         ModConfiguration.saveConfig()
         logger.info("    - Saving modification user data ...")
@@ -148,7 +133,7 @@ class ProjectEssentials {
             try {
                 if (
                     !cooldownsConfig.ignoredPlayers.contains(commandSenderNickName) &&
-                    !commandSender.hasPermissionLevel(cooldownsConfig.bypassPermissionLevel)
+                    !PermissionsAPI.hasPermission(commandSenderNickName, "ess.cooldown.bypass")
                 ) {
                     it.isCanceled = processCooldownOfCommand(
                         commandName, commandSenderNickName, it
@@ -171,31 +156,28 @@ class ProjectEssentials {
     }
 
     @SubscribeEvent
-    fun onPlayerJoin(event: PlayerLoggedInEvent) {
-        processAbilities(event.player)
-    }
+    fun onPlayerJoin(event: PlayerLoggedInEvent) = processAbilities(event.player)
 
     @SubscribeEvent
     fun onPlayerLeave(event: PlayerLoggedOutEvent) = savePlayerData(event.player)
 
     @SubscribeEvent
-    fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) {
-        processAbilities(event.player)
-    }
+    fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) = processAbilities(event.player)
 
     private fun processAbilities(player: PlayerEntity) {
         val config = ModConfiguration.getCommandsConfig().commands
         val playerCommandSource = player.commandSource
         val serverPlayerEntity = player.commandSource.asPlayer()
+        val playerName = player.name.string
         if (config.fly.autoFlyEnabled) {
-            if (serverPlayerEntity.hasPermissionLevel(config.fly.permissionLevel)) {
+            if (PermissionsAPI.hasPermission(playerName, "ess.fly")) {
                 if (FlyCommand.setFly(serverPlayerEntity, true)) {
                     sendMsg(playerCommandSource, "fly.auto.success")
                 }
             }
         }
         if (config.god.autoGodModeEnabled) {
-            if (serverPlayerEntity.hasPermissionLevel(config.god.permissionLevel)) {
+            if (PermissionsAPI.hasPermission(playerName, "ess.god")) {
                 if (GodCommand.setGod(serverPlayerEntity, true)) {
                     sendMsg(playerCommandSource, "god.auto.success")
                 }
