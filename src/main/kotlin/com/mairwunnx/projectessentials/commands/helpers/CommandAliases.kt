@@ -1,11 +1,9 @@
 package com.mairwunnx.projectessentials.commands.helpers
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentials.extensions.empty
-import kotlinx.serialization.UnstableDefault
+import com.mairwunnx.projectessentialscore.extensions.empty
 import net.minecraft.util.Tuple
 
-@UnstableDefault
 object CommandAliases {
     /**
      * Where String - command for aliases.
