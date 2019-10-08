@@ -31,14 +31,6 @@ version = projectEssentialsVersion
 group = "com.mairwunnx.$projectEssentialsId"
 archivesBaseName = projectEssentialsName
 
-configurations {
-    modClientDependencies
-    modServerDependencies
-    ktlint
-    embed
-    compile.extendsFrom(embed)
-}
-
 minecraft {
     mappings(
         channel: mappingsChannelType,
@@ -75,18 +67,13 @@ repositories {
     mavenCentral()
     maven { url("https://minecraft.curseforge.com/api/maven/") }
     maven { url("https://libraries.minecraft.net") }
+    maven { url("https://jitpack.io") }
 }
 
 dependencies {
     minecraft(group: "net.minecraftforge", name: "forge", version: forgeBaseVersion)
     compile(group: "com.mojang", name: "brigadier", version: brigadierBaseVersion)
-    ktlint(group: "com.pinterest", name: "ktlint", version: ktlintVersion)
     compile(
-        group: "org.jetbrains.kotlinx",
-        name: "kotlinx-serialization-runtime",
-        version: kotlinxSerializationVersion
-    )
-    embed(
         group: "org.jetbrains.kotlinx",
         name: "kotlinx-serialization-runtime",
         version: kotlinxSerializationVersion
@@ -96,60 +83,17 @@ dependencies {
         name: "kotlin-stdlib-$kotlinJdkVersionTarget",
         version: kotlinVersion
     )
-    embed(
-        group: "org.jetbrains.kotlin",
-        name: "kotlin-stdlib-$kotlinJdkVersionTarget",
-        version: kotlinVersion
+    compile(
+        group: "com.github.projectessentials",
+        name: "ProjectEssentials-Core",
+        version: "v1.14.4-1.0.2.0"
+    )
+    compile(
+        group: "com.github.projectessentials",
+        name: "ProjectEssentials-Permissions",
+        version: "v1.14.4-0.1.1.0"
     )
 }
-
-task installMods(type: Copy) {
-    dependsOn("installClientMods")
-    dependsOn("installServerMods")
-}
-
-task installClientMods(type: Copy, dependsOn: "deinstallClientMods") {
-    from { configurations.modClientDependencies }
-    include("**/*.jar")
-    into(file("$devRunClientPath/mods"))
-}
-
-task installServerMods(type: Copy, dependsOn: "deinstallServerMods") {
-    from { configurations.modServerDependencies }
-    include("**/*.jar")
-    into(file("$devRunServerPath/mods"))
-}
-
-task deinstallClientMods(type: Delete) {
-    delete(fileTree(dir: "$devRunClientPath/mods", include: "*.jar"))
-}
-
-task deinstallServerMods(type: Delete) {
-    delete(fileTree(dir: "$devRunServerPath/mods", include: "*.jar"))
-}
-
-project.afterEvaluate {
-    project.tasks["prepareRuns"].dependsOn(project.tasks["installClientMods"])
-    project.tasks["prepareRuns"].dependsOn(project.tasks["installServerMods"])
-}
-
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check kotlin sources code style"
-    classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args("src/**/*.kt")
-}
-
-//check.dependsOn(ktlint)
-
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations"
-    classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args("-F", "src/**/*.kt")
-}
-
-//jar.dependsOn(ktlintFormat)
 
 jar {
     manifest {
@@ -163,8 +107,6 @@ jar {
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 sourceCompatibility = targetCompatibility =
