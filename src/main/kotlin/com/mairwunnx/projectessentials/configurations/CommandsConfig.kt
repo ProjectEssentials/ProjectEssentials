@@ -7,8 +7,6 @@ import kotlinx.serialization.Serializable
 data class CommandsConfig(
     @SerialName("Commands")
     val commands: Commands = Commands(),
-    @SerialName("EssentialsCommands")
-    val essentialsCommands: EssentialsCommands = EssentialsCommands(),
     @SerialName("DisabledCommands")
     val disabledCommands: List<String> = listOf()
 ) {
@@ -59,14 +57,12 @@ data class CommandsConfig(
         @SerialName("Repair")
         val repair: Repair = Repair(),
         @SerialName("Ping")
-        val ping: Ping = Ping()
+        val ping: Ping = Ping(),
+        @SerialName("Clear")
+        val clear: Clear = Clear()
     ) {
         @Serializable
         data class Heal(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
@@ -75,10 +71,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Feed(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("MaxFoodSaturationLevel")
@@ -93,18 +85,12 @@ data class CommandsConfig(
 
         @Serializable
         data class Top(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etop")
         )
 
         @Serializable
         data class Air(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
@@ -113,10 +99,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Fly(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
@@ -124,17 +106,11 @@ data class CommandsConfig(
             @SerialName("AutoFlyEnabled")
             val autoFlyEnabled: Boolean = true,
             @SerialName("FlyDisabledWorlds")
-            val flyDisabledWorlds: kotlin.collections.List<String> = listOf(),
-            @SerialName("DisabledWorldsBypassPermLevel")
-            val disabledWorldsBypassPermLevel: Int = 3
+            val flyDisabledWorlds: kotlin.collections.List<String> = listOf()
         )
 
         @Serializable
         data class God(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
@@ -142,15 +118,11 @@ data class CommandsConfig(
             @SerialName("AutoGodModeEnabled")
             val autoGodModeEnabled: Boolean = true,
             @SerialName("GodModeDisabledWorlds")
-            val godModeDisabledWorlds: kotlin.collections.List<String> = listOf(),
-            @SerialName("DisabledWorldsBypassPermLevel")
-            val disabledWorldsBypassPermLevel: Int = 3
+            val godModeDisabledWorlds: kotlin.collections.List<String> = listOf()
         )
 
         @Serializable
         data class List(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("MaxDisplayedPlayers")
             val maxDisplayedPlayers: Int = 16,
             @SerialName("Aliases")
@@ -169,10 +141,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Break(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("RestrictedBlockByPassPermLevel")
-            val restrictedBlockByPassPermLevel: Int = 3,
             @SerialName("RestrictedBlocks")
             val restrictedBlocks: kotlin.collections.List<String> = listOf("minecraft:bedrock"),
             @SerialName("Aliases")
@@ -181,10 +149,6 @@ data class CommandsConfig(
 
         @Serializable
         data class GetPos(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
-            @SerialName("ArgUsePermissionLevel")
-            val argUsePermissionLevel: Int = 3,
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
@@ -196,40 +160,30 @@ data class CommandsConfig(
 
         @Serializable
         data class More(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("emore", "dupe")
         )
 
         @Serializable
         data class Day(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("eday")
         )
 
         @Serializable
         data class Night(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("enight")
         )
 
         @Serializable
         data class MidNight(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("emidnight")
         )
 
         @Serializable
         data class Noon(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "enoon", "midday", "noonday"
@@ -238,8 +192,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Sunset(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "esunset", "dusk", "sundown", "evening"
@@ -248,8 +200,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Sunrise(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "esunrise", "dawn", "morning", "morn"
@@ -258,24 +208,18 @@ data class CommandsConfig(
 
         @Serializable
         data class Time(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 2,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etime")
         )
 
         @Serializable
         data class Suicide(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("esuicide")
         )
 
         @Serializable
         data class Rain(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("DefaultDuration")
             val defaultDuration: Int = 13000,
             @SerialName("Aliases")
@@ -284,8 +228,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Storm(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("DefaultDuration")
             val defaultDuration: Int = 13000,
             @SerialName("Aliases")
@@ -296,8 +238,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Sun(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "esun", "weatherclear", "clearsky", "sky", "esky"
@@ -306,8 +246,6 @@ data class CommandsConfig(
 
         @Serializable
         data class Repair(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 3,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "fix", "efix", "erepair"
@@ -316,20 +254,18 @@ data class CommandsConfig(
 
         @Serializable
         data class Ping(
-            @SerialName("PermissionLevel")
-            val permissionLevel: Int = 0,
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("eping")
         )
-    }
 
-    @Serializable
-    data class EssentialsCommands(
-        @SerialName("VersionPermissionLevel")
-        val versionPermissionLevel: Int = 0,
-        @SerialName("ReloadPermissionLevel")
-        val reloadPermissionLevel: Int = 4,
-        @SerialName("SavePermissionLevel")
-        val savePermissionLevel: Int = 4
-    )
+        @Serializable
+        data class Clear(
+            @SerialName("EnableArgs")
+            val enableArgs: Boolean = true,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "eclear", "ci", "eci", "clean", "eclean"
+            )
+        )
+    }
 }
