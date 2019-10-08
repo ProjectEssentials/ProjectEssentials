@@ -6,6 +6,9 @@ import java.time.ZonedDateTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.toKotlinDuration
 
+/*
+todo: move it in Project Essentials-Cooldown module.
+ */
 object CooldownBase {
     const val DEFAULT_COOLDOWN = 5
     const val DEFAULT_COOLDOWN_LITERAL = "*"
