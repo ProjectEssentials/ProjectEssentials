@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.storage
 
-import com.mairwunnx.projectessentials.helpers.USER_DATA_FOLDER
+import com.mairwunnx.projectessentials.USER_DATA_FOLDER
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 import kotlin.system.measureTimeMillis
 
-@UnstableDefault
+@UseExperimental(UnstableDefault::class)
 object StorageBase {
     private val logger = LogManager.getLogger()
     private val userData = hashMapOf<String, UserData>()
@@ -28,19 +28,17 @@ object StorageBase {
         logger.debug("Installed data (${data}) for UUID ($uuid).")
     }
 
-    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun loadUserData() {
         logger.info("    - loading user data configurations ...")
 
         createConfigDirs(USER_DATA_FOLDER)
-
-        val users = File(USER_DATA_FOLDER).list().filter {
+        val users = File(USER_DATA_FOLDER).list()?.filter {
             if (File(it).isFile) return@filter false
             return@filter true
         }
 
         val elapsedTime = measureTimeMillis {
-            users.forEach {
+            users?.forEach {
                 logger.debug("        - processing $it user data ...")
                 val userId = it
                 val userDataRaw = File(
@@ -55,7 +53,6 @@ object StorageBase {
 
     fun saveUserData() {
         createConfigDirs(USER_DATA_FOLDER)
-
         userData.keys.forEach {
             logger.debug("        - processing $it user data ...")
 
@@ -65,7 +62,6 @@ object StorageBase {
             val dataPath = dataFolder + File.separator + "data.json"
 
             createConfigDirs(dataFolder)
-
             logger.debug("        - setup json configuration for parsing ...")
             val json = Json(
                 JsonConfiguration(
