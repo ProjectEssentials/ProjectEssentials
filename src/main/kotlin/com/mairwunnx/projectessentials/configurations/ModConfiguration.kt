@@ -1,8 +1,8 @@
 package com.mairwunnx.projectessentials.configurations
 
-import com.mairwunnx.projectessentials.helpers.COMMANDS_CONFIG
-import com.mairwunnx.projectessentials.helpers.COOLDOWNS_CONFIG
-import com.mairwunnx.projectessentials.helpers.MOD_CONFIG_FOLDER
+import com.mairwunnx.projectessentials.COMMANDS_CONFIG
+import com.mairwunnx.projectessentials.COOLDOWNS_CONFIG
+import com.mairwunnx.projectessentialscore.helpers.MOD_CONFIG_FOLDER
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.io.FileNotFoundException
 
-@UnstableDefault
+@UseExperimental(UnstableDefault::class)
 object ModConfiguration {
     private val logger = LogManager.getLogger()
     private var commandsConfig = CommandsConfig()
@@ -38,6 +38,12 @@ object ModConfiguration {
             logger.info("        - loading cooldowns configuration ...")
             val configRaw = File(COOLDOWNS_CONFIG).readText()
             cooldownsConfig = Json.parse(CooldownsConfig.serializer(), configRaw)
+            logger.info("    - loaded cooldowns (${cooldownsConfig.commandCooldowns.size})")
+            cooldownsConfig.commandCooldowns.forEach {
+                val command = it.split("=")[0]
+                val cooldown = it.split("=")[1]
+                logger.info("        - command: ${command}; cooldown: $cooldown")
+            }
         } catch (ex: FileNotFoundException) {
             logger.error("Configuration file ($COOLDOWNS_CONFIG) not found!")
             logger.warn("The default configuration will be used.")
