@@ -1,44 +1,48 @@
 package com.mairwunnx.projectessentials.commands.health
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND_ARG
+import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object HealCommand : CommandBase<CommandsConfig.Commands.Heal>(
-    getCommandsConfig().commands.heal
-) {
+object HealCommand : CommandBase() {
     private val logger = LogManager.getLogger()
+    private var config = getCommandsConfig().commands.heal
+
+    init {
+        command = "heal"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.heal
+        config = getCommandsConfig().commands.heal
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        commandArgName, EntityArgument.player()
+                        "player", EntityArgument.player()
                     ).executes {
-                        execute(it, true)
-                        return@executes 0
+                        return@executes execute(it, true)
                     }
                 )
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -46,47 +50,88 @@ object HealCommand : CommandBase<CommandsConfig.Commands.Heal>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
 
-        if (hasTarget) {
-            if (!targetPlayer.shouldHeal()) {
-                if (senderNickName == "server") {
-                    logger.info("Player $targetPlayerName already fully healed.")
-                } else {
-                    sendMsg(sender, "heal.player.maxhealth", targetPlayerName)
+        if (senderIsServer) {
+            if (targetIsExists) {
+                if (!targetPlayer.shouldHeal()) {
+                    logger.info("Player $targetName already fully healed.")
+                    return 0
                 }
-                return false
-            }
-            logger.info(
-                "Player ($targetPlayerName) Health changed from ${targetPlayer.health} to ${targetPlayer.maxHealth} by $senderNickName"
-            )
-            targetPlayer.health = targetPlayer.maxHealth
-            if (senderNickName == "server") {
-                logger.info("You have healed player $targetPlayerName.")
+                logger.info(
+                    "Player ($targetName) Health changed from ${targetPlayer.health} to ${targetPlayer.maxHealth} by $senderName"
+                )
+                targetPlayer.health = targetPlayer.maxHealth
+                logger.info("You have healed player $targetName.")
+                sendMsg(
+                    targetPlayer.commandSource,
+                    "heal.other.recipient_out",
+                    targetName
+                )
             } else {
-                sendMsg(sender, "heal.player.success", targetPlayerName)
+                logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
-            sendMsg(
-                targetPlayer.commandSource,
-                "heal.player.recipient.success",
-                targetPlayerName
-            )
         } else {
-            if (!senderPlayer.shouldHeal()) {
-                sendMsg(sender, "heal.self.maxhealth")
-                return false
-            }
-            logger.info(
-                "Player ($senderNickName) changed from ${senderPlayer.health} to ${senderPlayer.maxHealth}"
-            )
-            senderPlayer.health = senderPlayer.maxHealth
-            sendMsg(sender, "heal.self.success")
-        }
+            if (targetIsExists) {
+                if (PermissionsAPI.hasPermission(senderName, "ess.heal.other")) {
+                    when {
+                        !config.enableArgs -> {
+                            logger.warn(
+                                DISABLED_COMMAND_ARG
+                                    .replace("%0", senderName)
+                                    .replace("%1", command)
+                            )
+                            sendMsg(sender, "common.arg.error", command)
+                            return 0
+                        }
+                    }
 
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+                    if (!targetPlayer.shouldHeal()) {
+                        sendMsg(sender, "heal.other.maxhealth", targetName)
+                        return 0
+                    }
+                    logger.info(
+                        "Player ($targetName) Health changed from ${targetPlayer.health} to ${targetPlayer.maxHealth} by $senderName"
+                    )
+                    targetPlayer.health = targetPlayer.maxHealth
+                    sendMsg(sender, "heal.other.success", targetName)
+                    sendMsg(
+                        targetPlayer.commandSource,
+                        "heal.other.recipient_out",
+                        targetName
+                    )
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "heal.other.restricted", targetName)
+                }
+            } else {
+                if (PermissionsAPI.hasPermission(senderName, "ess.heal")) {
+                    if (!senderPlayer.shouldHeal()) {
+                        sendMsg(sender, "heal.self.maxhealth")
+                        return 0
+                    }
+                    logger.info(
+                        "Player ($senderName) changed from ${senderPlayer.health} to ${senderPlayer.maxHealth}"
+                    )
+                    senderPlayer.health = senderPlayer.maxHealth
+                    sendMsg(sender, "heal.self.success")
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "heal.self.restricted", senderName)
+                }
+            }
+        }
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 }
