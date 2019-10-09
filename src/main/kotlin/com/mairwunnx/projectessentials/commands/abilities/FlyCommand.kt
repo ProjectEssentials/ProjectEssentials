@@ -95,7 +95,7 @@ object FlyCommand : CommandBase() {
                     if (!setFly(targetPlayer)) return 0
                     sendMsg(sender, "fly.other.success", targetName)
                     sendMsg(
-                        targetPlayer.commandSource,
+                        target,
                         "fly.other.recipient_out",
                         senderName
                     )

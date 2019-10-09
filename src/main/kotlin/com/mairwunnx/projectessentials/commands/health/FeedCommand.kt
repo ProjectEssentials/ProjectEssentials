@@ -1,14 +1,16 @@
 package com.mairwunnx.projectessentials.commands.health
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.isNeedFood
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND_ARG
+import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
@@ -19,10 +21,7 @@ import net.minecraftforge.fml.DistExecutor
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
-    getCommandsConfig().commands.feed
-) {
+object FeedCommand : CommandBase() {
     private val logger = LogManager.getLogger()
     private var maxSaturateLevel = 5.0f
     private var maxFoodLevel = 20
@@ -32,27 +31,32 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
             "field_75125_b"
         )
     }
+    private var config = getCommandsConfig().commands.feed
+
+    init {
+        command = "feed"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.feed
+        config = getCommandsConfig().commands.feed
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        commandArgName, EntityArgument.player()
+                        "player", EntityArgument.player()
                     ).executes {
-                        execute(it, true)
-                        return@executes 0
+                        return@executes execute(it, true)
                     }
                 )
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -60,55 +64,95 @@ object FeedCommand : CommandBase<CommandsConfig.Commands.Feed>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
 
-        maxFoodLevel = config.commands.feed.maxFoodLevel
-        maxSaturateLevel = config.commands.feed.maxFoodSaturationLevel
+        maxFoodLevel = config.maxFoodLevel
+        maxSaturateLevel = config.maxFoodSaturationLevel
 
-        if (hasTarget) {
-            if (!targetPlayer.foodStats.isNeedFood()) {
-                if (senderNickName == "server") {
-                    logger.info("Player $targetPlayerName appetite already fully sated.")
-                } else {
-                    sendMsg(sender, "feed.player.maxfeed", targetPlayerName)
+        if (senderIsServer) {
+            if (targetIsExists) {
+                if (!targetPlayer.foodStats.isNeedFood()) {
+                    logger.info("Player $targetName appetite already fully sated.")
+                    return 0
                 }
-                return false
-            }
-            logger.info(
-                "Player ($targetPlayerName) food level/saturation changed from ${targetPlayer.foodStats.foodLevel}/${targetPlayer.foodStats.saturationLevel} to 20/5.0 by $senderNickName"
-            )
-            targetPlayer.foodStats.foodLevel =
-                maxFoodLevel
-            saturateTarget(targetPlayer)
-            if (senderNickName == "server") {
-                logger.info("You satiated the appetite of player $targetPlayerName.")
+                logger.info(
+                    "Player ($targetName) food level/saturation changed from ${targetPlayer.foodStats.foodLevel}/${targetPlayer.foodStats.saturationLevel} to 20/5.0 by $senderName"
+                )
+                targetPlayer.foodStats.foodLevel = maxFoodLevel
+                saturateTarget(targetPlayer)
+                logger.info("You satiated the appetite of player $targetName.")
+                sendMsg(
+                    targetPlayer.commandSource,
+                    "feed.other.recipient_out",
+                    senderName
+                )
             } else {
-                sendMsg(sender, "feed.player.success", targetPlayerName)
+                logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
-            sendMsg(
-                targetPlayer.commandSource,
-                "feed.player.recipient.success",
-                senderNickName
-            )
         } else {
-            if (!senderPlayer.foodStats.isNeedFood()) {
-                sendMsg(sender, "feed.self.maxfeed")
-                return false
-            }
-            logger.info(
-                "Player ($senderNickName) food level/saturation changed from ${senderPlayer.foodStats.foodLevel}/${senderPlayer.foodStats.saturationLevel} to 20/5.0"
-            )
-            senderPlayer.foodStats.foodLevel =
-                maxFoodLevel
-            saturateTarget(senderPlayer)
-            sendMsg(sender, "feed.self.success")
-        }
+            if (targetIsExists) {
+                if (PermissionsAPI.hasPermission(senderName, "ess.feed.other")) {
+                    when {
+                        !config.enableArgs -> {
+                            logger.warn(
+                                DISABLED_COMMAND_ARG
+                                    .replace("%0", senderName)
+                                    .replace("%1", command)
+                            )
+                            sendMsg(sender, "common.arg.error", command)
+                            return 0
+                        }
+                    }
 
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+                    if (!targetPlayer.foodStats.isNeedFood()) {
+                        sendMsg(sender, "feed.other.maxfeed", targetName)
+                        return 0
+                    }
+                    logger.info(
+                        "Player ($targetName) food level/saturation changed from ${targetPlayer.foodStats.foodLevel}/${targetPlayer.foodStats.saturationLevel} to 20/5.0 by $senderName"
+                    )
+                    targetPlayer.foodStats.foodLevel = maxFoodLevel
+                    saturateTarget(targetPlayer)
+                    sendMsg(sender, "feed.other.success", targetName)
+                    sendMsg(
+                        target,
+                        "feed.other.recipient_out",
+                        senderName
+                    )
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "feed.other.restricted", targetName)
+                }
+            } else {
+                if (PermissionsAPI.hasPermission(senderName, "ess.feed")) {
+                    if (!senderPlayer.foodStats.isNeedFood()) {
+                        sendMsg(sender, "feed.self.maxfeed")
+                        return 0
+                    }
+                    logger.info(
+                        "Player ($senderName) food level/saturation changed from ${senderPlayer.foodStats.foodLevel}/${senderPlayer.foodStats.saturationLevel} to 20/5.0"
+                    )
+                    senderPlayer.foodStats.foodLevel = maxFoodLevel
+                    saturateTarget(senderPlayer)
+                    sendMsg(sender, "feed.self.success")
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "feed.self.restricted", senderName)
+                }
+            }
+        }
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 
     private fun saturateTarget(target: ServerPlayerEntity) {
