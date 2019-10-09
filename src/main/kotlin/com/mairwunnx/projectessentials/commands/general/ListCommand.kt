@@ -69,7 +69,7 @@ object ListCommand : CommandBase() {
                         .replace("%0", senderName)
                         .replace("%1", command)
                 )
-                sendMsg(sender, "list.restricted", targetName)
+                sendMsg(sender, "list.restricted", senderName)
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")

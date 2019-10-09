@@ -62,7 +62,7 @@ object MoreCommand : CommandBase() {
                         .replace("%0", senderName)
                         .replace("%1", command)
                 )
-                sendMsg(sender, "more.restricted", targetName)
+                sendMsg(sender, "more.restricted", senderName)
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")

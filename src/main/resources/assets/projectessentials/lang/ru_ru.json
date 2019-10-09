@@ -74,7 +74,7 @@
   "project_essentials.time.out": "§6Текущее игровое время:§7 %s§6.",
   "project_essentials.time.self.error": "§cУ вас §7нет прав §cна изменение или просмотр времени игры.",
   "project_essentials.suicide.success": "§6Прощай жестокий мир ...",
-  "project_essentials.suicide.self.error": "§cУ вас §7нет прав §cчто...? что бы убить себя?.",
+  "project_essentials.suicide.restricted": "§cУ вас §7нет прав §cчто...? что бы убить себя?.",
   "death.attack.suicide": "§cУбит потому что так захотел.",
   "project_essentials.rain.installed": "§6Дождливая погода §7была установлена§6.",
   "project_essentials.rain.self.error": "§cУ вас §7нет прав §cна изменение погоды.",

@@ -80,7 +80,7 @@ object BreakCommand : CommandBase() {
                         .replace("%0", senderName)
                         .replace("%1", command)
                 )
-                sendMsg(sender, "break.restricted", targetName)
+                sendMsg(sender, "break.restricted", senderName)
             }
         }
 
