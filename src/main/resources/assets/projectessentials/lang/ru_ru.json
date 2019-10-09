@@ -58,7 +58,7 @@
   "project_essentials.getpos.player.error": "§cУ вас §7нет прав §cна просмотр позиции игрока §7%s§c.",
   "project_essentials.more.out": "§6Количество §7выбранной вещи §7было увеличено §6до размера стака.",
   "project_essentials.more.fullstack": "§cКоличество выбранной вещи §7уже имеет §cразмер полного стака.",
-  "project_essentials.more.self.error": "§cУ вас §7нет прав §cна увеличение количества предметов.",
+  "project_essentials.more.restricted": "§cУ вас §7нет прав §cна увеличение количества предметов.",
   "project_essentials.day.installed": "§6Дневное время §7было установлено§6.",
   "project_essentials.day.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.night.installed": "§6Ночное время §7было установлено§6.",
