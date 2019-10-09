@@ -1,36 +1,37 @@
 package com.mairwunnx.projectessentials.commands.general
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object ListCommand : CommandBase<CommandsConfig.Commands.List>(
-    getCommandsConfig().commands.list,
-    hasArguments = false,
-    canServerExecuteWhenArgNone = true
-) {
+object ListCommand : CommandBase() {
     private val logger = LogManager.getLogger()
+    private var config = getCommandsConfig().commands.list
+
+    init {
+        command = "list"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.list
+        config = getCommandsConfig().commands.list
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -38,12 +39,10 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
-
-        val maxListNodes = getCommandsConfig().commands.list.maxDisplayedPlayers
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
+        val maxListNodes = config.maxDisplayedPlayers
         val online = sender.server.onlinePlayerNames.count()
         val maxOnline = sender.server.maxPlayers
         val onlinePlayers = fun(): List<String> {
@@ -56,16 +55,24 @@ object ListCommand : CommandBase<CommandsConfig.Commands.List>(
             }
         }
 
-        if (senderNickName == "server") {
+        if (senderIsServer) {
             logger.info("Players online ($online/$maxOnline): ${onlinePlayers()}")
         } else {
-            sendMsg(
-                sender, "list.out",
-                online.toString(), maxOnline.toString(),
-                onlinePlayers().toString()
-            )
+            if (PermissionsAPI.hasPermission(senderName, "ess.list")) {
+                sendMsg(
+                    sender, "list.out",
+                    online.toString(), maxOnline.toString(), onlinePlayers().toString()
+                )
+            } else {
+                logger.warn(
+                    PERMISSION_LEVEL
+                        .replace("%0", senderName)
+                        .replace("%1", command)
+                )
+                sendMsg(sender, "list.restricted", targetName)
+            }
         }
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 }

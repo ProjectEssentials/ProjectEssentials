@@ -49,7 +49,7 @@
   "project_essentials.god.other.restricted": "§cYou §7don't have permission §cto change god mode player §7%s§c.",
   "project_essentials.god.other.recipient_out": "§6Your god mode §7was changed §6by player §7%s§6.",
   "project_essentials.list.out": "§6Players online (§7%s§6/§7%s§6)§6: §7%s",
-  "project_essentials.list.self.error": "§cYou §7don't have permission §cto see online list.",
+  "project_essentials.list.restricted": "§cYou §7don't have permission §cto see online list.",
   "project_essentials.break.restricted_block": "§cYou are §7not allowed §cto destroy it block.",
   "project_essentials.break.restricted": "§cYou §7don't have permission §cto break block.",
   "project_essentials.getpos.self.out": "§6Your current position XYZ: §7%s §6/ §7%s §6/ §7%s",
