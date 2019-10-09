@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands.health
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND_ARG
 import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
 import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
 import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
@@ -74,6 +75,18 @@ object AirCommand : CommandBase() {
         } else {
             if (targetIsExists) {
                 if (PermissionsAPI.hasPermission(senderName, "ess.air.other")) {
+                    when {
+                        !config.enableArgs -> {
+                            logger.warn(
+                                DISABLED_COMMAND_ARG
+                                    .replace("%0", senderName)
+                                    .replace("%1", command)
+                            )
+                            sendMsg(sender, "common.arg.error", command)
+                            return 0
+                        }
+                    }
+                    
                     if (targetPlayer.air == targetPlayer.maxAir) {
                         sendMsg(sender, "air.other.maxair", targetName)
                         return 0

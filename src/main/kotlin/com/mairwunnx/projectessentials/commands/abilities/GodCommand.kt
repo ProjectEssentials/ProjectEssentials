@@ -78,7 +78,7 @@ object GodCommand : CommandBase() {
                 val playerAbilities = targetPlayer.abilities
                 if (PermissionsAPI.hasPermission(senderName, "ess.god.other")) {
                     when {
-                        targetIsExists && !config.enableArgs -> {
+                        !config.enableArgs -> {
                             logger.warn(
                                 DISABLED_COMMAND_ARG
                                     .replace("%0", senderName)

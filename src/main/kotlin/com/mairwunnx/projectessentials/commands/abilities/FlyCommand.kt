@@ -77,7 +77,7 @@ object FlyCommand : CommandBase() {
             if (targetIsExists) {
                 if (PermissionsAPI.hasPermission(senderName, "ess.fly.other")) {
                     when {
-                        targetIsExists && !config.enableArgs -> {
+                        !config.enableArgs -> {
                             logger.warn(
                                 DISABLED_COMMAND_ARG
                                     .replace("%0", senderName)
