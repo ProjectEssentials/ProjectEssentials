@@ -1,49 +1,51 @@
 package com.mairwunnx.projectessentials.commands.abilities
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.dimName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.storage.StorageBase
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND_ARG
+import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
 import net.minecraft.entity.player.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object GodCommand : CommandBase<CommandsConfig.Commands.God>(
-    getCommandsConfig().commands.god
-) {
+object GodCommand : CommandBase() {
     private val logger = LogManager.getLogger()
+    private var config = getCommandsConfig().commands.god
+
+    init {
+        command = "god"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.god
+        config = getCommandsConfig().commands.god
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
-    override fun register(
-        dispatcher: CommandDispatcher<CommandSource>
-    ) {
+    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        commandArgName, EntityArgument.player()
+                        "player", EntityArgument.player()
                     ).executes {
-                        execute(it, true)
-                        return@executes 0
+                        return@executes execute(it, true)
                     }
                 )
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -51,37 +53,81 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
+        if (senderIsServer) {
+            if (targetIsExists) {
+                val playerAbilities = targetPlayer.abilities
 
-        val playerAbilities = targetPlayer.abilities
-        if (hasTarget) {
-            logger.info(
-                "Player ($targetPlayerName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderNickName"
-            )
-            if (!setGod(targetPlayer, isHasTarget = true)) return false
-            if (senderNickName == "server") {
-                logger.info("You changed god mode of player $targetPlayerName.")
+                logger.info(
+                    "Player ($targetName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderName"
+                )
+                if (!setGod(targetPlayer, isHasTarget = true)) return 0
+                logger.info("You changed god mode of player $targetName.")
+                sendMsg(
+                    target,
+                    "god.other.recipient_out",
+                    senderName
+                )
             } else {
-                sendMsg(sender, "god.player.success", targetPlayerName)
+                logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
-            sendMsg(
-                targetPlayer.commandSource,
-                "god.player.recipient.success",
-                senderNickName
-            )
         } else {
-            logger.info(
-                "Player ($senderNickName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage}"
-            )
-            if (!setGod(sender.asPlayer())) return false
-            sendMsg(sender, "god.self.success")
+            if (targetIsExists) {
+                val playerAbilities = targetPlayer.abilities
+                if (PermissionsAPI.hasPermission(senderName, "ess.god.other")) {
+                    when {
+                        targetIsExists && !config.enableArgs -> {
+                            logger.warn(
+                                DISABLED_COMMAND_ARG
+                                    .replace("%0", senderName)
+                                    .replace("%1", command)
+                            )
+                            sendMsg(sender, "common.arg.error", command)
+                            return 0
+                        }
+                    }
+
+                    logger.info(
+                        "Player ($targetName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderName"
+                    )
+                    if (!setGod(targetPlayer, isHasTarget = true)) return 0
+                    sendMsg(sender, "god.other.success", targetName)
+                    sendMsg(
+                        target,
+                        "god.other.recipient_out",
+                        senderName
+                    )
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "god.other.restricted", targetName)
+                }
+            } else {
+                val playerAbilities = senderPlayer.abilities
+                if (PermissionsAPI.hasPermission(senderName, "ess.god")) {
+                    logger.info(
+                        "Player ($senderName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage}"
+                    )
+                    if (!setGod(sender.asPlayer())) return 0
+                    sendMsg(sender, "god.self.success")
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "god.self.restricted", senderName)
+                }
+            }
         }
 
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 
     /**
@@ -97,7 +143,7 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
 
         if (target.isCreative || target.isSpectator) {
             if (!isAutoGod && !isHasTarget) {
-                sendMsg(sender, "god.creative")
+                sendMsg(sender, "god.incompatible_mode")
             }
             return false
         }
@@ -129,7 +175,7 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
 
         if (isRestrictedWorld(target)) {
             installGod(false)
-            if (!isHasTarget) sendMsg(sender, "god.self.restricted")
+            if (!isHasTarget) sendMsg(sender, "god.incompatible_world")
             return false
         }
 
@@ -142,7 +188,7 @@ object GodCommand : CommandBase<CommandsConfig.Commands.God>(
     ): Boolean {
         val godConfig = getCommandsConfig().commands.god
         return if (godConfig.godModeDisabledWorlds.contains(target.world.dimName())) {
-            !target.hasPermissionLevel(godConfig.disabledWorldsBypassPermLevel)
+            !PermissionsAPI.hasPermission(target.name.string, "god.incompatible_world.bypass")
         } else {
             false
         }
