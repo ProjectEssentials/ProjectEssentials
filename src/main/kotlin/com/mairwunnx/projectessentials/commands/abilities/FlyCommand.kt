@@ -1,47 +1,51 @@
 package com.mairwunnx.projectessentials.commands.abilities
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.dimName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.storage.StorageBase
+import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND_ARG
+import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
 import net.minecraft.entity.player.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
-    getCommandsConfig().commands.fly
-) {
+object FlyCommand : CommandBase() {
     private val logger = LogManager.getLogger()
+    private var config = getCommandsConfig().commands.fly
+
+    init {
+        command = "fly"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.fly
+        config = getCommandsConfig().commands.fly
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument(
-                        commandArgName, EntityArgument.player()
+                        "player", EntityArgument.player()
                     ).executes {
-                        execute(it, true)
-                        return@executes 0
+                        return@executes execute(it, true)
                     }
                 )
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -49,34 +53,81 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
 
-        if (hasTarget) {
-            val playerAbilities = targetPlayer.abilities
-            logger.info(
-                "Player ($targetPlayerName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderNickName"
-            )
-            if (!setFly(targetPlayer)) return false
-            sendMsg(sender, "fly.player.success", targetPlayerName)
-            sendMsg(
-                targetPlayer.commandSource,
-                "fly.player.recipient.success",
-                senderNickName
-            )
+        if (senderIsServer) {
+            if (targetIsExists) {
+                val playerAbilities = targetPlayer.abilities
+                logger.info(
+                    "Player ($targetName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderName"
+                )
+                if (!setFly(targetPlayer)) return 0
+                logger.info("You changed fly mode of player $targetName.")
+                sendMsg(
+                    targetPlayer.commandSource,
+                    "fly.other.recipient_out",
+                    senderName
+                )
+            } else {
+                logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            }
         } else {
-            val playerAbilities = senderPlayer.abilities
-            logger.info(
-                "Player ($senderNickName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying}"
-            )
-            if (!setFly(senderPlayer)) return false
-            sendMsg(sender, "fly.self.success")
+            if (targetIsExists) {
+                if (PermissionsAPI.hasPermission(senderName, "ess.fly.other")) {
+                    when {
+                        targetIsExists && !config.enableArgs -> {
+                            logger.warn(
+                                DISABLED_COMMAND_ARG
+                                    .replace("%0", senderName)
+                                    .replace("%1", command)
+                            )
+                            sendMsg(sender, "common.arg.error", command)
+                            return 0
+                        }
+                    }
+
+                    val playerAbilities = targetPlayer.abilities
+                    logger.info(
+                        "Player ($targetName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderName"
+                    )
+                    if (!setFly(targetPlayer)) return 0
+                    sendMsg(sender, "fly.other.success", targetName)
+                    sendMsg(
+                        targetPlayer.commandSource,
+                        "fly.other.recipient_out",
+                        senderName
+                    )
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "fly.other.restricted", targetName)
+                }
+            } else {
+                if (PermissionsAPI.hasPermission(senderName, "ess.fly")) {
+                    val playerAbilities = senderPlayer.abilities
+                    logger.info(
+                        "Player ($senderName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying}"
+                    )
+                    if (!setFly(senderPlayer)) return 0
+                    sendMsg(sender, "fly.self.success")
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "fly.self.restricted")
+                }
+            }
         }
 
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 
     fun setFly(
@@ -89,7 +140,7 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
 
         if (source.asPlayer().isCreative || source.asPlayer().isSpectator) {
             if (!isAutoFly && !isHasTarget) {
-                sendMsg(source, "fly.creative")
+                sendMsg(source, "fly.incompatible_mode")
             }
             return false
         }
@@ -123,7 +174,7 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
         if (isRestrictedWorld(target)) {
             installFly(false)
             if (!isHasTarget) {
-                sendMsg(target.commandSource, "fly.self.restricted")
+                sendMsg(target.commandSource, "fly.incompatible_world")
             }
             return false
         }
@@ -145,7 +196,10 @@ object FlyCommand : CommandBase<CommandsConfig.Commands.Fly>(
     ): Boolean {
         val flyConfig = getCommandsConfig().commands.fly
         return if (flyConfig.flyDisabledWorlds.contains(target.world.dimName())) {
-            !target.hasPermissionLevel(flyConfig.disabledWorldsBypassPermLevel)
+            !PermissionsAPI.hasPermission(
+                target.name.string,
+                "fly.incompatible_world.bypass"
+            )
         } else {
             false
         }
