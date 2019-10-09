@@ -87,5 +87,5 @@
   "project_essentials.repair.fulldamage": "§cЭтот предмет §7не нуждается §cв починке.",
   "project_essentials.repair.self.error": "§cУ вас §7нет прав §cна починку каких либо предметов.",
   "project_essentials.ping.out": "§6Понг (§7%sms§6).",
-  "project_essentials.ping.self.error": "§cУ вас §7нет прав §cна пинг сервера."
+  "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера."
 }

@@ -87,5 +87,5 @@
   "project_essentials.repair.fulldamage": "§cThis item §7does not need §crepairs.",
   "project_essentials.repair.self.error": "§cYou §7don't have permission §cto repair item.",
   "project_essentials.ping.out": "§6Pong with §7%sms§6.",
-  "project_essentials.ping.self.error": "§cYou §7don't have permission §cto ping server."
+  "project_essentials.ping.restricted": "§cYou §7don't have permission §cto ping server."
 }
