@@ -1,45 +1,46 @@
 package com.mairwunnx.projectessentials.commands.general
 
 import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.CommandsConfig
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
+import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import kotlinx.serialization.UnstableDefault
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.util.Hand
 import org.apache.logging.log4j.LogManager
 
-@UnstableDefault
-object RepairCommand : CommandBase<CommandsConfig.Commands.Repair>(
-    getCommandsConfig().commands.repair,
-    hasArguments = false
-) {
+object RepairCommand : CommandBase() {
     private val logger = LogManager.getLogger()
+    private var config = getCommandsConfig().commands.repair
+
+    init {
+        command = "repair"
+        aliases = config.aliases.toMutableList()
+    }
 
     override fun reload() {
-        commandInstance = getCommandsConfig().commands.repair
+        config = getCommandsConfig().commands.repair
+        aliases = config.aliases.toMutableList()
         super.reload()
     }
 
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         super.register(dispatcher)
-        commandAliases.forEach { command ->
+        aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(Commands.literal("all").executes {
-                    execute(it, true)
-                    return@executes 0
+                    return@executes execute(it, "all")
                 })
                 .then(Commands.literal("hand").executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 })
                 .executes {
-                    execute(it)
-                    return@executes 0
+                    return@executes execute(it)
                 }
             )
         }
@@ -47,34 +48,53 @@ object RepairCommand : CommandBase<CommandsConfig.Commands.Repair>(
 
     override fun execute(
         c: CommandContext<CommandSource>,
-        hasTarget: Boolean
-    ): Boolean {
-        val code = super.execute(c, hasTarget)
-        if (!code) return false
-
-        if (hasTarget) {
-            val inventory = senderPlayer.inventory
-            inventory.armorInventory.forEach {
-                if (it.isDamaged) it.damage = 0
-            }
-            inventory.mainInventory.forEach {
-                if (it.isDamaged) it.damage = 0
-            }
-            inventory.offHandInventory.forEach {
-                if (it.isDamaged) it.damage = 0
-            }
-            sendMsg(sender, "repair.out.all")
+        argument: Any?
+    ): Int {
+        super.execute(c, argument)
+        if (senderIsServer) {
+            logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
         } else {
-            val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
-            if (item.isDamaged) {
-                item.damage = 0
-                sendMsg(sender, "repair.out")
+            if (argument is String && argument == "all") {
+                if (PermissionsAPI.hasPermission(senderName, "ess.repair.all")) {
+                    val inventory = senderPlayer.inventory
+                    inventory.armorInventory.forEach {
+                        if (it.isDamaged) it.damage = 0
+                    }
+                    inventory.mainInventory.forEach {
+                        if (it.isDamaged) it.damage = 0
+                    }
+                    inventory.offHandInventory.forEach {
+                        if (it.isDamaged) it.damage = 0
+                    }
+                    sendMsg(sender, "repair.all.out")
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "repair.all.restricted", targetName)
+                }
             } else {
-                sendMsg(sender, "repair.fulldamage")
+                if (PermissionsAPI.hasPermission(senderName, "ess.repair")) {
+                    val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
+                    if (item.isDamaged) {
+                        item.damage = 0
+                        sendMsg(sender, "repair.out")
+                    } else {
+                        sendMsg(sender, "repair.fulldamage")
+                    }
+                } else {
+                    logger.warn(
+                        PERMISSION_LEVEL
+                            .replace("%0", senderName)
+                            .replace("%1", command)
+                    )
+                    sendMsg(sender, "repair.restricted", targetName)
+                }
             }
         }
-
-        logger.info("Executed command \"/$commandName\" from $senderNickName")
-        return true
+        logger.info("Executed command \"/$command\" from $senderName")
+        return 0
     }
 }
