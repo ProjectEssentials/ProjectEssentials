@@ -73,7 +73,7 @@ object RepairCommand : CommandBase() {
                             .replace("%0", senderName)
                             .replace("%1", command)
                     )
-                    sendMsg(sender, "repair.all.restricted", targetName)
+                    sendMsg(sender, "repair.all.restricted", senderName)
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.repair")) {
@@ -90,7 +90,7 @@ object RepairCommand : CommandBase() {
                             .replace("%0", senderName)
                             .replace("%1", command)
                     )
-                    sendMsg(sender, "repair.restricted", targetName)
+                    sendMsg(sender, "repair.restricted", senderName)
                 }
             }
         }
