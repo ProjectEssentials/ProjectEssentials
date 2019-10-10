@@ -75,7 +75,6 @@
   "project_essentials.rain.installed": "§6Дождливая погода §7была установлена§6.",
   "project_essentials.storm.installed": "§6Штормовая погода §7была установлена§6.",
   "project_essentials.sun.installed": "§6Солнечная погода §7была установлена§6.",
-  "project_essentials.sun.self.error": "§cУ вас §7нет прав §cна изменение погоды.",
   "project_essentials.repair.out": "§6Предмет который вы держите в руке §7был отремонтирован§6.",
   "project_essentials.repair.all.out": "§6Все предметы в вашем инвентаре §7были отремонтированы§6.",
   "project_essentials.repair.fulldamage": "§cЭтот предмет §7не нуждается §cв починке.",
