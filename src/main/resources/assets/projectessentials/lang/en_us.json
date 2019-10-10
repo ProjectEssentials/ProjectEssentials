@@ -66,7 +66,7 @@
   "project_essentials.midnight.installed": "§6Midnight time §7has been §6installed.",
   "project_essentials.midnight.restricted": "§cYou §7don't have permission §cto change world time.",
   "project_essentials.noon.installed": "§6Noon time §7has been §6installed.",
-  "project_essentials.noon.self.error": "§cYou §7don't have permission §cto change world time.",
+  "project_essentials.noon.restricted": "§cYou §7don't have permission §cto change world time.",
   "project_essentials.sunset.installed": "§6Sunset time §7has been §6installed.",
   "project_essentials.sunset.self.error": "§cYou §7don't have permission §cto change world time.",
   "project_essentials.sunrise.installed": "§6Sunrise time §7has been §6installed.",
