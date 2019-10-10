@@ -60,7 +60,7 @@
   "project_essentials.more.fullstack": "§cКоличество выбранной вещи §7уже имеет §cразмер полного стака.",
   "project_essentials.more.restricted": "§cУ вас §7нет прав §cна увеличение количества предметов.",
   "project_essentials.day.installed": "§6Дневное время §7было установлено§6.",
-  "project_essentials.day.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
+  "project_essentials.day.restricted": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.night.installed": "§6Ночное время §7было установлено§6.",
   "project_essentials.night.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.midnight.installed": "§6Полуночное время §7было установлено§6.",
