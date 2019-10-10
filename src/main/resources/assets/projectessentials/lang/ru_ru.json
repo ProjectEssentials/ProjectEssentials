@@ -64,7 +64,7 @@
   "project_essentials.night.installed": "§6Ночное время §7было установлено§6.",
   "project_essentials.night.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.midnight.installed": "§6Полуночное время §7было установлено§6.",
-  "project_essentials.midnight.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
+  "project_essentials.midnight.restricted": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.noon.installed": "§6Полуденное время §7было установлено§6.",
   "project_essentials.noon.self.error": "§cУ вас §7нет прав §cна изменение времени игры.",
   "project_essentials.sunset.installed": "§6Время заката §7было установлено§6.",
