@@ -8,7 +8,7 @@
   "project_essentials.common.save.restricted": "§cУ вас §7нет разрешение §cна сохранении конфигурации essentials.",
   "project_essentials.common.save.success": "§6Essentials конфигурация §7успешно §6сохранена.",
   "project_essentials.common.version.restricted": "§cУ вас §7нет разрешение §cна просмотр версии essentials.",
-  "project_essentials.common.arg.error": "§cАргументы для команды §7/%s §cзапрещены сервером.",
+  "project_essentials.common.arg.disabled": "§cАргументы для команды §7/%s §cзапрещены сервером.",
   "project_essentials.heal.self.success": "§6Вы §7были исцелены§6.",
   "project_essentials.heal.self.maxhealth": "§cВы уже §7полностью §cисцелены.",
   "project_essentials.heal.self.restricted": "§cУ вас §7нет разрешения §cисцелять себя.",

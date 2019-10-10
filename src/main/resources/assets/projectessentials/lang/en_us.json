@@ -8,7 +8,7 @@
   "project_essentials.common.save.restricted": "§cYou §7don't have permission §cto save essentials configuration.",
   "project_essentials.common.save.success": "§6Essentials configuration §7successfully §6saved.",
   "project_essentials.common.version.restricted": "§cYou §7don't have permission §cto see essentials version.",
-  "project_essentials.common.arg.error": "§cArguments for §7/%s §ccommand §7restricted §cby server.",
+  "project_essentials.common.arg.disabled": "§cArguments for §7/%s §ccommand §7restricted §cby server.",
   "project_essentials.heal.self.success": "§6You §7have been healed§6.",
   "project_essentials.heal.self.maxhealth": "§cYou already §7fully §chealed.",
   "project_essentials.heal.self.restricted": "§cYou §7don't have permission §cto heal yourself.",

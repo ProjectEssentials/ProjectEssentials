@@ -85,7 +85,7 @@ object GodCommand : CommandBase() {
                                     .replace("%0", senderName)
                                     .replace("%1", command)
                             )
-                            sendMsg(sender, "common.arg.error", command)
+                            sendMsg(sender, "common.arg.disabled", command)
                             return 0
                         }
                     }
