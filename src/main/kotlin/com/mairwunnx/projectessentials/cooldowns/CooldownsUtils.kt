@@ -56,7 +56,7 @@ fun processCooldownOfCommand(
         )
         sendMsg(
             commandEvent.source,
-            "common.cooldown.error",
+            "common.cooldown.not_expired",
             commandCooldown.minus(
                 CooldownBase.getCooldown(commandSenderNickName, command)
             ).toInt().toString()
