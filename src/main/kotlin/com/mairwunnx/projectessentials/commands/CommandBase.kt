@@ -25,6 +25,7 @@ abstract class CommandBase {
     var senderIsServer = false
     var command: String = String.empty
     var aliases: MutableList<String> = mutableListOf()
+    val aliasesOfValidation = mutableListOf<String>()
 
     open fun register(dispatcher: CommandDispatcher<CommandSource>) {
         logger.info("    - register \"/$command\" command ...")
@@ -33,13 +34,15 @@ abstract class CommandBase {
     }
 
     private fun assignCommandAliases() {
+        aliases.add(command)
         aliases.forEach {
             logger.info("        - assigning \"/$command\" command alias: $it")
             when {
-                validateAlias(it) -> aliases.add(it)
+                validateAlias(it) -> aliasesOfValidation.add(it)
                 else -> logger.error("        - alias assigning $it skipped: alias validation fail!")
             }
         }
+        aliases = aliasesOfValidation
     }
 
     private fun applyCommandAliases() {
