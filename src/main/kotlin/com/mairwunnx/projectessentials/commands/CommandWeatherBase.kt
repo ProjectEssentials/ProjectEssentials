@@ -13,7 +13,7 @@ import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import org.apache.logging.log4j.LogManager
 
-open class CommandWeatherBase : CommandBase() {
+abstract class CommandWeatherBase : CommandBase() {
     private val logger = LogManager.getLogger()
     var weather = Weather.CLEAR
     var defaultDuration = 6000

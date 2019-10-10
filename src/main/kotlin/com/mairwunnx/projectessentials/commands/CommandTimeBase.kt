@@ -10,7 +10,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import org.apache.logging.log4j.LogManager
 
-open class CommandTimeBase : CommandBase() {
+abstract class CommandTimeBase : CommandBase() {
     private val logger = LogManager.getLogger()
     var time = 0L
 
