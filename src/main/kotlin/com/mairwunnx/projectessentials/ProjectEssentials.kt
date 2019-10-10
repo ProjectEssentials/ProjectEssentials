@@ -54,6 +54,7 @@ class ProjectEssentials : EssBase() {
     private val logger = LogManager.getLogger()
 
     init {
+        modInstance = this
         modVersion = "1.14.4-0.2.0.0"
         logBaseInfo()
         validateForgeVersion()
@@ -246,5 +247,9 @@ class ProjectEssentials : EssBase() {
     private fun getGod(player: PlayerEntity?): Boolean {
         if (player == null) return false
         return player.abilities.disableDamage
+    }
+
+    companion object {
+        lateinit var modInstance: ProjectEssentials
     }
 }
