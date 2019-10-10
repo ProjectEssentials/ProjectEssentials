@@ -47,6 +47,7 @@ object MoreCommand : CommandBase() {
 
         if (senderIsServer) {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.more")) {
                 val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
@@ -63,6 +64,7 @@ object MoreCommand : CommandBase() {
                         .replace("%1", command)
                 )
                 sendMsg(sender, "more.restricted", senderName)
+                return 0
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")

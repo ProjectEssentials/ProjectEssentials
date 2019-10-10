@@ -73,6 +73,7 @@ object FlyCommand : CommandBase() {
             } else {
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
+            return 0
         } else {
             if (targetIsExists) {
                 if (PermissionsAPI.hasPermission(senderName, "ess.fly.other")) {
@@ -106,6 +107,7 @@ object FlyCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "fly.other.restricted", targetName)
+                    return 0
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.fly")) {
@@ -122,6 +124,7 @@ object FlyCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "fly.self.restricted")
+                    return 0
                 }
             }
         }

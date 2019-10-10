@@ -57,6 +57,7 @@ object ListCommand : CommandBase() {
 
         if (senderIsServer) {
             logger.info("Players online ($online/$maxOnline): ${onlinePlayers()}")
+            return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.list")) {
                 sendMsg(
@@ -70,6 +71,7 @@ object ListCommand : CommandBase() {
                         .replace("%1", command)
                 )
                 sendMsg(sender, "list.restricted", senderName)
+                return 0
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")

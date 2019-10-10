@@ -48,6 +48,7 @@ object BreakCommand : CommandBase() {
         super.execute(c, argument)
         if (senderIsServer) {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.break")) {
                 val maxDistance = 20
@@ -81,6 +82,7 @@ object BreakCommand : CommandBase() {
                         .replace("%1", command)
                 )
                 sendMsg(sender, "break.restricted", senderName)
+                return 0
             }
         }
 

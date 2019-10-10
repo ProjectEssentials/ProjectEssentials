@@ -91,6 +91,7 @@ object FeedCommand : CommandBase() {
             } else {
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
+            return 0
         } else {
             if (targetIsExists) {
                 if (PermissionsAPI.hasPermission(senderName, "ess.feed.other")) {
@@ -128,6 +129,7 @@ object FeedCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "feed.other.restricted", targetName)
+                    return 0
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.feed")) {
@@ -148,6 +150,7 @@ object FeedCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "feed.self.restricted", senderName)
+                    return 0
                 }
             }
         }

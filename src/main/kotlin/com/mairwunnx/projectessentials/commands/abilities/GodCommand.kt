@@ -73,6 +73,7 @@ object GodCommand : CommandBase() {
             } else {
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
+            return 0
         } else {
             if (targetIsExists) {
                 val playerAbilities = targetPlayer.abilities
@@ -106,6 +107,7 @@ object GodCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "god.other.restricted", targetName)
+                    return 0
                 }
             } else {
                 val playerAbilities = senderPlayer.abilities
@@ -122,6 +124,7 @@ object GodCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "god.self.restricted", senderName)
+                    return 0
                 }
             }
         }

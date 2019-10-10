@@ -53,6 +53,7 @@ object RepairCommand : CommandBase() {
         super.execute(c, argument)
         if (senderIsServer) {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            return 0
         } else {
             if (argument is String && argument == "all") {
                 if (PermissionsAPI.hasPermission(senderName, "ess.repair.all")) {
@@ -74,6 +75,7 @@ object RepairCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "repair.all.restricted", senderName)
+                    return 0
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.repair")) {
@@ -91,6 +93,7 @@ object RepairCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "repair.restricted", senderName)
+                    return 0
                 }
             }
         }

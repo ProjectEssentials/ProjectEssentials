@@ -73,6 +73,7 @@ object HealCommand : CommandBase() {
             } else {
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             }
+            return 0
         } else {
             if (targetIsExists) {
                 if (PermissionsAPI.hasPermission(senderName, "ess.heal.other")) {
@@ -109,6 +110,7 @@ object HealCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "heal.other.restricted", targetName)
+                    return 0
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.heal")) {
@@ -128,6 +130,7 @@ object HealCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "heal.self.restricted", senderName)
+                    return 0
                 }
             }
         }

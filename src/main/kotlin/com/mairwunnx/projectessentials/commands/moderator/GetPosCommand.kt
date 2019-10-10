@@ -56,13 +56,15 @@ object GetPosCommand : CommandBase() {
         super.execute(c, argument)
 
         if (senderIsServer) {
-            if (targetIsExists) {
+            return if (targetIsExists) {
                 val posX = targetPlayer.posX.roundToInt()
                 val posY = targetPlayer.posY.roundToInt()
                 val posZ = targetPlayer.posZ.roundToInt()
                 logger.info("Player $targetName current position XYZ: $posX / $posY / $posZ")
+                0
             } else {
                 logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+                0
             }
         } else {
             if (targetIsExists) {
@@ -93,6 +95,7 @@ object GetPosCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "getpos.other.restricted", targetName)
+                    return 0
                 }
             } else {
                 if (PermissionsAPI.hasPermission(senderName, "ess.getpos")) {
@@ -110,6 +113,7 @@ object GetPosCommand : CommandBase() {
                             .replace("%1", command)
                     )
                     sendMsg(sender, "getpos.self.restricted", senderName)
+                    return 0
                 }
             }
         }

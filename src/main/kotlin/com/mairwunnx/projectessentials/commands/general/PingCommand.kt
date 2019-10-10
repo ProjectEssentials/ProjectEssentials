@@ -45,6 +45,7 @@ object PingCommand : CommandBase() {
         super.execute(c, argument)
         if (senderIsServer) {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.ping")) {
                 sendMsg(sender, "ping.out", senderPlayer.ping.toString())
@@ -55,6 +56,7 @@ object PingCommand : CommandBase() {
                         .replace("%1", command)
                 )
                 sendMsg(sender, "ping.restricted", targetName)
+                return 0
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")

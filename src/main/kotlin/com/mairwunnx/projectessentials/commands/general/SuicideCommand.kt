@@ -46,6 +46,7 @@ object SuicideCommand : CommandBase() {
         super.execute(c, argument)
         if (senderIsServer) {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.suicide")) {
                 senderPlayer.attackEntityFrom(
@@ -62,6 +63,7 @@ object SuicideCommand : CommandBase() {
                         .replace("%1", command)
                 )
                 sendMsg(sender, "suicide.restricted", senderName)
+                return 0
             }
         }
         logger.info("Executed command \"/$command\" from $senderName")
