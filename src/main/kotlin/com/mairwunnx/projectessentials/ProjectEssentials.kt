@@ -99,7 +99,7 @@ class ProjectEssentials : EssBase() {
         RepairCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
-        ClearCommand.register(cmdDispatcher)
+//        ClearCommand.register(cmdDispatcher)
     }
 
     @Suppress("UNUSED_PARAMETER")
