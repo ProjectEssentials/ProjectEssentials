@@ -23,7 +23,7 @@
   "project_essentials.feed.other.maxfeed": "§cАппетит игрока §7%s §cуже §7полностью §cнасыщен.",
   "project_essentials.feed.other.restricted": "§cУ вас §7нет разрешения §cна насыщение аппетита игрока §7%s§c.",
   "project_essentials.feed.other.recipient_out": "§6Ваш аппетит §7был насыщен §cигроком §7%s§6.",
-  "project_essentials.top.error": "§cУ вас §7нет разрешения §cтелепортироваться наверх.",
+  "project_essentials.top.restricted": "§cУ вас §7нет разрешения §cтелепортироваться наверх.",
   "project_essentials.top.success": "§6Вы §7были телепортированы наверх§6.",
   "project_essentials.air.self.success": "§6Вы §7избавились §6от удушья.",
   "project_essentials.air.self.maxair": "§cВы имеете §7полный §cзапас воздуха.",
