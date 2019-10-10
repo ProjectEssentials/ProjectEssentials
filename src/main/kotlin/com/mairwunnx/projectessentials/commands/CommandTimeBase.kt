@@ -43,7 +43,7 @@ open class CommandTimeBase : CommandBase() {
                         .replace("%0", senderName)
                         .replace("%1", command)
                 )
-                sendMsg(sender, "$command.restricted", senderName)
+                sendMsg(sender, "time.restricted", senderName)
                 return 0
             }
         }
