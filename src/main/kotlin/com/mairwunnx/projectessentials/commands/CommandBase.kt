@@ -2,7 +2,6 @@
 
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.helpers.validateAlias
 import com.mairwunnx.projectessentialscore.extensions.empty
 import com.mairwunnx.projectessentialscore.extensions.isPlayerSender

@@ -1,7 +1,6 @@
 package com.mairwunnx.projectessentials.configurations
 
 import com.mairwunnx.projectessentials.COMMANDS_CONFIG
-import com.mairwunnx.projectessentials.COOLDOWNS_CONFIG
 import com.mairwunnx.projectessentialscore.helpers.MOD_CONFIG_FOLDER
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -14,12 +13,10 @@ import java.io.FileNotFoundException
 object ModConfiguration {
     private val logger = LogManager.getLogger()
     private var commandsConfig = CommandsConfig()
-    private var cooldownsConfig = CooldownsConfig()
 
     fun loadConfig() {
         logger.info("    - loading base modification configuration ...")
         loadCommandsConfig()
-        loadCooldownsConfig()
     }
 
     private fun loadCommandsConfig() {
@@ -29,23 +26,6 @@ object ModConfiguration {
             commandsConfig = Json.parse(CommandsConfig.serializer(), configRaw)
         } catch (ex: FileNotFoundException) {
             logger.error("Configuration file ($COMMANDS_CONFIG) not found!")
-            logger.warn("The default configuration will be used.")
-        }
-    }
-
-    private fun loadCooldownsConfig() {
-        try {
-            logger.info("        - loading cooldowns configuration ...")
-            val configRaw = File(COOLDOWNS_CONFIG).readText()
-            cooldownsConfig = Json.parse(CooldownsConfig.serializer(), configRaw)
-            logger.info("    - loaded cooldowns (${cooldownsConfig.commandCooldowns.size})")
-            cooldownsConfig.commandCooldowns.forEach {
-                val command = it.split("=")[0]
-                val cooldown = it.split("=")[1]
-                logger.info("        - command: ${command}; cooldown: $cooldown")
-            }
-        } catch (ex: FileNotFoundException) {
-            logger.error("Configuration file ($COOLDOWNS_CONFIG) not found!")
             logger.warn("The default configuration will be used.")
         }
     }
@@ -64,7 +44,6 @@ object ModConfiguration {
         )
         createConfigDirs()
         saveCommandsConfig(json)
-        saveCooldownsConfig(json)
     }
 
     private fun createConfigDirs() {
@@ -87,20 +66,5 @@ object ModConfiguration {
         }
     }
 
-    private fun saveCooldownsConfig(json: Json) {
-        logger.info("        - saving cooldowns configuration ...")
-        val cooldownsConfigRaw = json.stringify(
-            CooldownsConfig.serializer(),
-            cooldownsConfig
-        )
-
-        try {
-            File(COOLDOWNS_CONFIG).writeText(cooldownsConfigRaw)
-        } catch (ex: SecurityException) {
-            logger.error("An error occurred while saving cooldowns configuration", ex)
-        }
-    }
-
     fun getCommandsConfig() = commandsConfig
-    fun getCooldownsConfig() = cooldownsConfig
 }

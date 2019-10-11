@@ -9,7 +9,6 @@ import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
-import com.mairwunnx.projectessentials.commands.moderator.ClearCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
@@ -18,8 +17,6 @@ import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentials.cooldowns.CooldownBase
-import com.mairwunnx.projectessentials.cooldowns.processCooldownOfCommand
 import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.storage.StorageBase
@@ -118,8 +115,6 @@ class ProjectEssentials : EssBase() {
             val commandName = it.commandName
             val commandSender = it.player
             val commandSenderNickName = commandSender.name.string
-            val cooldownsConfig = ModConfiguration.getCooldownsConfig()
-
             if (isBlockedCommand(it)) {
                 logger.warn(
                     DISABLED_COMMAND
@@ -129,20 +124,6 @@ class ProjectEssentials : EssBase() {
                 sendMsg(commandSender.commandSource, "common.command.blocked")
                 it.isCanceled = true
                 return
-            }
-
-            try {
-                if (
-                    !cooldownsConfig.ignoredPlayers.contains(commandSenderNickName) &&
-                    !PermissionsAPI.hasPermission(commandSenderNickName, "ess.cooldown.bypass")
-                ) {
-                    it.isCanceled = processCooldownOfCommand(
-                        commandName, commandSenderNickName, it
-                    )
-                    return
-                }
-            } catch (_: KotlinNullPointerException) {
-                CooldownBase.addCooldown(commandSenderNickName, commandName)
             }
         }
     }
