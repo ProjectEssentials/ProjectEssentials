@@ -3,6 +3,7 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.helpers.validateAlias
+import com.mairwunnx.projectessentialscooldown.essentials.CommandsAliases
 import com.mairwunnx.projectessentialscore.extensions.empty
 import com.mairwunnx.projectessentialscore.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
@@ -52,7 +53,7 @@ abstract class CommandBase {
 
     private fun applyCommandAliases() {
         logger.info("        - applying aliases: $commandAliases")
-        CommandAliases.aliases[command] = commandAliases
+        CommandsAliases.aliases[command] = commandAliases
     }
 
     protected open fun execute(
