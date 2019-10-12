@@ -52,8 +52,15 @@ abstract class CommandBase {
     }
 
     private fun applyCommandAliases() {
-        logger.info("        - applying aliases: $commandAliases")
-        CommandsAliases.aliases[command] = commandAliases
+        try {
+            Class.forName(
+                "com.mairwunnx.projectessentialscooldown.essentials.CommandsAliases"
+            )
+            CommandsAliases.aliases[command] = commandAliases
+            logger.info("        - applying aliases: $commandAliases")
+        } catch (_: ClassNotFoundException) {
+            // ignored
+        }
     }
 
     protected open fun execute(
