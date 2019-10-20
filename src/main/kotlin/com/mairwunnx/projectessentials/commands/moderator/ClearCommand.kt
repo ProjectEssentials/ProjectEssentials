@@ -139,7 +139,7 @@ object ClearCommand : CommandBase() {
                     val itemCounts = senderPlayer.inventory.clearMatchingItems({ true }, -1)
                     senderPlayer.openContainer.detectAndSendChanges()
                     senderPlayer.updateHeldItem()
-                    sendMsg(c.source, "clear.success")
+                    sendMsg(c.source, "clear.self.success")
                     logger.info("Cleared inventory of ${senderPlayer.name.string} with $itemCounts items")
                 } else {
                     logger.warn(
