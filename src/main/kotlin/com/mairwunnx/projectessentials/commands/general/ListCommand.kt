@@ -11,6 +11,8 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import org.apache.logging.log4j.LogManager
 
+// todo: add registerNative method for overriding ListCommand from minecraft.
+
 object ListCommand : CommandBase() {
     private val logger = LogManager.getLogger()
     private var config = getCommandsConfig().commands.list

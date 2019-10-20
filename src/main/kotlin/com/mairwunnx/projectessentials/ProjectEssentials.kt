@@ -9,6 +9,7 @@ import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
+import com.mairwunnx.projectessentials.commands.moderator.ClearCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
@@ -96,7 +97,7 @@ class ProjectEssentials : EssBase() {
         RepairCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
-//        ClearCommand.register(cmdDispatcher)
+        ClearCommand.register(cmdDispatcher)
     }
 
     @Suppress("UNUSED_PARAMETER")
