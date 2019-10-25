@@ -1,8 +1,6 @@
 buildscript {
     repositories {
         maven { url("https://files.minecraftforge.net/maven") }
-        maven { url("https://libraries.minecraft.net") }
-        maven { url("https://plugins.gradle.org/m2/") }
         jcenter()
         mavenCentral()
     }
@@ -10,53 +8,52 @@ buildscript {
         classpath(
             group: "net.minecraftforge.gradle",
             name: "ForgeGradle",
-            version: forgeGradleVersion,
+            version: forge_gradle_version,
             changing: true
         )
         classpath(
-            "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+            group: "org.jetbrains.kotlin",
+            name: "kotlin-gradle-plugin",
+            version: kotlin_version
         )
         classpath(
-            "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
+            group: "org.jetbrains.kotlin",
+            name: "kotlin-serialization",
+            version: kotlin_version
         )
     }
 }
 
 apply(plugin: "net.minecraftforge.gradle")
 apply(plugin: "kotlin")
-apply(plugin: "java")
 apply(plugin: "kotlinx-serialization")
 
-version = projectEssentialsVersion
-group = "com.mairwunnx.$projectEssentialsId"
-archivesBaseName = projectEssentialsName
+version = module_version
+group = "com.mairwunnx.$module_id"
+archivesBaseName = module_name
 
 minecraft {
     mappings(
-        channel: mappingsChannelType,
-        version: mappingsChannelVersion
+        channel: forge_mappings_channel_type,
+        version: forge_mappings_channel_version
     )
 
     runs {
         client {
-            workingDirectory(project.file(devRunClientPath))
+            workingDirectory(project.file(dev_run_client_path))
             property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
             property("forge.logging.console.level", "debug")
             mods {
-                ProjectEssentials {
-                    source(sourceSets.main)
-                }
+                ProjectEssentials { source(sourceSets.main) }
             }
         }
 
         server {
-            workingDirectory(project.file(devRunServerPath))
+            workingDirectory(project.file(dev_run_server_path))
             property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
             property("forge.logging.console.level", "debug")
             mods {
-                ProjectEssentials {
-                    source(sourceSets.main)
-                }
+                ProjectEssentials { source(sourceSets.main) }
             }
         }
     }
@@ -65,14 +62,12 @@ minecraft {
 repositories {
     jcenter()
     mavenCentral()
-    maven { url("https://minecraft.curseforge.com/api/maven/") }
-    maven { url("https://libraries.minecraft.net") }
     maven { url("https://jitpack.io") }
 }
 
 dependencies {
-    minecraft(group: "net.minecraftforge", name: "forge", version: forgeBaseVersion)
-    compile(group: "com.mojang", name: "brigadier", version: brigadierBaseVersion)
+    minecraft(group: "net.minecraftforge", name: "forge", version: forge_version)
+    compile(group: "com.mojang", name: "brigadier", version: brigadier_version)
     compile(
         group: "org.jetbrains.kotlinx",
         name: "kotlinx-serialization-runtime",
@@ -80,35 +75,35 @@ dependencies {
     )
     compile(
         group: "org.jetbrains.kotlin",
-        name: "kotlin-stdlib-$kotlinJdkVersionTarget",
-        version: kotlinVersion
+        name: "kotlin-stdlib-$kotlin_jdk_version_target",
+        version: kotlin_version
     )
     compile(
         group: "com.github.projectessentials",
         name: "ProjectEssentials-Core",
-        version: "v1.14.4-1.+"
+        version: ess_core_version
     )
     compile(
         group: "com.github.projectessentials",
         name: "ProjectEssentials-Permissions",
-        version: "v1.14.4-0.2.0.0"
+        version: ess_perm_version
     )
     compile(
         group: "com.github.projectessentials",
         name: "ProjectEssentials-Cooldown",
-        version: "v1.14.4-1.+"
+        version: ess_cooldown_version
     )
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title"     : projectEssentialsName,
-            "Specification-Vendor"    : projectEssentialsVendor,
-            "Specification-Version"   : projectEssentialsVersion,
-            "Implementation-Title"    : projectEssentialsName,
-            "Implementation-Version"  : projectEssentialsVersion,
-            "Implementation-Vendor"   : projectEssentialsVendor,
+            "Specification-Title"     : module_name,
+            "Specification-Vendor"    : module_vendor,
+            "Specification-Version"   : module_version,
+            "Implementation-Title"    : module_name,
+            "Implementation-Version"  : module_version,
+            "Implementation-Vendor"   : module_vendor,
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -116,10 +111,10 @@ jar {
 
 sourceCompatibility = targetCompatibility =
     compileJava.sourceCompatibility =
-        compileJava.targetCompatibility = jvmVersionTarget
+        compileJava.targetCompatibility = project_jvm_version_target
 
 compileKotlin.kotlinOptions.jvmTarget =
-    compileTestKotlin.kotlinOptions.jvmTarget = jvmVersionTarget
+    compileTestKotlin.kotlinOptions.jvmTarget = project_jvm_version_target
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
