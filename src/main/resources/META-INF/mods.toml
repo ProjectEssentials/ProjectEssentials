@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[28,)"
 logoFile="logo.png"
+# todo: before first public release need change it url.
 issueTrackerURL="https://github.com/MairwunNx/ProjectEssentials/issues"
 
 [[mods]]
@@ -9,13 +10,14 @@ issueTrackerURL="https://github.com/MairwunNx/ProjectEssentials/issues"
     displayName="Project Essentials"
     credits="Thanks JetBrains for Intellij IDEA license!"
     authors="MairwunNx (Pavel Erokhin)"
+    # todo: before first public release need change it url.
     updateJSONURL="https://raw.githubusercontent.com/MairwunNx/ProjectEssentials/MC-1.14.4/update.json"
     displayURL="https://github.com/MairwunNx/ProjectEssentials"
     description='''
     Project Essentials - minecraft command mod - adds commands for use in-game.
     '''
 
-[[dependencies.projectessentials]]
+[[dependencies.mod]]
     modId="project_essentials_core"
     mandatory=true
     versionRange="[1,)"
