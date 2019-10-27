@@ -59,7 +59,9 @@ data class CommandsConfig(
         @SerialName("Ping")
         val ping: Ping = Ping(),
         @SerialName("Afk")
-        val afk: Afk = Afk()
+        val afk: Afk = Afk(),
+        @SerialName("Burn")
+        val burn: Burn = Burn()
     ) {
         @Serializable
         data class Heal(
@@ -263,6 +265,16 @@ data class CommandsConfig(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
                 "afk", "eafk", "away", "eaway"
+            )
+        )
+
+        @Serializable
+        data class Burn(
+            @SerialName("DefaultDuration")
+            val defaultDuration: Int = 10,
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "burn", "eburn"
             )
         )
     }

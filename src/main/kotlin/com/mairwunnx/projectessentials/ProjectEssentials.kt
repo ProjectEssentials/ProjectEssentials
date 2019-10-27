@@ -108,6 +108,7 @@ class ProjectEssentials : EssBase() {
         SunCommand.register(cmdDispatcher)
         RepairCommand.register(cmdDispatcher)
         AfkCommand.register(cmdDispatcher)
+        BurnCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
