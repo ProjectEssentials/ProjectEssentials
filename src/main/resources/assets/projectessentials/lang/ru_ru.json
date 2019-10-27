@@ -80,5 +80,8 @@
   "project_essentials.repair.fulldamage": "§cЭтот предмет §7не нуждается §cв починке.",
   "project_essentials.repair.restricted": "§cУ вас §7нет прав §cна починку каких либо предметов.",
   "project_essentials.ping.out": "§6Понг (§7%sms§6).",
-  "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера."
+  "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера.",
+  "project_essentials.afk.restricted": "§cУ вас §7нет прав §cна уход в afk.",
+  "project_essentials.afk_disabled": "§7§oИгрок §6%s§7§o вышел из AFK режима и теперь активен.",
+  "project_essentials.afk_enabled": "§7§oИгрок §6%s§7§o отошел в AFK и может не отвечать на сообщения."
 }
