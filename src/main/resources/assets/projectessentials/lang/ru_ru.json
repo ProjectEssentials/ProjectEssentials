@@ -88,5 +88,7 @@
   "project_essentials.burn.success": "§6Вы подожгли игрока §7%s §6на §7%s §6секунд.",
   "project_essentials.lightning.restricted": "§cУ вас §7нет прав §cна призыв молнии.",
   "project_essentials.lightning_entity.success": "§6Вы поразили игрока или сущность §7%s §6с помощью молнии.",
-  "project_essentials.lightning_entities.success": "§6Вы поразили §7%s§6 игроков или сущностей с помощью молнии."
+  "project_essentials.lightning_entities.success": "§6Вы поразили §7%s§6 игроков или сущностей с помощью молнии.",
+  "project_essentials.tppos.restricted": "§cУ вас §7нет прав §cна телепортацию с выбранной позиции.",
+  "project_essentials.tppos.success": "§6Телепортация к выбранной позиции..."
 }

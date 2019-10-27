@@ -88,5 +88,7 @@
   "project_essentials.burn.success": "§6You set player §7%s §6on fire for §7%s §6seconds.",
   "project_essentials.lightning.restricted": "§cYou §7don't have permission §cto summon lightning bolt.",
   "project_essentials.lightning_entity.success": "§6You smiting by lightning strike §7%s §6player or entity.",
-  "project_essentials.lightning_entities.success": "§6You smiting by lightning strike entities and players: §7%s§6."
+  "project_essentials.lightning_entities.success": "§6You smiting by lightning strike entities and players: §7%s§6.",
+  "project_essentials.tppos.restricted": "§cYou §7don't have permission §cto teleport with target position.",
+  "project_essentials.tppos.success": "§6Teleporting to target position..."
 }
