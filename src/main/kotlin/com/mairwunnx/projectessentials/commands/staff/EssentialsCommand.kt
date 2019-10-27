@@ -157,6 +157,7 @@ object EssentialsCommand {
         PingCommand.reload()
         AfkCommand.reload()
         BurnCommand.reload()
+        LightningCommand.reload()
     }
 
     private fun saveExecute(c: CommandContext<CommandSource>): Int {

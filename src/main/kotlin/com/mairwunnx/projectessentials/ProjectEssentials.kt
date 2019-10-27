@@ -109,6 +109,7 @@ class ProjectEssentials : EssBase() {
         RepairCommand.register(cmdDispatcher)
         AfkCommand.register(cmdDispatcher)
         BurnCommand.register(cmdDispatcher)
+        LightningCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
