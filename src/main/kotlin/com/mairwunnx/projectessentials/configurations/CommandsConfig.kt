@@ -63,7 +63,9 @@ data class CommandsConfig(
         @SerialName("Burn")
         val burn: Burn = Burn(),
         @SerialName("Lightning")
-        val lightning: Lightning = Lightning()
+        val lightning: Lightning = Lightning(),
+        @SerialName("TpPos")
+        val tpPos: TpPos = TpPos()
     ) {
         @Serializable
         data class Heal(
@@ -286,6 +288,12 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "lightning", "elightning", "shock", "eshock", "thor", "ethor"
             )
+        )
+
+        @Serializable
+        data class TpPos(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etppos")
         )
     }
 }

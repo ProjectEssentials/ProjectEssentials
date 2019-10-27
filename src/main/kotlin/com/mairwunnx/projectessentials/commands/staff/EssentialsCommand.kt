@@ -9,6 +9,7 @@ import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
+import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
@@ -158,6 +159,7 @@ object EssentialsCommand {
         AfkCommand.reload()
         BurnCommand.reload()
         LightningCommand.reload()
+        TpPosCommand.reload()
     }
 
     private fun saveExecute(c: CommandContext<CommandSource>): Int {
