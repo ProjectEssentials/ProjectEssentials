@@ -19,6 +19,7 @@ import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentials.states.AfkPresenter
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
 import com.mairwunnx.projectessentialscore.EssBase
@@ -52,6 +53,7 @@ class ProjectEssentials : EssBase() {
 
     init {
         modInstance = this
+        afkPresenter = AfkPresenter()
         modVersion = "1.14.4-0.2.0.0"
         logBaseInfo()
         validateForgeVersion()
@@ -105,6 +107,7 @@ class ProjectEssentials : EssBase() {
         StormCommand.register(cmdDispatcher)
         SunCommand.register(cmdDispatcher)
         RepairCommand.register(cmdDispatcher)
+        AfkCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
@@ -241,5 +244,6 @@ class ProjectEssentials : EssBase() {
 
     companion object {
         lateinit var modInstance: ProjectEssentials
+        lateinit var afkPresenter: AfkPresenter
     }
 }

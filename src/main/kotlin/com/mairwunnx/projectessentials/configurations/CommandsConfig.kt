@@ -58,8 +58,8 @@ data class CommandsConfig(
         val repair: Repair = Repair(),
         @SerialName("Ping")
         val ping: Ping = Ping(),
-        @SerialName("Clear")
-        val clear: Clear = Clear()
+        @SerialName("Afk")
+        val afk: Afk = Afk()
     ) {
         @Serializable
         data class Heal(
@@ -259,12 +259,10 @@ data class CommandsConfig(
         )
 
         @Serializable
-        data class Clear(
-            @SerialName("EnableArgs")
-            val enableArgs: Boolean = true,
+        data class Afk(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf(
-                "eclear", "ci", "eci", "clean", "eclean"
+                "afk", "eafk", "away", "eaway"
             )
         )
     }
