@@ -90,5 +90,11 @@
   "project_essentials.lightning_entity.success": "§6You smiting by lightning strike §7%s §6player or entity.",
   "project_essentials.lightning_entities.success": "§6You smiting by lightning strike entities and players: §7%s§6.",
   "project_essentials.tppos.restricted": "§cYou §7don't have permission §cto teleport with target position.",
-  "project_essentials.tppos.success": "§6Teleporting to target position..."
+  "project_essentials.tppos.success": "§6Teleporting to target position...",
+  "commands.clear.success.single": "§6Removed §7%s§6 items from player §7%s§6.",
+  "commands.clear.success.multiple": "§6Removed §7%s§6 items from §7%s§6 players.",
+  "commands.clear.test.single": "§6Found §7%s§6 matching items on player §7%s§6.",
+  "commands.clear.test.multiple": "§6Found §7%s§6 matching items on §7%s§6 players.",
+  "clear.failed.single": "§cNo items were found on player §7{0}§c.",
+  "clear.failed.multiple": "§cNo items were found on §7{0}§c players."
 }

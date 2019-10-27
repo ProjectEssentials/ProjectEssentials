@@ -1,8 +1,0 @@
-{
-  "commands.clear.success.single": "§6Removed §7%s§6 items from player §7%s§6.",
-  "commands.clear.success.multiple": "§6Removed §7%s§6 items from §7%s§6 players.",
-  "commands.clear.test.single": "§6Found §7%s§6 matching items on player §7%s§6.",
-  "commands.clear.test.multiple": "§6Found §7%s§6 matching items on §7%s§6 players.",
-  "clear.failed.single": "§cNo items were found on player §7%s§6.",
-  "clear.failed.multiple": "§cNo items were found on §7%s§6 players."
-}

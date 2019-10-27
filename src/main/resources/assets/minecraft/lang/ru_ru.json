@@ -1,8 +1,0 @@
-{
-  "commands.clear.success.single": "§6Удалено §7%s§6 предметов у игрока §7%s§6.",
-  "commands.clear.success.multiple": "§6Удалено §7%s§6 предметов у §7%s§6 игроков.",
-  "commands.clear.test.single": "§6Найдено §7%s§6 соответвующих предметов у игрока §7%s§6.",
-  "commands.clear.test.multiple": "§6Найдено §7%s§6 соответвующих предметов у игроков §7%s§6.",
-  "clear.failed.single": "§cНе найдены какие-либо предметы у игрока §7%s§6.",
-  "clear.failed.multiple": "§cНе надены какие-либо предметы у игроков §7%s§6."
-}
