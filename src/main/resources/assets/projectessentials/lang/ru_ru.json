@@ -80,10 +80,5 @@
   "project_essentials.repair.fulldamage": "§cЭтот предмет §7не нуждается §cв починке.",
   "project_essentials.repair.restricted": "§cУ вас §7нет прав §cна починку каких либо предметов.",
   "project_essentials.ping.out": "§6Понг (§7%sms§6).",
-  "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера.",
-  "project_essentials.clear.recipient_out": "§6Ваш инвентарь очищен игроком §7%s§6.",
-  "project_essentials.clear.self.success": "§6Ваш инвентарь очищен.",
-  "project_essentials.clear.self.restricted": "§cУ вас §7нет прав §cна очистку инвентаря.",
-  "project_essentials.clear.other.success": "§6Вы очистили инвентарь игрока §7%s§6.",
-  "project_essentials.clear.other.restricted": "§cУ вас §7нет прав §cна очистку чужого инвентаря."
+  "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера."
 }

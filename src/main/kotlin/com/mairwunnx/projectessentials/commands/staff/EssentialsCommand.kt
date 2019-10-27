@@ -7,7 +7,6 @@ import com.mairwunnx.projectessentials.commands.general.*
 import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
-import com.mairwunnx.projectessentials.commands.moderator.ClearCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.commands.time.*
@@ -156,7 +155,6 @@ object EssentialsCommand {
         SunCommand.reload()
         RepairCommand.reload()
         PingCommand.reload()
-        ClearCommand.reload()
     }
 
     private fun saveExecute(c: CommandContext<CommandSource>): Int {

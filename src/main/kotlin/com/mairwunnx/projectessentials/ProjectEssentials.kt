@@ -9,7 +9,6 @@ import com.mairwunnx.projectessentials.commands.health.AirCommand
 import com.mairwunnx.projectessentials.commands.health.FeedCommand
 import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
-import com.mairwunnx.projectessentials.commands.moderator.ClearCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
@@ -71,17 +70,28 @@ class ProjectEssentials : EssBase() {
 
     private fun registerCommands(
         cmdDispatcher: CommandDispatcher<CommandSource>
+//        server: MinecraftServer
     ) {
-        logger.info("Command registering is starting ...")
+        // todo: try not register commands if not commands
+        //  not allowed for all
+        logger.info("Start registering essentials commands")
+//        if (!server.playerList.commandsAllowedForAll()) {
+        ListCommand.register(cmdDispatcher)
+        GetPosCommand.register(cmdDispatcher)
+        EssentialsCommand.register(cmdDispatcher)
+        PingCommand.register(cmdDispatcher)
+//            return
+//        }
+        ListCommand.register(cmdDispatcher)
+        GetPosCommand.register(cmdDispatcher)
+        PingCommand.register(cmdDispatcher)
         HealCommand.register(cmdDispatcher)
         FeedCommand.register(cmdDispatcher)
         TopCommand.register(cmdDispatcher)
         AirCommand.register(cmdDispatcher)
         FlyCommand.register(cmdDispatcher)
         GodCommand.register(cmdDispatcher)
-        ListCommand.register(cmdDispatcher)
         BreakCommand.register(cmdDispatcher)
-        GetPosCommand.register(cmdDispatcher)
         MoreCommand.register(cmdDispatcher)
         DayCommand.register(cmdDispatcher)
         NightCommand.register(cmdDispatcher)
@@ -96,8 +106,6 @@ class ProjectEssentials : EssBase() {
         SunCommand.register(cmdDispatcher)
         RepairCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
-        PingCommand.register(cmdDispatcher)
-        ClearCommand.register(cmdDispatcher)
     }
 
     @Suppress("UNUSED_PARAMETER")
