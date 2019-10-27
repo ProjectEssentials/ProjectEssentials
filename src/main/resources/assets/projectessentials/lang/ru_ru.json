@@ -83,5 +83,7 @@
   "project_essentials.ping.restricted": "§cУ вас §7нет прав §cна пинг сервера.",
   "project_essentials.afk.restricted": "§cУ вас §7нет прав §cна уход в afk.",
   "project_essentials.afk_disabled": "§7§oИгрок §6%s§7§o вышел из AFK режима и теперь активен.",
-  "project_essentials.afk_enabled": "§7§oИгрок §6%s§7§o отошел в AFK и может не отвечать на сообщения."
+  "project_essentials.afk_enabled": "§7§oИгрок §6%s§7§o отошел в AFK и может не отвечать на сообщения.",
+  "project_essentials.burn.restricted": "§cУ вас §7нет прав §cчто бы поджечь игрока.",
+  "project_essentials.burn.success": "§6Вы подожгли игрока §7{0} §6на §7{1} §6секунд."
 }

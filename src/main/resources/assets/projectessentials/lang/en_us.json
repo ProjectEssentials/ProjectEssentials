@@ -83,5 +83,7 @@
   "project_essentials.ping.restricted": "§cYou §7don't have permission §cto ping server.",
   "project_essentials.afk.restricted": "§cYou §7don't have permission §cto set afk mode.",
   "project_essentials.afk_disabled": "§7§oPlayer §6%s§7§o exited AFK mode and is now active.",
-  "project_essentials.afk_enabled": "§7§oPlayer §6%s§7§o is now AFK and may not respond to messages."
+  "project_essentials.afk_enabled": "§7§oPlayer §6%s§7§o is now AFK and may not respond to messages.",
+  "project_essentials.burn.restricted": "§cYou §7don't have permission §cto burn player.",
+  "project_essentials.burn.success": "§6You set player §7{0} §6on fire for §7{1} §6seconds."
 }
