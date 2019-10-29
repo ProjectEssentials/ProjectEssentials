@@ -10,6 +10,7 @@ import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
+import com.mairwunnx.projectessentials.commands.teleport.TpHereCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
@@ -162,6 +163,7 @@ object EssentialsCommand {
         LightningCommand.reload()
         TpPosCommand.reload()
         TpAllCommand.reload()
+        TpHereCommand.reload()
     }
 
     private fun saveExecute(c: CommandContext<CommandSource>): Int {

@@ -67,7 +67,9 @@ data class CommandsConfig(
         @SerialName("TpPos")
         val tpPos: TpPos = TpPos(),
         @SerialName("TpAll")
-        val tpAll: TpAll = TpAll()
+        val tpAll: TpAll = TpAll(),
+        @SerialName("TpHere")
+        val tpHere: TpHere = TpHere()
     ) {
         @Serializable
         data class Heal(
@@ -302,6 +304,12 @@ data class CommandsConfig(
         data class TpAll(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etpall")
+        )
+
+        @Serializable
+        data class TpHere(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etphere", "s")
         )
     }
 }
