@@ -96,5 +96,7 @@
   "commands.clear.test.single": "§6Found §7%s§6 matching items on player §7%s§6.",
   "commands.clear.test.multiple": "§6Found §7%s§6 matching items on §7%s§6 players.",
   "clear.failed.single": "§cNo items were found on player §7{0}§c.",
-  "clear.failed.multiple": "§cNo items were found on §7{0}§c players."
+  "clear.failed.multiple": "§cNo items were found on §7{0}§c players.",
+  "project_essentials.tpall.restricted": "§cYou §7don't have permission §cto teleport all player to target.",
+  "project_essentials.tpall.success": "§6Teleporting all players to target..."
 }
