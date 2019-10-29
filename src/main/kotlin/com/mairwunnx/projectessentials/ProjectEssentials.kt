@@ -12,6 +12,7 @@ import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
+import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
@@ -112,6 +113,7 @@ class ProjectEssentials : EssBase() {
         BurnCommand.register(cmdDispatcher)
         LightningCommand.register(cmdDispatcher)
         TpPosCommand.register(cmdDispatcher)
+        TpAllCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
