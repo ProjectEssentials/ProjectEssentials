@@ -98,5 +98,7 @@
   "clear.failed.single": "§cНе найдены какие-либо предметы у игрока §7{0}§6.",
   "clear.failed.multiple": "§cНе надены какие-либо предметы у игроков §7{0}§6.",
   "project_essentials.tpall.restricted": "§cУ вас §7нет прав §cна телепортацию всех игроков к какому-либо игроку.",
-  "project_essentials.tpall.success": "§6Телепортация всех игроков к выбранному игроку..."
+  "project_essentials.tpall.success": "§6Телепортация всех игроков к выбранному игроку...",
+  "project_essentials.tphere.restricted": "§cУ вас §7нет прав §cна телепортирование игрока к своей позиции.",
+  "project_essentials.tphere.success": "§6Телепортирование игрока §7%s §6к своей позиции..."
 }
