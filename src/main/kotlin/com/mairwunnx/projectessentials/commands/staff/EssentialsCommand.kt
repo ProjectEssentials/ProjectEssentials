@@ -144,6 +144,7 @@ object EssentialsCommand {
         ListCommand.reload()
         BreakCommand.reload()
         GetPosCommand.reload()
+        SendPosCommand.reload()
         MoreCommand.reload()
         DayCommand.reload()
         NightCommand.reload()

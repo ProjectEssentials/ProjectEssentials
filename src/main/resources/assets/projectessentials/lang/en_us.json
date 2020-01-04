@@ -100,5 +100,7 @@
   "project_essentials.tpall.restricted": "§cYou §7don't have permission §cto teleport all player to target.",
   "project_essentials.tpall.success": "§6Teleporting all players to target...",
   "project_essentials.tphere.restricted": "§cYou §7don't have permission §cto teleport player to you.",
-  "project_essentials.tphere.success": "§6Teleporting player §7%s §6to you..."
+  "project_essentials.tphere.success": "§6Teleporting player §7%s §6to you...",
+  "project_essentials.sendpos.pattern": "§6Player §7%s §6share with you coordinates (§7§oworld = §7§o%s, §7§ox = %s, §7§oy = %s, §7§oz = %s§6)",
+  "project_essentials.sendpos.restricted": "§cYou §7don't have permission §cto share your position with players."
 }

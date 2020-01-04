@@ -89,6 +89,7 @@ class ProjectEssentials : EssBase() {
 //        }
         ListCommand.register(cmdDispatcher)
         GetPosCommand.register(cmdDispatcher)
+        SendPosCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
         HealCommand.register(cmdDispatcher)
         FeedCommand.register(cmdDispatcher)

@@ -100,5 +100,7 @@
   "project_essentials.tpall.restricted": "§cУ вас §7нет прав §cна телепортацию всех игроков к какому-либо игроку.",
   "project_essentials.tpall.success": "§6Телепортация всех игроков к выбранному игроку...",
   "project_essentials.tphere.restricted": "§cУ вас §7нет прав §cна телепортирование игрока к своей позиции.",
-  "project_essentials.tphere.success": "§6Телепортирование игрока §7%s §6к своей позиции..."
+  "project_essentials.tphere.success": "§6Телепортирование игрока §7%s §6к своей позиции...",
+  "project_essentials.sendpos.pattern": "§6Игрок §7%s §6поделился с Вами своими координатами (§7§oизмерение = §7§o%s, §7§ox = %s, §7§oy = %s, §7§oz = %s§6)",
+  "project_essentials.sendpos.restricted": "§cУ вас §7нет прав §cчто бы поделиться своими координатами с кем-либо."
 }

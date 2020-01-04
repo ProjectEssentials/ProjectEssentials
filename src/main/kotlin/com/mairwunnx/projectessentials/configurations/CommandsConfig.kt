@@ -30,6 +30,8 @@ data class CommandsConfig(
         val `break`: Break = Break(),
         @SerialName("GetPos")
         val getPos: GetPos = GetPos(),
+        @SerialName("SendPos")
+        val sendPos: SendPos = SendPos(),
         @SerialName("More")
         val more: More = More(),
         @SerialName("Day")
@@ -165,6 +167,14 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf(
                 "eposition",
                 "mypos"
+            )
+        )
+
+        @Serializable
+        data class SendPos(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf(
+                "esendpos"
             )
         )
 
