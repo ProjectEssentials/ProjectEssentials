@@ -75,18 +75,12 @@ class ProjectEssentials : EssBase() {
 
     private fun registerCommands(
         cmdDispatcher: CommandDispatcher<CommandSource>
-//        server: MinecraftServer
     ) {
-        // todo: try not register commands if not commands
-        //  not allowed for all
         logger.info("Start registering essentials commands")
-//        if (!server.playerList.commandsAllowedForAll()) {
         ListCommand.register(cmdDispatcher)
         GetPosCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
-//            return
-//        }
         ListCommand.register(cmdDispatcher)
         GetPosCommand.register(cmdDispatcher)
         SendPosCommand.register(cmdDispatcher)
