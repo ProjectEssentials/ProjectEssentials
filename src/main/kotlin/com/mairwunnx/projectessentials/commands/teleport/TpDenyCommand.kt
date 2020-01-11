@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials
+import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -49,23 +49,37 @@ object TpDenyCommand : CommandBase() {
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tpdeny")) {
                 val requestInitiator =
-                    ProjectEssentials.teleportPresenter.getRequest(senderPlayer)
+                    teleportPresenter.getRequest(senderPlayer)
 
-                if (requestInitiator == null) {
-                    sendMsg(sender, "tpdeny.not_exist_requests")
-                } else {
-                    if (ProjectEssentials.teleportPresenter.removeRequest(
+                val requestHereInitiator =
+                    teleportPresenter.getRequestHere(senderPlayer)
+
+                if (requestInitiator != null) {
+                    if (teleportPresenter.removeRequest(
                             requestInitiator.name.string, senderPlayer.name.string
                         )
                     ) {
                         sendMsg(
                             requestInitiator.commandSource, "tpdeny.request_denied"
                         )
-                    } else {
                         sendMsg(
                             sender, "tpdeny.request_denied_successfully"
                         )
                     }
+                } else if (requestHereInitiator != null) {
+                    if (teleportPresenter.removeRequestHere(
+                            requestHereInitiator.name.string, senderPlayer.name.string
+                        )
+                    ) {
+                        sendMsg(
+                            requestHereInitiator.commandSource, "tpdeny.request_denied"
+                        )
+                        sendMsg(
+                            sender, "tpdeny.request_denied_successfully"
+                        )
+                    }
+                } else {
+                    sendMsg(sender, "tpdeny.not_exist_requests")
                 }
             } else {
                 logger.warn(
