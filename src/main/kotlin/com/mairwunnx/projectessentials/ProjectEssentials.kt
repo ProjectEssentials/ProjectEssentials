@@ -116,6 +116,7 @@ class ProjectEssentials : EssBase() {
         TpDenyCommand.register(cmdDispatcher)
         TpToggleCommand.register(cmdDispatcher)
         TpaCancelCommand.register(cmdDispatcher)
+        TpaHereCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
