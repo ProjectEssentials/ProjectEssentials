@@ -79,7 +79,9 @@ data class CommandsConfig(
         @SerialName("TpDeny")
         val tpDeny: TpDeny = TpDeny(),
         @SerialName("TpToggle")
-        val tpToggle: TpToggle = TpToggle()
+        val tpToggle: TpToggle = TpToggle(),
+        @SerialName("TpaCancel")
+        val tpaCancel: TpaCancel = TpaCancel()
     ) {
         @Serializable
         data class Heal(
@@ -354,6 +356,12 @@ data class CommandsConfig(
         data class TpToggle(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etptoggle", "tpoff", "etpoff")
+        )
+
+        @Serializable
+        data class TpaCancel(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etpacancel")
         )
     }
 }

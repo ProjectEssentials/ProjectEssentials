@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.states
 
-import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.findPlayer
 import com.mairwunnx.projectessentialscore.extensions.empty
 import net.minecraft.entity.player.ServerPlayerEntity
@@ -47,15 +47,22 @@ class Requested(
     }
 }
 
-class RequestedToAll(
-    val playerRequested: ServerPlayerEntity,
-    val targetPlayer: List<ServerPlayerEntity>,
+/**
+ * @param requestInitiator player nickname, who created
+ * request, i.e who initiator of request.
+ * @param requestedPlayer target of request, i.e player
+ * who can accept or decine teleport request.
+ * @param requestTime teleport request creating time.
+ */
+class RequestedHere(
+    val requestInitiator: String,
+    val requestedPlayer: String,
     val requestTime: ZonedDateTime
 ) : TeleportState()
 
-class RequestedHere(
+class RequestedToAll(
     val playerRequested: ServerPlayerEntity,
-    val targetPlayer: ServerPlayerEntity,
+    val targetPlayer: List<ServerPlayerEntity>,
     val requestTime: ZonedDateTime
 ) : TeleportState()
 
@@ -79,7 +86,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
     private var timeOut = 45
 
     fun configureTimeOut() {
-        timeOut = ModConfiguration.getCommandsConfig().commands.tpa.timeOut
+        timeOut = getCommandsConfig().commands.tpa.timeOut
     }
 
     /**
@@ -111,6 +118,9 @@ class TeleportPresenter(private val server: MinecraftServer) {
      * maker, for getting late player position, for teleport
      * to you.
      *
+     * @param player target player nickname, i.e player what take
+     * request. (i.e not request initiator).
+     *
      * @return data type ServerPlayerEntity (nullable),
      * if return null then request expired or not exist.
      * if request not expired or exists then return player
@@ -133,7 +143,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
         }
     }
 
-    fun removeExpiredRequest() {
+    private fun removeExpiredRequest() {
         removeRequestedExpiredRequest()
     }
 
@@ -168,6 +178,23 @@ class TeleportPresenter(private val server: MinecraftServer) {
         return state.removeIf {
             it as Requested
             requestInitiator == it.requestInitiator && requestedPlayer == it.requestedPlayer
+        }
+    }
+
+    /**
+     * Remove all requests, tpa, tpahere and other.
+     *
+     * @param requestInitiator request initiator player nickname,
+     * i.e player who created request.
+     * @return true if request removed successfully,
+     * false if request not exists (i.e not able for removing).
+     */
+    fun removeAllRequests(
+        requestInitiator: String
+    ): Boolean {
+        return state.removeAll {
+            it as Requested
+            requestInitiator == it.requestInitiator
         }
     }
 
