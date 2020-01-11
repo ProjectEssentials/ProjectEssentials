@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.states
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.findPlayer
+import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentialscore.extensions.empty
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.server.MinecraftServer
@@ -280,6 +281,26 @@ class TeleportPresenter(private val server: MinecraftServer) {
         }
     }
 
+    fun makeRequestToAll(
+        requestInitiator: String,
+        players: Collection<ServerPlayerEntity>
+    ) {
+        var server: MinecraftServer? = null
+        players.forEach {
+            if (server == null) server = it.server
+            if (it.name.string != requestInitiator) {
+                commitRequest(requestInitiator, it.name.string)
+                sendMsg(it.commandSource, "request from $requestInitiator")
+            }
+        }
+        if (server != null) {
+            val initiator = server!!.findPlayer(requestInitiator)
+            if (initiator != null) {
+                sendMsg(initiator.commandSource, "request success")
+            }
+        }
+    }
+
     /**
      * Remove all requests, tpa, tpahere and other.
      *
@@ -343,17 +364,5 @@ class TeleportPresenter(private val server: MinecraftServer) {
 
             return@removeAll false
         }
-    }
-
-    fun commitRequestToAll() {
-
-    }
-
-    fun getRequestToAll() {
-
-    }
-
-    fun removeRequestToAll() {
-
     }
 }

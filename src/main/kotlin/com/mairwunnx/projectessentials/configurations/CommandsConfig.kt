@@ -74,6 +74,8 @@ data class CommandsConfig(
         val tpHere: TpHere = TpHere(),
         @SerialName("Tpa")
         val tpa: Tpa = Tpa(),
+        @SerialName("TpaAll")
+        val tpaAll: TpaAll = TpaAll(),
         @SerialName("TpaHere")
         val tpaHere: TpaHere = TpaHere(),
         @SerialName("TpAccept")
@@ -340,6 +342,12 @@ data class CommandsConfig(
             val aliases: kotlin.collections.List<String> = listOf("etpa", "call", "ecall"),
             @SerialName("TimeOut")
             val timeOut: Int = 45
+        )
+
+        @Serializable
+        data class TpaAll(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etpaall", "callall", "ecallall")
         )
 
         @Serializable

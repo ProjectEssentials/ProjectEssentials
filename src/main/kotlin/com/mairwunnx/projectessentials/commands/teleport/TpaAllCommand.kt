@@ -11,21 +11,19 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
 import org.apache.logging.log4j.LogManager
 
-object TpaCommand : CommandBase() {
+object TpaAllCommand : CommandBase() {
     private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpa
+    private var config = getCommandsConfig().commands.tpaAll
 
     init {
-        command = "tpa"
+        command = "tpaall"
         aliases = config.aliases.toMutableList()
     }
 
     override fun reload() {
-        config = getCommandsConfig().commands.tpa
+        config = getCommandsConfig().commands.tpaAll
         aliases = config.aliases.toMutableList()
         super.reload()
     }
@@ -34,11 +32,9 @@ object TpaCommand : CommandBase() {
         super.register(dispatcher)
         aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument("player", EntityArgument.player()).executes {
-                        return@executes execute(it, true)
-                    }
-                )
+                .executes {
+                    return@executes execute(it)
+                }
             )
         }
     }
@@ -53,25 +49,18 @@ object TpaCommand : CommandBase() {
             logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
             return 0
         } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpa")) {
-                if (teleportPresenter.commitRequest(
-                        senderPlayer.name.string,
-                        targetPlayer.name.string
-                    )
-                ) {
-                    sendMsg(sender, "request success")
-                    sendMsg(target, "request from $senderName")
-                } else {
-                    sendMsg(sender, "request already exists or player restricted")
-                    sendMsg(target, "$senderName tried to teleport to you")
-                }
+            if (PermissionsAPI.hasPermission(senderName, "ess.tpaall")) {
+                teleportPresenter.makeRequestToAll(
+                    senderName,
+                    senderPlayer.server.playerList.players
+                )
             } else {
                 logger.warn(
                     PERMISSION_LEVEL
                         .replace("%0", senderName)
                         .replace("%1", command)
                 )
-                sendMsg(sender, "tpa.restricted")
+                sendMsg(sender, "tpaall.restricted")
                 return 0
             }
         }
