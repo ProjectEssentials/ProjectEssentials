@@ -179,8 +179,11 @@ class TeleportPresenter(private val server: MinecraftServer) {
         requestedPlayer: String
     ): Boolean {
         return state.removeIf {
-            it as Requested
-            requestInitiator == it.requestInitiator && requestedPlayer == it.requestedPlayer
+            if (it is Requested) {
+                return@removeIf requestInitiator == it.requestInitiator &&
+                        requestedPlayer == it.requestedPlayer
+            }
+            return@removeIf false
         }
     }
 
@@ -244,8 +247,11 @@ class TeleportPresenter(private val server: MinecraftServer) {
         requestedPlayer: String
     ): Boolean {
         return state.removeIf {
-            it as RequestedHere
-            requestInitiator == it.requestInitiator && requestedPlayer == it.requestedPlayer
+            if (it is RequestedHere) {
+                return@removeIf requestInitiator == it.requestInitiator &&
+                        requestedPlayer == it.requestedPlayer
+            }
+            return@removeIf false
         }
     }
 
@@ -285,12 +291,14 @@ class TeleportPresenter(private val server: MinecraftServer) {
     @UseExperimental(ExperimentalTime::class)
     private fun removeRequestedExpiredRequest() {
         state.removeAll {
-            it as Requested
+            if (it is Requested) {
+                val duration = Duration.between(it.requestTime, ZonedDateTime.now())
+                val passedSeconds = duration.toKotlinDuration().inSeconds
 
-            val duration = Duration.between(it.requestTime, ZonedDateTime.now())
-            val passedSeconds = duration.toKotlinDuration().inSeconds
+                return@removeAll (passedSeconds > timeOut)
+            }
 
-            return@removeAll (passedSeconds > timeOut)
+            return@removeAll false
         }
     }
 
@@ -301,12 +309,14 @@ class TeleportPresenter(private val server: MinecraftServer) {
     @UseExperimental(ExperimentalTime::class)
     private fun removeRequestedHereExpiredRequest() {
         state.removeAll {
-            it as RequestedHere
+            if (it is RequestedHere) {
+                val duration = Duration.between(it.requestTime, ZonedDateTime.now())
+                val passedSeconds = duration.toKotlinDuration().inSeconds
 
-            val duration = Duration.between(it.requestTime, ZonedDateTime.now())
-            val passedSeconds = duration.toKotlinDuration().inSeconds
+                return@removeAll (passedSeconds > timeOut)
+            }
 
-            return@removeAll (passedSeconds > timeOut)
+            return@removeAll false
         }
     }
 

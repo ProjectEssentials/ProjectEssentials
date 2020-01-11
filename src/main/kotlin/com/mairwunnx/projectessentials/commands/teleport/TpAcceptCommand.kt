@@ -84,7 +84,7 @@ object TpAcceptCommand : CommandBase() {
                         sendMsg(
                             requestHereInitiator.commandSource, "tpaccept.request_accepted"
                         )
-                        ProjectEssentials.teleportPresenter.removeRequest(
+                        ProjectEssentials.teleportPresenter.removeRequestHere(
                             requestHereInitiator.name.string,
                             senderPlayer.name.string
                         )
