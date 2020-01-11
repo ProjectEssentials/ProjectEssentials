@@ -163,6 +163,11 @@ object EssentialsCommand {
         TpAllCommand.reload()
         TpHereCommand.reload()
         TpaCommand.reload()
+        TpAcceptCommand.reload()
+        TpaHereCommand.reload()
+        TpDenyCommand.reload()
+        TpToggleCommand.reload()
+        TpaCancelCommand.reload()
         ProjectEssentials.teleportPresenter.configureTimeOut()
     }
 
