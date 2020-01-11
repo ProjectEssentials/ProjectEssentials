@@ -66,8 +66,8 @@ object TpAcceptCommand : CommandBase() {
                         requestInitiator.commandSource, "tpaccept.request_accepted"
                     )
                     ProjectEssentials.teleportPresenter.removeRequest(
-                        requestInitiator,
-                        senderPlayer
+                        requestInitiator.name.string,
+                        senderPlayer.name.string
                     )
                 }
             } else {

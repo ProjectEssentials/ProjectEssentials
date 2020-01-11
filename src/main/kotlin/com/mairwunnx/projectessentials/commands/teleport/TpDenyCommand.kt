@@ -55,7 +55,7 @@ object TpDenyCommand : CommandBase() {
                     sendMsg(sender, "tpdeny.not_exist_requests")
                 } else {
                     if (ProjectEssentials.teleportPresenter.removeRequest(
-                            requestInitiator, senderPlayer
+                            requestInitiator.name.string, senderPlayer.name.string
                         )
                     ) {
                         sendMsg(

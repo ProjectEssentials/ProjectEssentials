@@ -1,18 +1,31 @@
 package com.mairwunnx.projectessentials.states
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.extensions.findPlayer
+import com.mairwunnx.projectessentialscore.extensions.empty
 import net.minecraft.entity.player.ServerPlayerEntity
+import net.minecraft.server.MinecraftServer
 import org.apache.logging.log4j.LogManager
 import java.time.Duration
 import java.time.ZonedDateTime
 import kotlin.time.ExperimentalTime
 import kotlin.time.toKotlinDuration
 
+/**
+ * Base teleport state class.
+ */
 sealed class TeleportState
 
+/**
+ * @param requestInitiator player nickname, who created
+ * request, i.e who initiator of request.
+ * @param requestedPlayer target of request, i.e player
+ * who can accept or decine teleport request.
+ * @param requestTime teleport request creating time.
+ */
 class Requested(
-    val playerRequested: ServerPlayerEntity,
-    val targetPlayer: ServerPlayerEntity,
+    val requestInitiator: String,
+    val requestedPlayer: String,
     val requestTime: ZonedDateTime
 ) : TeleportState() {
     override fun equals(other: Any?): Boolean {
@@ -21,15 +34,15 @@ class Requested(
 
         other as Requested
 
-        if (playerRequested != other.playerRequested) return false
-        if (targetPlayer != other.targetPlayer) return false
+        if (requestInitiator != other.requestInitiator) return false
+        if (requestedPlayer != other.requestedPlayer) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = playerRequested.hashCode()
-        result = 31 * result + targetPlayer.hashCode()
+        var result = requestInitiator.hashCode()
+        result = 31 * result + requestedPlayer.hashCode()
         return result
     }
 }
@@ -46,10 +59,23 @@ class RequestedHere(
     val requestTime: ZonedDateTime
 ) : TeleportState()
 
-class TeleportPresenter {
+/**
+ * @param server minecraft server instance, basically
+ * needed for finding player by nickname on server.
+ */
+class TeleportPresenter(private val server: MinecraftServer) {
     private val logger = LogManager.getLogger()
     private val state: MutableList<TeleportState> = mutableListOf()
+    /**
+     * Stores data of ignored players, i.e players who
+     * disabled teleport request thought using command `/tptoggle`.
+     */
     var ignoredPlayers: MutableList<String> = mutableListOf() // todo: it need save
+    /**
+     * Time out of teleport request, after expiring some time
+     * (able to configure in configuration) teleport request will be
+     * removed.
+     */
     private var timeOut = 45
 
     fun configureTimeOut() {
@@ -62,20 +88,20 @@ class TeleportPresenter {
      * maked request to any player).
      */
     fun commitRequest(
-        playerRequested: ServerPlayerEntity,
-        targetPlayer: ServerPlayerEntity
+        requestInitiator: String,
+        requestedPlayer: String
     ): Boolean {
         removeExpiredRequest()
 
         state.forEach {
-            if (it is Requested) when (it) {
-                Requested(playerRequested, targetPlayer, ZonedDateTime.now()) -> return false
-            }
+            if (it is Requested &&
+                it == Requested(requestInitiator, requestedPlayer, ZonedDateTime.now())
+            ) return false
         }
 
-        if (targetPlayer.name.string in ignoredPlayers) return false
+        if (requestedPlayer in ignoredPlayers) return false
 
-        state.add(Requested(playerRequested, targetPlayer, ZonedDateTime.now()))
+        state.add(Requested(requestInitiator, requestedPlayer, ZonedDateTime.now()))
         return true
     }
 
@@ -95,14 +121,16 @@ class TeleportPresenter {
     ): ServerPlayerEntity? {
         removeExpiredRequest()
 
-        return (this.state.find {
+        (this.state.find {
             if (it is Requested) {
-                if (player.name.string == it.targetPlayer.name.string) {
+                if (player.name.string == it.requestedPlayer) {
                     return@find true
                 }
             }
             return@find false
-        } as Requested?)?.playerRequested
+        } as Requested?)?.requestInitiator.let {
+            return server.findPlayer(it ?: String.empty)
+        }
     }
 
     fun removeExpiredRequest() {
@@ -126,20 +154,20 @@ class TeleportPresenter {
     }
 
     /**
-     * @param requestInitiator request initiator as player,
+     * @param requestInitiator request initiator player nickname,
      * i.e player who created request.
-     * @param requested requested player, i.e player who can
+     * @param requestedPlayer requested player, i.e player who can
      * accept or deny request.
      * @return true if request removed successfully,
      * false if request not exists (i.e not able for removing).
      */
     fun removeRequest(
-        requestInitiator: ServerPlayerEntity,
-        requested: ServerPlayerEntity
+        requestInitiator: String,
+        requestedPlayer: String
     ): Boolean {
         return state.removeIf {
             it as Requested
-            requestInitiator == it.playerRequested && requested == it.targetPlayer
+            requestInitiator == it.requestInitiator && requestedPlayer == it.requestedPlayer
         }
     }
 

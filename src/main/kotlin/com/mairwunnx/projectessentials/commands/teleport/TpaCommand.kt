@@ -54,7 +54,11 @@ object TpaCommand : CommandBase() {
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tpa")) {
-                if (ProjectEssentials.teleportPresenter.commitRequest(senderPlayer, targetPlayer)) {
+                if (ProjectEssentials.teleportPresenter.commitRequest(
+                        senderPlayer.name.string,
+                        targetPlayer.name.string
+                    )
+                ) {
                     sendMsg(sender, "request success")
                     sendMsg(target, "request from $senderName")
                 } else {

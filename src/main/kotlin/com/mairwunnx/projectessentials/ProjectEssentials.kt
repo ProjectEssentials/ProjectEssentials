@@ -55,7 +55,6 @@ class ProjectEssentials : EssBase() {
     init {
         modInstance = this
         afkPresenter = AfkPresenter()
-        teleportPresenter = TeleportPresenter()
         modVersion = "1.14.4-0.3.0.0"
         logBaseInfo()
         validateForgeVersion()
@@ -68,6 +67,8 @@ class ProjectEssentials : EssBase() {
 
     @SubscribeEvent
     fun onServerStarting(it: FMLServerStartingEvent) {
+        teleportPresenter = TeleportPresenter(it.server)
+        teleportPresenter.configureTimeOut()
         logger.info("$modName starting mod loading ...")
         registerCommands(it.server.commandManager.dispatcher)
     }

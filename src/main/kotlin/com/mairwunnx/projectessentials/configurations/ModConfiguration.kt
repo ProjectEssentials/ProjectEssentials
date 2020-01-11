@@ -1,7 +1,6 @@
 package com.mairwunnx.projectessentials.configurations
 
 import com.mairwunnx.projectessentials.COMMANDS_CONFIG
-import com.mairwunnx.projectessentials.ProjectEssentials
 import com.mairwunnx.projectessentialscore.helpers.MOD_CONFIG_FOLDER
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -18,7 +17,6 @@ object ModConfiguration {
     fun loadConfig() {
         logger.info("    - loading base modification configuration ...")
         loadCommandsConfig()
-        ProjectEssentials.teleportPresenter.configureTimeOut()
     }
 
     private fun loadCommandsConfig() {
