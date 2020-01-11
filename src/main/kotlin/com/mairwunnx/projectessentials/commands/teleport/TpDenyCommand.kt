@@ -54,32 +54,36 @@ object TpDenyCommand : CommandBase() {
                 val requestHereInitiator =
                     teleportPresenter.getRequestHere(senderPlayer)
 
-                if (requestInitiator != null) {
-                    if (teleportPresenter.removeRequest(
-                            requestInitiator.name.string, senderPlayer.name.string
-                        )
-                    ) {
-                        sendMsg(
-                            requestInitiator.commandSource, "tpdeny.request_denied"
-                        )
-                        sendMsg(
-                            sender, "tpdeny.request_denied_successfully"
-                        )
+                when {
+                    requestInitiator != null -> {
+                        if (teleportPresenter.removeRequest(
+                                requestInitiator.name.string, senderPlayer.name.string
+                            )
+                        ) {
+                            sendMsg(
+                                requestInitiator.commandSource, "tpdeny.request_denied"
+                            )
+                            sendMsg(
+                                sender, "tpdeny.request_denied_successfully"
+                            )
+                        }
                     }
-                } else if (requestHereInitiator != null) {
-                    if (teleportPresenter.removeRequestHere(
-                            requestHereInitiator.name.string, senderPlayer.name.string
-                        )
-                    ) {
-                        sendMsg(
-                            requestHereInitiator.commandSource, "tpdeny.request_denied"
-                        )
-                        sendMsg(
-                            sender, "tpdeny.request_denied_successfully"
-                        )
+                    requestHereInitiator != null -> {
+                        if (teleportPresenter.removeRequestHere(
+                                requestHereInitiator.name.string, senderPlayer.name.string
+                            )
+                        ) {
+                            sendMsg(
+                                requestHereInitiator.commandSource, "tpdeny.request_denied"
+                            )
+                            sendMsg(
+                                sender, "tpdeny.request_denied_successfully"
+                            )
+                        }
                     }
-                } else {
-                    sendMsg(sender, "tpdeny.not_exist_requests")
+                    else -> {
+                        sendMsg(sender, "tpdeny.not_exist_requests")
+                    }
                 }
             } else {
                 logger.warn(

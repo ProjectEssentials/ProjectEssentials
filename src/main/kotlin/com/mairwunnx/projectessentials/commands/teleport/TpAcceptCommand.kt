@@ -51,24 +51,47 @@ object TpAcceptCommand : CommandBase() {
                 val requestInitiator =
                     ProjectEssentials.teleportPresenter.getRequest(senderPlayer)
 
-                if (requestInitiator == null) {
-                    sendMsg(sender, "tpaccept.not_exist_requests")
-                } else {
-                    requestInitiator.teleport(
-                        senderPlayer.serverWorld,
-                        senderPlayer.posX,
-                        senderPlayer.posY,
-                        senderPlayer.posZ,
-                        senderPlayer.rotationYaw,
-                        senderPlayer.rotationPitch
-                    )
-                    sendMsg(
-                        requestInitiator.commandSource, "tpaccept.request_accepted"
-                    )
-                    ProjectEssentials.teleportPresenter.removeRequest(
-                        requestInitiator.name.string,
-                        senderPlayer.name.string
-                    )
+                val requestHereInitiator =
+                    ProjectEssentials.teleportPresenter.getRequestHere(senderPlayer)
+
+                when {
+                    requestInitiator != null -> {
+                        requestInitiator.teleport(
+                            senderPlayer.serverWorld,
+                            senderPlayer.posX,
+                            senderPlayer.posY,
+                            senderPlayer.posZ,
+                            senderPlayer.rotationYaw,
+                            senderPlayer.rotationPitch
+                        )
+                        sendMsg(
+                            requestInitiator.commandSource, "tpaccept.request_accepted"
+                        )
+                        ProjectEssentials.teleportPresenter.removeRequest(
+                            requestInitiator.name.string,
+                            senderPlayer.name.string
+                        )
+                    }
+                    requestHereInitiator != null -> {
+                        senderPlayer.teleport(
+                            requestHereInitiator.serverWorld,
+                            requestHereInitiator.posX,
+                            requestHereInitiator.posY,
+                            requestHereInitiator.posZ,
+                            requestHereInitiator.rotationYaw,
+                            requestHereInitiator.rotationPitch
+                        )
+                        sendMsg(
+                            requestHereInitiator.commandSource, "tpaccept.request_accepted"
+                        )
+                        ProjectEssentials.teleportPresenter.removeRequest(
+                            requestHereInitiator.name.string,
+                            senderPlayer.name.string
+                        )
+                    }
+                    else -> {
+                        sendMsg(sender, "tpaccept.not_exist_requests")
+                    }
                 }
             } else {
                 logger.warn(
