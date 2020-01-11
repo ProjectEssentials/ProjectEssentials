@@ -1,7 +1,7 @@
 package com.mairwunnx.projectessentials.states
 
+import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import net.minecraft.entity.player.ServerPlayerEntity
-import net.minecraft.util.Tuple
 import org.apache.logging.log4j.LogManager
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -14,7 +14,25 @@ class Requested(
     val playerRequested: ServerPlayerEntity,
     val targetPlayer: ServerPlayerEntity,
     val requestTime: ZonedDateTime
-) : TeleportState()
+) : TeleportState() {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Requested
+
+        if (playerRequested != other.playerRequested) return false
+        if (targetPlayer != other.targetPlayer) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = playerRequested.hashCode()
+        result = 31 * result + targetPlayer.hashCode()
+        return result
+    }
+}
 
 class RequestedToAll(
     val playerRequested: ServerPlayerEntity,
@@ -31,48 +49,98 @@ class RequestedHere(
 class TeleportPresenter {
     private val logger = LogManager.getLogger()
     private val state: MutableList<TeleportState> = mutableListOf()
-    var ignoredPlayers: MutableList<String> = mutableListOf()
-    var timeOut = 45
+    var ignoredPlayers: MutableList<String> = mutableListOf() // todo: it need save
+    private var timeOut = 45
 
+    fun configureTimeOut() {
+        timeOut = ModConfiguration.getCommandsConfig().commands.tpa.timeOut
+    }
+
+    /**
+     * @return true if request added successfully,
+     * false if request adding failed (e.g player already
+     * maked request to any player).
+     */
     fun commitRequest(
         playerRequested: ServerPlayerEntity,
         targetPlayer: ServerPlayerEntity
     ): Boolean {
+        removeExpiredRequest()
+
         state.forEach {
-            if ((it as Requested).targetPlayer.name.string == targetPlayer.name.string) {
-                return false
+            if (it is Requested) when (it) {
+                Requested(playerRequested, targetPlayer, ZonedDateTime.now()) -> return false
             }
         }
+
+        if (targetPlayer.name.string in ignoredPlayers) return false
+
         state.add(Requested(playerRequested, targetPlayer, ZonedDateTime.now()))
         return true
     }
 
-    @UseExperimental(ExperimentalTime::class)
+    /**
+     * It should be return player if request exists,
+     * returned player can be used for identification request
+     * maker, for getting late player position, for teleport
+     * to you.
+     *
+     * @return data type ServerPlayerEntity (nullable),
+     * if return null then request expired or not exist.
+     * if request not expired or exists then return player
+     * who make request.
+     */
     fun getRequest(
         player: ServerPlayerEntity
-    ): Tuple<ServerPlayerEntity?, ServerPlayerEntity?> {
-        val state = state.find {
+    ): ServerPlayerEntity? {
+        removeExpiredRequest()
+
+        return (this.state.find {
             if (it is Requested) {
                 if (player.name.string == it.targetPlayer.name.string) {
                     return@find true
                 }
             }
             return@find false
-        } as Requested
+        } as Requested?)?.playerRequested
+    }
 
-        val duration = Duration.between(state.requestTime, ZonedDateTime.now())
-        val passedSeconds = duration.toKotlinDuration().inSeconds
+    fun removeExpiredRequest() {
+        removeRequestedExpiredRequest()
+    }
 
-        if (passedSeconds < timeOut) {
-            return Tuple(state.playerRequested, state.playerRequested)
-        } else {
-            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-            return Tuple(null, null)
+    /**
+     * Just remove all expired requests from teleport state.
+     * It method remove only `Requested` type requests.
+     */
+    @UseExperimental(ExperimentalTime::class)
+    private fun removeRequestedExpiredRequest() {
+        state.removeAll {
+            it as Requested
+
+            val duration = Duration.between(it.requestTime, ZonedDateTime.now())
+            val passedSeconds = duration.toKotlinDuration().inSeconds
+
+            return@removeAll (passedSeconds > timeOut)
         }
     }
 
-    fun removeRequest() {
-
+    /**
+     * @param requestInitiator request initiator as player,
+     * i.e player who created request.
+     * @param requested requested player, i.e player who can
+     * accept or deny request.
+     * @return true if request removed successfully,
+     * false if request not exists (i.e not able for removing).
+     */
+    fun removeRequest(
+        requestInitiator: ServerPlayerEntity,
+        requested: ServerPlayerEntity
+    ): Boolean {
+        return state.removeIf {
+            it as Requested
+            requestInitiator == it.playerRequested && requested == it.targetPlayer
+        }
     }
 
     fun commitRequestToAll() {

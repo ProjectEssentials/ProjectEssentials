@@ -71,7 +71,15 @@ data class CommandsConfig(
         @SerialName("TpAll")
         val tpAll: TpAll = TpAll(),
         @SerialName("TpHere")
-        val tpHere: TpHere = TpHere()
+        val tpHere: TpHere = TpHere(),
+        @SerialName("Tpa")
+        val tpa: Tpa = Tpa(),
+        @SerialName("TpAccept")
+        val tpAccept: TpAccept = TpAccept(),
+        @SerialName("TpDeny")
+        val tpDeny: TpDeny = TpDeny(),
+        @SerialName("TpToggle")
+        val tpToggle: TpToggle = TpToggle()
     ) {
         @Serializable
         data class Heal(
@@ -320,6 +328,32 @@ data class CommandsConfig(
         data class TpHere(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etphere", "s")
+        )
+
+        @Serializable
+        data class Tpa(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etpa", "call", "ecall"),
+            @SerialName("TimeOut")
+            val timeOut: Int = 45
+        )
+
+        @Serializable
+        data class TpAccept(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etpaccept", "tpyes", "etpyes")
+        )
+
+        @Serializable
+        data class TpDeny(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etpdeny", "tpno", "etpno")
+        )
+
+        @Serializable
+        data class TpToggle(
+            @SerialName("Aliases")
+            val aliases: kotlin.collections.List<String> = listOf("etptoggle", "tpoff", "etpoff")
         )
     }
 }

@@ -11,10 +11,7 @@ import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.helpers.CommandAliases
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.staff.EssentialsCommand
-import com.mairwunnx.projectessentials.commands.teleport.TopCommand
-import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
-import com.mairwunnx.projectessentials.commands.teleport.TpHereCommand
-import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
+import com.mairwunnx.projectessentials.commands.teleport.*
 import com.mairwunnx.projectessentials.commands.time.*
 import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
@@ -23,6 +20,7 @@ import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.states.AfkPresenter
+import com.mairwunnx.projectessentials.states.TeleportPresenter
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
 import com.mairwunnx.projectessentialscore.EssBase
@@ -57,6 +55,7 @@ class ProjectEssentials : EssBase() {
     init {
         modInstance = this
         afkPresenter = AfkPresenter()
+        teleportPresenter = TeleportPresenter()
         modVersion = "1.14.4-0.3.0.0"
         logBaseInfo()
         validateForgeVersion()
@@ -111,6 +110,10 @@ class ProjectEssentials : EssBase() {
         TpPosCommand.register(cmdDispatcher)
         TpAllCommand.register(cmdDispatcher)
         TpHereCommand.register(cmdDispatcher)
+        TpaCommand.register(cmdDispatcher)
+        TpAcceptCommand.register(cmdDispatcher)
+        TpDenyCommand.register(cmdDispatcher)
+        TpToggleCommand.register(cmdDispatcher)
         EssentialsCommand.register(cmdDispatcher)
     }
 
@@ -248,5 +251,6 @@ class ProjectEssentials : EssBase() {
     companion object {
         lateinit var modInstance: ProjectEssentials
         lateinit var afkPresenter: AfkPresenter
+        lateinit var teleportPresenter: TeleportPresenter
     }
 }
