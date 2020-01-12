@@ -104,5 +104,10 @@
   "project_essentials.sendpos.pattern": "§6Игрок §7%s §6поделился с Вами своими координатами (§7§oизмерение = §7§o%s, §7§ox = %s, §7§oy = %s, §7§oz = %s§6).",
   "project_essentials.sendpos.restricted": "§cУ вас §7нет прав §cчто бы поделиться своими координатами с кем-либо.",
   "project_essentials.tpaall.restricted": "§cУ вас §7нет прав §cчто бы отправить заявку на телепортацию ко всем игрокам.",
-  "project_essentials.tpaall.success": "§6Заявки на телепортирование отправлены §7всем §6игрокам..."
+  "project_essentials.tpaall.success": "§6Заявки на телепортирование отправлены §7всем §6игрокам...",
+  "project_essentials.tpa.restricted": "§cУ вас §7нет прав §cчто бы отправить заявку на телепортацию к игроку.",
+  "project_essentials.tpa.success": "§6Заявка на телепортацию отправлена игроку §7%s§6.",
+  "project_essentials.tpa.recipient_success": "§7%s§6 просит телепортироваться к Вам.\n§6Что бы принять заявку, напишите §7/tpyes§6, что бы отклонить §7/tpno",
+  "project_essentials.tpa.request_exist": "§cЗаявка на телепортацию к игроку §7%s §cуже существует, отмените заявку (§7/tpacancel§c) или ждите принятия решения или таймаута.",
+  "project_essentials.tpa.tried_to_teleport": "§7Игрок §7§o%s §7попытался подать заявку на телепортацию к вам."
 }

@@ -59,11 +59,11 @@ object TpaCommand : CommandBase() {
                         targetPlayer.name.string
                     )
                 ) {
-                    sendMsg(sender, "request success")
-                    sendMsg(target, "request from $senderName")
+                    sendMsg(sender, "tpa.success", targetName)
+                    sendMsg(target, "tpa.recipient_success", senderName)
                 } else {
-                    sendMsg(sender, "request already exists or player restricted")
-                    sendMsg(target, "$senderName tried to teleport to you")
+                    sendMsg(sender, "tpa.request_exist", targetName)
+                    sendMsg(target, "tpa.tried_to_teleport", senderName)
                 }
             } else {
                 logger.warn(

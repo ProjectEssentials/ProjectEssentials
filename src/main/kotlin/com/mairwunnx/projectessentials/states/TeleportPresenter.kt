@@ -315,7 +315,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
             if (server == null) server = it.server
             if (it.name.string != requestInitiator) {
                 commitRequest(requestInitiator, it.name.string)
-                sendMsg(it.commandSource, "request from $requestInitiator") TODO
+                sendMsg(it.commandSource, "tpa.recipient_success", requestInitiator)
             }
         }
         if (server != null) {
