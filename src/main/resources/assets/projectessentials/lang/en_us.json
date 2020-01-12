@@ -112,5 +112,9 @@
   "project_essentials.tpa.tried_to_teleport": "§7Player §7§o%s §7tried to make teleport request to you.",
   "project_essentials.tpacancel.restricted": "§cYou §7don't have permission §cto canceling teleport requests.",
   "project_essentials.tpacancel.requests_cancel_successfully": "§6All teleport requests have been canceled.",
-  "project_essentials.tpacancel.nothing_to_cancel": "§cNothing to cancel."
+  "project_essentials.tpacancel.nothing_to_cancel": "§cNothing to cancel.",
+  "project_essentials.tpdeny.restricted": "§cYou §7don't have permission §cto deny teleport requests.",
+  "project_essentials.tpdeny.request_denied": "§cYour teleport request to player §7%s §chave been denied.",
+  "project_essentials.tpdeny.request_denied_successfully": "§6You denied teleport request by §7%s§6.",
+  "project_essentials.tpdeny.nothing_to_cancel": "§cNothing to deny."
 }

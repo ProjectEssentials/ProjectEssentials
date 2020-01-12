@@ -112,5 +112,9 @@
   "project_essentials.tpa.tried_to_teleport": "§7Игрок §7§o%s §7попытался подать заявку на телепортацию к вам.",
   "project_essentials.tpacancel.restricted": "§cУ вас §7нет прав §cна отмену заявок на телепорт.",
   "project_essentials.tpacancel.requests_cancel_successfully": "§6Все заявки на телепортацию были отменены.",
-  "project_essentials.tpacancel.nothing_to_cancel": "§cНечего отменять, заявок-то нет."
+  "project_essentials.tpacancel.nothing_to_cancel": "§cНечего отменять, заявок-то нет.",
+  "project_essentials.tpdeny.restricted": "§cУ вас §7нет прав §cна отмену заявок на телепортацию.",
+  "project_essentials.tpdeny.request_denied": "§cВаша заявка к игроку §7%s §cна телепортацию была отменена.",
+  "project_essentials.tpdeny.request_denied_successfully": "§6Вы отклонили заявку на телепортацию от игрока §7%s§6.",
+  "project_essentials.tpdeny.nothing_to_cancel": "§cУ вас нет заявок, что бы их отклонить."
 }

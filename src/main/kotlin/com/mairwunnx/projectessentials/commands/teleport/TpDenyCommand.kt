@@ -61,10 +61,14 @@ object TpDenyCommand : CommandBase() {
                             )
                         ) {
                             sendMsg(
-                                requestInitiator.commandSource, "tpdeny.request_denied"
+                                requestInitiator.commandSource,
+                                "tpdeny.request_denied",
+                                senderName
                             )
                             sendMsg(
-                                sender, "tpdeny.request_denied_successfully"
+                                sender,
+                                "tpdeny.request_denied_successfully",
+                                requestInitiator.name.string
                             )
                         }
                     }
@@ -74,15 +78,19 @@ object TpDenyCommand : CommandBase() {
                             )
                         ) {
                             sendMsg(
-                                requestHereInitiator.commandSource, "tpdeny.request_denied"
+                                requestHereInitiator.commandSource,
+                                "tpdeny.request_denied",
+                                senderName
                             )
                             sendMsg(
-                                sender, "tpdeny.request_denied_successfully"
+                                sender,
+                                "tpdeny.request_denied_successfully",
+                                requestHereInitiator.name.string
                             )
                         }
                     }
                     else -> {
-                        sendMsg(sender, "tpdeny.not_exist_requests")
+                        sendMsg(sender, "tpdeny.nothing_to_cancel")
                     }
                 }
             } else {
