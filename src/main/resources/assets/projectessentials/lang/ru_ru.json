@@ -108,7 +108,7 @@
   "project_essentials.tpa.restricted": "§cУ вас §7нет прав §cчто бы отправить заявку на телепортацию к игроку.",
   "project_essentials.tpa.success": "§6Заявка на телепортацию отправлена игроку §7%s§6.",
   "project_essentials.tpa.recipient_success": "§7%s§6 просит телепортироваться к Вам.\n§6Что бы принять заявку, напишите §7/tpyes§6, что бы отклонить §7/tpno",
-  "project_essentials.tpa.request_exist": "§cЗаявка на телепортацию к игроку §7%s §cуже существует, отмените заявку (§7/tpacancel§c) или ждите принятия решения или таймаута.",
+  "project_essentials.tpa.request_exist": "§cЗаявка на телепортацию к игроку §7%s §cуже существует или игрок запретил телепорт к нему, отмените заявку (§7/tpacancel§c) или ждите принятия решения или таймаута.",
   "project_essentials.tpa.tried_to_teleport": "§7Игрок §7§o%s §7попытался подать заявку на телепортацию к вам.",
   "project_essentials.tpacancel.restricted": "§cУ вас §7нет прав §cна отмену заявок на телепорт.",
   "project_essentials.tpacancel.requests_cancel_successfully": "§6Все заявки на телепортацию были отменены.",

@@ -108,7 +108,7 @@
   "project_essentials.tpa.restricted": "§cYou §7don't have permission §cto make teleport request to player.",
   "project_essentials.tpa.success": "§6Teleport request sent to player §7%s§6.",
   "project_essentials.tpa.recipient_success": "§7%s§6 player has requested to teleport to you.\n§6For accepting request type §7/tpyes§6, for deny type §7/tpno",
-  "project_essentials.tpa.request_exist": "§cRequest for teleport to player §7%s §calready exist, cancel request (§7/tpacancel§c) or wait decide or timeout.",
+  "project_essentials.tpa.request_exist": "§cRequest for teleport to player §7%s §calready exist or player restricted teleports, cancel request (§7/tpacancel§c) or wait decide or timeout.",
   "project_essentials.tpa.tried_to_teleport": "§7Player §7§o%s §7tried to make teleport request to you.",
   "project_essentials.tpacancel.restricted": "§cYou §7don't have permission §cto canceling teleport requests.",
   "project_essentials.tpacancel.requests_cancel_successfully": "§6All teleport requests have been canceled.",
