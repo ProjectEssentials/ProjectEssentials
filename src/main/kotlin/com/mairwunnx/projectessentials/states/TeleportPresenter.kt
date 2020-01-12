@@ -80,37 +80,6 @@ class RequestedHere(
 }
 
 /**
- * @param requestInitiator player nickname, who created
- * request, i.e who initiator of request.
- * @param requestedPlayers targets of request, i.e players
- * who can accept or decine teleport request.
- * @param requestTime teleport request creating time.
- */
-class RequestedToAll(
-    val requestInitiator: String,
-    val requestedPlayers: List<String>,
-    val requestTime: ZonedDateTime
-) : TeleportState() {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as RequestedToAll
-
-        if (requestInitiator != other.requestInitiator) return false
-        if (requestedPlayers != other.requestedPlayers) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = requestInitiator.hashCode()
-        result = 31 * result + requestedPlayers.hashCode()
-        return result
-    }
-}
-
-/**
  * @param server minecraft server instance, basically
  * needed for finding player by nickname on server.
  */
