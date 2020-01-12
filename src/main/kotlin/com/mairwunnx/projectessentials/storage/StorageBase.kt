@@ -46,7 +46,17 @@ object StorageBase {
                     val userDataRaw = File(
                         USER_DATA_FOLDER + File.separator + it + File.separator + "data.json"
                     ).readText()
-                    val userDataClass = Json.parse(UserData.serializer(), userDataRaw)
+                    val json = Json(
+                        JsonConfiguration(
+                            encodeDefaults = true,
+                            strictMode = false,
+                            unquoted = false,
+                            allowStructuredMapKeys = true,
+                            prettyPrint = true,
+                            useArrayPolymorphism = false
+                        )
+                    )
+                    val userDataClass = json.parse(UserData.serializer(), userDataRaw)
                     userData[userId] = userDataClass
                 } catch (_: FileNotFoundException) {
                     logger.info("        - loading user data for $it skipped! not found!")
@@ -71,7 +81,7 @@ object StorageBase {
             val json = Json(
                 JsonConfiguration(
                     encodeDefaults = true,
-                    strictMode = true,
+                    strictMode = false,
                     unquoted = false,
                     allowStructuredMapKeys = true,
                     prettyPrint = true,

@@ -23,7 +23,16 @@ object ModConfiguration {
         try {
             logger.info("        - loading commands configuration ...")
             val configRaw = File(COMMANDS_CONFIG).readText()
-            commandsConfig = Json.parse(CommandsConfig.serializer(), configRaw)
+            val json = Json(
+                JsonConfiguration(
+                    encodeDefaults = true,
+                    strictMode = false,
+                    unquoted = false,
+                    allowStructuredMapKeys = true,
+                    prettyPrint = true
+                )
+            )
+            commandsConfig = json.parse(CommandsConfig.serializer(), configRaw)
         } catch (ex: FileNotFoundException) {
             logger.error("Configuration file ($COMMANDS_CONFIG) not found!")
             logger.warn("The default configuration will be used.")
@@ -35,7 +44,7 @@ object ModConfiguration {
         val json = Json(
             JsonConfiguration(
                 encodeDefaults = true,
-                strictMode = true,
+                strictMode = false,
                 unquoted = false,
                 allowStructuredMapKeys = true,
                 prettyPrint = true,
