@@ -315,14 +315,14 @@ class TeleportPresenter(private val server: MinecraftServer) {
             if (server == null) server = it.server
             if (it.name.string != requestInitiator) {
                 commitRequest(requestInitiator, it.name.string)
-                sendMsg(it.commandSource, "request from $requestInitiator")
+                sendMsg(it.commandSource, "request from $requestInitiator") TODO
             }
         }
         if (server != null) {
             val initiator = server!!.findPlayer(requestInitiator)
             if (initiator != null) {
                 logger.info("All players has been notified about requests")
-                sendMsg(initiator.commandSource, "request success")
+                sendMsg(initiator.commandSource, "tpaall.success")
             }
         }
     }
