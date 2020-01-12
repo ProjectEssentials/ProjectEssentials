@@ -92,14 +92,16 @@ class TeleportPresenter(private val server: MinecraftServer) {
      */
     var ignoredPlayers: MutableList<String> = mutableListOf() // todo: it need save
     /**
-     * Time out of teleport request, after expiring some time
+     * Time out (in seconds) of teleport request, after expiring some time
      * (able to configure in configuration) teleport request will be
      * removed.
+     *
+     * Default value is 45 seconds.
      */
     private var timeOut = 45
 
     init {
-        logger.info("Initializing teleport presenter")
+        logger.info("Initializing teleport state presenter")
     }
 
     fun configureTimeOut() {
@@ -116,17 +118,31 @@ class TeleportPresenter(private val server: MinecraftServer) {
         requestInitiator: String,
         requestedPlayer: String
     ): Boolean {
+        logger.info(
+            "Commiting request type `Requested` with with request initiator $requestInitiator and requested player $requestedPlayer"
+        )
         removeExpiredRequest()
 
         state.forEach {
             if (it is Requested &&
                 it == Requested(requestInitiator, requestedPlayer, ZonedDateTime.now())
-            ) return false
+            ) {
+                logger.info(
+                    "Commiting request `Requested` type aborted!, reason: request already exist."
+                )
+                return false
+            }
         }
 
-        if (requestedPlayer in ignoredPlayers) return false
+        if (requestedPlayer in ignoredPlayers) {
+            logger.info(
+                "Commiting request `Requested` type aborted!, reason: player restrict teleport requests."
+            )
+            return false
+        }
 
         state.add(Requested(requestInitiator, requestedPlayer, ZonedDateTime.now()))
+        logger.info("Commiting request `Requested` type done.")
         return true
     }
 
@@ -147,6 +163,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
     fun getRequest(
         player: ServerPlayerEntity
     ): ServerPlayerEntity? {
+        logger.info("Getting teleport requests for ${player.name.string}")
         removeExpiredRequest()
 
         (this.state.find {
@@ -157,6 +174,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
             }
             return@find false
         } as Requested?)?.requestInitiator.let {
+            logger.info("Request found, finding request initiator player on server")
             return server.findPlayer(it ?: String.empty)
         }
     }
@@ -173,6 +191,9 @@ class TeleportPresenter(private val server: MinecraftServer) {
         requestInitiator: String,
         requestedPlayer: String
     ): Boolean {
+        logger.info(
+            "Removing request `Requested` by request initiator ($requestInitiator) and requested player ($requestedPlayer)"
+        )
         return state.removeIf {
             if (it is Requested) {
                 return@removeIf requestInitiator == it.requestInitiator &&
@@ -192,17 +213,31 @@ class TeleportPresenter(private val server: MinecraftServer) {
         requestInitiator: String,
         requestedPlayer: String
     ): Boolean {
+        logger.info(
+            "Commiting request type `RequestedHere` with with request initiator $requestInitiator and requested player $requestedPlayer"
+        )
         removeExpiredRequest()
 
         state.forEach {
             if (it is RequestedHere &&
                 it == RequestedHere(requestInitiator, requestedPlayer, ZonedDateTime.now())
-            ) return false
+            ) {
+                logger.info(
+                    "Commiting request `RequestedHere` type aborted!, reason: request already exist."
+                )
+                return false
+            }
         }
 
-        if (requestedPlayer in ignoredPlayers) return false
+        if (requestedPlayer in ignoredPlayers) {
+            logger.info(
+                "Commiting request `RequestedHere` type aborted!, reason: player restrict teleport requests."
+            )
+            return false
+        }
 
         state.add(RequestedHere(requestInitiator, requestedPlayer, ZonedDateTime.now()))
+        logger.info("Commiting request `RequestedHere` type done.")
         return true
     }
 
@@ -223,6 +258,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
     fun getRequestHere(
         player: ServerPlayerEntity
     ): ServerPlayerEntity? {
+        logger.info("Getting teleport requests for ${player.name.string}")
         removeExpiredRequest()
 
         (this.state.find {
@@ -233,14 +269,26 @@ class TeleportPresenter(private val server: MinecraftServer) {
             }
             return@find false
         } as RequestedHere?)?.requestInitiator.let {
+            logger.info("Request found, finding request initiator player on server")
             return server.findPlayer(it ?: String.empty)
         }
     }
 
+    /**
+     * @param requestInitiator request initiator player nickname,
+     * i.e player who created request.
+     * @param requestedPlayer requested player, i.e player who can
+     * accept or deny request.
+     * @return true if request removed successfully,
+     * false if request not exists (i.e not able for removing).
+     */
     fun removeRequestHere(
         requestInitiator: String,
         requestedPlayer: String
     ): Boolean {
+        logger.info(
+            "Removing request `RequestedHere` by request initiator ($requestInitiator) and requested player ($requestedPlayer)"
+        )
         return state.removeIf {
             if (it is RequestedHere) {
                 return@removeIf requestInitiator == it.requestInitiator &&
@@ -250,10 +298,18 @@ class TeleportPresenter(private val server: MinecraftServer) {
         }
     }
 
+    /**
+     * It work like `Request`, but for all players on server.
+     *
+     * @param requestInitiator request initiator player nickname,
+     * i.e player who created request.
+     * @param players collection of players on server.
+     */
     fun makeRequestToAll(
         requestInitiator: String,
         players: Collection<ServerPlayerEntity>
     ) {
+        logger.info("Making request to all players by $requestInitiator")
         var server: MinecraftServer? = null
         players.forEach {
             if (server == null) server = it.server
@@ -265,6 +321,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
         if (server != null) {
             val initiator = server!!.findPlayer(requestInitiator)
             if (initiator != null) {
+                logger.info("All players has been notified about requests")
                 sendMsg(initiator.commandSource, "request success")
             }
         }
@@ -281,6 +338,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
     fun removeAllRequests(
         requestInitiator: String
     ): Boolean {
+        logger.info("Removing all exists requests by $requestInitiator")
         return state.removeAll {
             when (it) {
                 is Requested -> {
@@ -295,6 +353,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
     }
 
     private fun removeExpiredRequest() {
+        logger.info("Removing expired teleport requests")
         removeRequestedExpiredRequest()
         removeRequestedHereExpiredRequest()
     }
@@ -305,6 +364,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
      */
     @UseExperimental(ExperimentalTime::class)
     private fun removeRequestedExpiredRequest() {
+        logger.info("Removing expired `Requested` type teleport requests")
         state.removeAll {
             if (it is Requested) {
                 val duration = Duration.between(it.requestTime, ZonedDateTime.now())
@@ -323,6 +383,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
      */
     @UseExperimental(ExperimentalTime::class)
     private fun removeRequestedHereExpiredRequest() {
+        logger.info("Removing expired `RequestedHere` type teleport requests")
         state.removeAll {
             if (it is RequestedHere) {
                 val duration = Duration.between(it.requestTime, ZonedDateTime.now())
