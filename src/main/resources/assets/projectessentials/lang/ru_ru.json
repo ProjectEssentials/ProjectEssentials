@@ -119,5 +119,8 @@
   "project_essentials.tpdeny.nothing_to_cancel": "§cУ вас нет заявок, что бы их отклонить.",
   "project_essentials.tptoggle.restricted": "§cУ вас §7нет прав §cчто бы отключить или включить заявки на телепортацию.",
   "project_essentials.tptoggle.removed_successfully": "§6Заявки на телепорт к вам разрешены.",
-  "project_essentials.tptoggle.added_successfully": "§6Заявки на телепорт к вам запрещены."
+  "project_essentials.tptoggle.added_successfully": "§6Заявки на телепорт к вам запрещены.",
+  "project_essentials.tpaccept.restricted": "§cУ вас §7нет прав §cчто бы принять заявку на телепортацию.",
+  "project_essentials.tpaccept.request_accepted": "§6Ваша заявка на телепорт к игроку §7%s §6была принята, телепортирование ...",
+  "project_essentials.tpaccept.nothing_to_accept": "§cВы не можете принять заявку, так как ее нет."
 }

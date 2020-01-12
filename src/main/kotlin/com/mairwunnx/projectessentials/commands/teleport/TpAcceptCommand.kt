@@ -65,7 +65,9 @@ object TpAcceptCommand : CommandBase() {
                             senderPlayer.rotationPitch
                         )
                         sendMsg(
-                            requestInitiator.commandSource, "tpaccept.request_accepted"
+                            requestInitiator.commandSource,
+                            "tpaccept.request_accepted",
+                            senderName
                         )
                         ProjectEssentials.teleportPresenter.removeRequest(
                             requestInitiator.name.string,
@@ -82,7 +84,9 @@ object TpAcceptCommand : CommandBase() {
                             requestHereInitiator.rotationPitch
                         )
                         sendMsg(
-                            requestHereInitiator.commandSource, "tpaccept.request_accepted"
+                            requestHereInitiator.commandSource,
+                            "tpaccept.request_accepted",
+                            senderName
                         )
                         ProjectEssentials.teleportPresenter.removeRequestHere(
                             requestHereInitiator.name.string,
@@ -90,7 +94,7 @@ object TpAcceptCommand : CommandBase() {
                         )
                     }
                     else -> {
-                        sendMsg(sender, "tpaccept.not_exist_requests")
+                        sendMsg(sender, "tpaccept.nothing_to_accept")
                     }
                 }
             } else {

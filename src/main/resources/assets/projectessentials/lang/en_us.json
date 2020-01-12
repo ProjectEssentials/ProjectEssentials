@@ -119,5 +119,8 @@
   "project_essentials.tpdeny.nothing_to_cancel": "§cNothing to deny.",
   "project_essentials.tptoggle.restricted": "§cYou §7don't have permission §cto toggle of or toggle on teleport requests.",
   "project_essentials.tptoggle.removed_successfully": "§6Teleport requests to you toggled on.",
-  "project_essentials.tptoggle.added_successfully": "§6Teleport requests to you toggled off."
+  "project_essentials.tptoggle.added_successfully": "§6Teleport requests to you toggled off.",
+  "project_essentials.tpaccept.restricted": "§cYou §7don't have permission §cto accept teleport request.",
+  "project_essentials.tpaccept.request_accepted": "§6Your teleport request to §7%s §6player has been accepted, teleporting ...",
+  "project_essentials.tpaccept.nothing_to_accept": "§cNothing to accept."
 }
