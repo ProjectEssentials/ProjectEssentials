@@ -59,11 +59,11 @@ object TpaHereCommand : CommandBase() {
                         targetPlayer.name.string
                     )
                 ) {
-                    sendMsg(sender, "request TP HERE success")
-                    sendMsg(target, "request TP HERE from $senderName")
+                    sendMsg(sender, "tpahere.success", targetName)
+                    sendMsg(target, "tpahere.recipient_success", senderName)
                 } else {
-                    sendMsg(sender, "request TP HERE already exists or player restricted")
-                    sendMsg(target, "$senderName tried to make `call here` to you")
+                    sendMsg(sender, "tpahere.request_exist", targetName)
+                    sendMsg(target, "tpahere.tried_to_teleport", senderName)
                 }
             } else {
                 logger.warn(
