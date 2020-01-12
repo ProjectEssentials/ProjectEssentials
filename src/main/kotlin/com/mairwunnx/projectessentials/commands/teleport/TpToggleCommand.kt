@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials
+import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -48,13 +48,13 @@ object TpToggleCommand : CommandBase() {
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tptoggle")) {
-                if (senderName in ProjectEssentials.teleportPresenter.ignoredPlayers) {
-                    ProjectEssentials.teleportPresenter.ignoredPlayers.remove(senderName)
+                if (senderName in teleportPresenter.ignoredPlayers) {
+                    teleportPresenter.ignoredPlayers.remove(senderName)
                     sendMsg(sender, "tptoggle.removed_successfully")
-                    logger.info("player $senderName removed from ignore list")
+                    logger.info("Player $senderName removed from teleport ignore list")
                 } else {
-                    logger.info("player $senderName added to ignore list")
-                    ProjectEssentials.teleportPresenter.ignoredPlayers.add(senderName)
+                    logger.info("player $senderName added to teleport ignore list")
+                    teleportPresenter.ignoredPlayers.add(senderName)
                     sendMsg(sender, "tptoggle.added_successfully")
                 }
             } else {

@@ -116,5 +116,8 @@
   "project_essentials.tpdeny.restricted": "§cYou §7don't have permission §cto deny teleport requests.",
   "project_essentials.tpdeny.request_denied": "§cYour teleport request to player §7%s §chave been denied.",
   "project_essentials.tpdeny.request_denied_successfully": "§6You denied teleport request by §7%s§6.",
-  "project_essentials.tpdeny.nothing_to_cancel": "§cNothing to deny."
+  "project_essentials.tpdeny.nothing_to_cancel": "§cNothing to deny.",
+  "project_essentials.tptoggle.restricted": "§cYou §7don't have permission §cto toggle of or toggle on teleport requests.",
+  "project_essentials.tptoggle.removed_successfully": "§6Teleport requests to you toggled on.",
+  "project_essentials.tptoggle.added_successfully": "§6Teleport requests to you toggled off."
 }
