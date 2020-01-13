@@ -3,8 +3,8 @@ package com.mairwunnx.projectessentials.commands.general
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
-import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext

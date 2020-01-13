@@ -2,9 +2,9 @@ package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.commands.weather.Weather
 import com.mairwunnx.projectessentials.extensions.sendMsg
+import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mairwunnx.projectessentialscore.helpers.ONLY_PLAYER_CAN
 import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
-import com.mairwunnx.projectessentialspermissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
