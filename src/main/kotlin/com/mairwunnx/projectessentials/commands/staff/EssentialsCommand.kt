@@ -138,7 +138,6 @@ object EssentialsCommand {
         FeedCommand.reload()
         FlyCommand.reload()
         GodCommand.reload()
-        ListCommand.reload()
         BreakCommand.reload()
         GetPosCommand.reload()
         SendPosCommand.reload()

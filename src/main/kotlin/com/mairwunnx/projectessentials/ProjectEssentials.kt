@@ -77,7 +77,6 @@ class ProjectEssentials : EssBase() {
         cmdDispatcher: CommandDispatcher<CommandSource>
     ) {
         logger.info("Start registering essentials commands")
-        ListCommand.register(cmdDispatcher)
         GetPosCommand.register(cmdDispatcher)
         SendPosCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
