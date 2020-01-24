@@ -40,20 +40,28 @@ minecraft {
 
     runs {
         client {
+            //noinspection GroovyAssignabilityCheck
             workingDirectory(project.file(dev_run_client_path))
             property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
             property("forge.logging.console.level", "debug")
             mods {
-                ProjectEssentials { source(sourceSets.main) }
+                ProjectEssentials {
+                    //noinspection GroovyAssignabilityCheck
+                    source(sourceSets.main)
+                }
             }
         }
 
         server {
+            //noinspection GroovyAssignabilityCheck
             workingDirectory(project.file(dev_run_server_path))
             property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
             property("forge.logging.console.level", "debug")
             mods {
-                ProjectEssentials { source(sourceSets.main) }
+                ProjectEssentials {
+                    //noinspection GroovyAssignabilityCheck
+                    source(sourceSets.main)
+                }
             }
         }
     }
@@ -116,6 +124,7 @@ sourceCompatibility = targetCompatibility =
 compileKotlin.kotlinOptions.jvmTarget =
     compileTestKotlin.kotlinOptions.jvmTarget = project_jvm_version_target
 
+//noinspection GroovyAssignabilityCheck
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
