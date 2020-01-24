@@ -17,6 +17,11 @@ import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.core.EssBase
+import com.mairwunnx.projectessentials.core.extensions.commandName
+import com.mairwunnx.projectessentials.core.extensions.player
+import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND
+import com.mairwunnx.projectessentials.core.helpers.MOD_CONFIG_FOLDER
 import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
@@ -24,11 +29,6 @@ import com.mairwunnx.projectessentials.states.AfkPresenter
 import com.mairwunnx.projectessentials.states.TeleportPresenter
 import com.mairwunnx.projectessentials.storage.StorageBase
 import com.mairwunnx.projectessentials.storage.UserData
-import com.mairwunnx.projectessentialscore.EssBase
-import com.mairwunnx.projectessentialscore.extensions.commandName
-import com.mairwunnx.projectessentialscore.extensions.player
-import com.mairwunnx.projectessentialscore.helpers.DISABLED_COMMAND
-import com.mairwunnx.projectessentialscore.helpers.MOD_CONFIG_FOLDER
 import com.mojang.brigadier.CommandDispatcher
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.PlayerEntity

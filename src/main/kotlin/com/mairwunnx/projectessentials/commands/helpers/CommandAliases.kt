@@ -1,7 +1,7 @@
 package com.mairwunnx.projectessentials.commands.helpers
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentialscooldown.essentials.CommandsAliases.aliases
+import com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases.aliases
 
 object CommandAliases {
     /**

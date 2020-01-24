@@ -2,10 +2,10 @@
 
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases
+import com.mairwunnx.projectessentials.core.extensions.empty
+import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.helpers.validateAlias
-import com.mairwunnx.projectessentialscooldown.essentials.CommandsAliases
-import com.mairwunnx.projectessentialscore.extensions.empty
-import com.mairwunnx.projectessentialscore.extensions.isPlayerSender
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
@@ -54,7 +54,7 @@ abstract class CommandBase {
     private fun applyCommandAliases() {
         try {
             Class.forName(
-                "com.mairwunnx.projectessentialscooldown.essentials.CommandsAliases"
+                "com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases"
             )
             CommandsAliases.aliases[command] = commandAliases
             logger.info("        - applying aliases: $commandAliases")

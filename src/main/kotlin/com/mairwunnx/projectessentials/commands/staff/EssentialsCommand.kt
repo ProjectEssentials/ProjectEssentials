@@ -14,11 +14,11 @@ import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mairwunnx.projectessentials.storage.StorageBase
-import com.mairwunnx.projectessentialscore.extensions.isPlayerSender
-import com.mairwunnx.projectessentialscore.helpers.PERMISSION_LEVEL
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext

@@ -1,9 +1,9 @@
 package com.mairwunnx.projectessentials.states
 
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.extensions.empty
 import com.mairwunnx.projectessentials.extensions.findPlayer
 import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentialscore.extensions.empty
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.server.MinecraftServer
 import org.apache.logging.log4j.LogManager
