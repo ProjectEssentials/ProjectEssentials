@@ -58,9 +58,7 @@ class ProjectEssentials : EssBase() {
         modVersion = "1.14.4-0.3.0"
         logBaseInfo()
         validateForgeVersion()
-        logger.debug("Register event bus for $modName mod ...")
         MinecraftForge.EVENT_BUS.register(this)
-        logger.info("Loading $modName modification settings ...")
         ModConfiguration.loadConfig()
         StorageBase.loadUserData()
     }
@@ -69,14 +67,12 @@ class ProjectEssentials : EssBase() {
     fun onServerStarting(it: FMLServerStartingEvent) {
         teleportPresenter = TeleportPresenter(it.server)
         teleportPresenter.configureTimeOut()
-        logger.info("$modName starting mod loading ...")
         registerCommands(it.server.commandManager.dispatcher)
     }
 
     private fun registerCommands(
         cmdDispatcher: CommandDispatcher<CommandSource>
     ) {
-        logger.info("Start registering essentials commands")
         GetPosCommand.register(cmdDispatcher)
         SendPosCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)
@@ -119,9 +115,7 @@ class ProjectEssentials : EssBase() {
     @SubscribeEvent
     fun onServerStopping(it: FMLServerStoppingEvent) {
         logger.info("Shutting down $modName mod ...")
-        logger.info("    - Saving modification configuration ...")
         ModConfiguration.saveConfig()
-        logger.info("    - Saving modification user data ...")
         StorageBase.saveUserData()
     }
 
