@@ -1,5 +1,3 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
-
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.ProjectEssentials
@@ -26,10 +24,10 @@ abstract class CommandBase {
     var senderIsServer = false
     var command: String = String.empty
     var aliases: MutableList<String> = mutableListOf()
-    val commandAliases: MutableList<String> = mutableListOf()
+    private val commandAliases: MutableList<String> = mutableListOf()
 
     open fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        logger.info("    - register \"/$command\" command ...")
+        logger.info("Register \"/$command\" command")
         assignCommandAliases()
         applyCommandAliases()
     }
@@ -38,10 +36,9 @@ abstract class CommandBase {
         try {
             aliases.add(command)
             aliases.forEach {
-                logger.info("        - assigning \"/$command\" command alias: $it")
                 when {
                     validateAlias(it) -> commandAliases.add(it)
-                    else -> logger.error("        - alias assigning $it skipped: alias validation fail!")
+                    else -> logger.error("Alias assigning $it skipped: alias validation fail!")
                 }
             }
         } catch (ex: ConcurrentModificationException) {
@@ -84,14 +81,14 @@ abstract class CommandBase {
                 targetName = targetPlayer.name.string
                 targetIsExists = true
             } catch (ex: IllegalArgumentException) {
-                logger.warn("unnable get player instance command context.")
+                logger.warn("Unnable get player instance command context.")
             }
         }
         return 0
     }
 
     open fun reload() {
-        logger.info("    - reloading \"/$command\" command ...")
+        logger.info("Reloading \"/$command\" command")
         assignCommandAliases()
         applyCommandAliases()
     }
