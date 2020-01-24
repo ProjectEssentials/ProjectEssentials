@@ -148,7 +148,6 @@ object EssentialsCommand {
         NoonCommand.reload()
         SunsetCommand.reload()
         SunriseCommand.reload()
-        TimeCommand.reload()
         SuicideCommand.reload()
         RainCommand.reload()
         StormCommand.reload()

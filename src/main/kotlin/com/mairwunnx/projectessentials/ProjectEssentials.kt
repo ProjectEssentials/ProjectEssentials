@@ -94,7 +94,6 @@ class ProjectEssentials : EssBase() {
         NoonCommand.register(cmdDispatcher)
         SunsetCommand.register(cmdDispatcher)
         SunriseCommand.register(cmdDispatcher)
-        TimeCommand.register(cmdDispatcher)
         SuicideCommand.register(cmdDispatcher)
         RainCommand.register(cmdDispatcher)
         StormCommand.register(cmdDispatcher)
