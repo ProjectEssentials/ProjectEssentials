@@ -2,6 +2,7 @@
 
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.ProjectEssentials
 import com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases
 import com.mairwunnx.projectessentials.core.extensions.empty
 import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
@@ -52,15 +53,8 @@ abstract class CommandBase {
     }
 
     private fun applyCommandAliases() {
-        try {
-            Class.forName(
-                "com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases"
-            )
-            CommandsAliases.aliases[command] = commandAliases
-            logger.info("        - applying aliases: $commandAliases")
-        } catch (_: ClassNotFoundException) {
-            // ignored
-        }
+        if (!ProjectEssentials.cooldownsInstalled) return
+        CommandsAliases.aliases[command] = commandAliases
     }
 
     protected open fun execute(

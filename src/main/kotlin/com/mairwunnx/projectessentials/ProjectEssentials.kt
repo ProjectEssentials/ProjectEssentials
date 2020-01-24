@@ -67,6 +67,7 @@ class ProjectEssentials : EssBase() {
     fun onServerStarting(it: FMLServerStartingEvent) {
         teleportPresenter = TeleportPresenter(it.server)
         teleportPresenter.configureTimeOut()
+        loadAdditionalModules()
         registerCommands(it.server.commandManager.dispatcher)
     }
 
@@ -240,9 +241,21 @@ class ProjectEssentials : EssBase() {
         return player.abilities.disableDamage
     }
 
+    private fun loadAdditionalModules() {
+        try {
+            Class.forName(
+                "com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases"
+            )
+            cooldownsInstalled = true
+        } catch (_: ClassNotFoundException) {
+            // ignored
+        }
+    }
+
     companion object {
         lateinit var modInstance: ProjectEssentials
         lateinit var afkPresenter: AfkPresenter
         lateinit var teleportPresenter: TeleportPresenter
+        var cooldownsInstalled: Boolean = false
     }
 }
