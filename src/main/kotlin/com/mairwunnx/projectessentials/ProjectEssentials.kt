@@ -55,7 +55,7 @@ class ProjectEssentials : EssBase() {
     init {
         modInstance = this
         afkPresenter = AfkPresenter()
-        modVersion = "1.14.4-0.3.0.0"
+        modVersion = "1.14.4-0.3.0"
         logBaseInfo()
         validateForgeVersion()
         logger.debug("Register event bus for $modName mod ...")
