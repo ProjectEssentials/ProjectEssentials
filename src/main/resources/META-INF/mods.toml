@@ -25,7 +25,7 @@ issueTrackerURL="https://github.com/ProjectEssentials/ProjectEssentials/issues"
 [[dependencies.projectessentials]]
     modId="project_essentials_permissions"
     mandatory=true
-    versionRange="[0,)"
+    versionRange="[1,)"
     ordering="NONE"
     side="BOTH"
 
