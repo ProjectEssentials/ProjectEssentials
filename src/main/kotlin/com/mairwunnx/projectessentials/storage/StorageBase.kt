@@ -1,15 +1,12 @@
 package com.mairwunnx.projectessentials.storage
 
 import com.mairwunnx.projectessentials.USER_DATA_FOLDER
-import kotlinx.serialization.UnstableDefault
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import com.mairwunnx.projectessentials.core.helpers.jsonInstance
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.io.FileNotFoundException
 import kotlin.system.measureTimeMillis
 
-@UseExperimental(UnstableDefault::class)
 object StorageBase {
     private val logger = LogManager.getLogger()
     private val userData = hashMapOf<String, UserData>()
@@ -30,9 +27,9 @@ object StorageBase {
     }
 
     fun loadUserData() {
-        logger.info("    - loading user data configurations ...")
+        logger.info("Loading user data configurations")
 
-        createConfigDirs(USER_DATA_FOLDER)
+        File(USER_DATA_FOLDER).mkdirs()
         val users = File(USER_DATA_FOLDER).list()?.filter {
             if (File(it).isFile) return@filter false
             return@filter true
@@ -41,25 +38,14 @@ object StorageBase {
         val elapsedTime = measureTimeMillis {
             users?.forEach {
                 try {
-                    logger.debug("        - processing $it user data ...")
                     val userId = it
                     val userDataRaw = File(
                         USER_DATA_FOLDER + File.separator + it + File.separator + "data.json"
                     ).readText()
-                    val json = Json(
-                        JsonConfiguration(
-                            encodeDefaults = true,
-                            strictMode = false,
-                            unquoted = false,
-                            allowStructuredMapKeys = true,
-                            prettyPrint = true,
-                            useArrayPolymorphism = false
-                        )
-                    )
-                    val userDataClass = json.parse(UserData.serializer(), userDataRaw)
+                    val userDataClass = jsonInstance.parse(UserData.serializer(), userDataRaw)
                     userData[userId] = userDataClass
                 } catch (_: FileNotFoundException) {
-                    logger.info("        - loading user data for $it skipped! not found!")
+                    logger.info("Loading user data for $it skipped! not found!")
                 }
             }
         }
@@ -67,39 +53,21 @@ object StorageBase {
     }
 
     fun saveUserData() {
-        createConfigDirs(USER_DATA_FOLDER)
+        File(USER_DATA_FOLDER).mkdirs()
         userData.keys.forEach {
-            logger.debug("        - processing $it user data ...")
 
             val userId = it
             val userDataClass = userData[userId]!!
             val dataFolder = USER_DATA_FOLDER + File.separator + userId
             val dataPath = dataFolder + File.separator + "data.json"
 
-            createConfigDirs(dataFolder)
-            logger.debug("        - setup json configuration for parsing ...")
-            val json = Json(
-                JsonConfiguration(
-                    encodeDefaults = true,
-                    strictMode = false,
-                    unquoted = false,
-                    allowStructuredMapKeys = true,
-                    prettyPrint = true,
-                    useArrayPolymorphism = false
-                )
-            )
-            val userDataRaw = json.stringify(UserData.serializer(), userDataClass)
+            File(dataFolder).mkdirs()
+            val userDataRaw = jsonInstance.stringify(UserData.serializer(), userDataClass)
             try {
                 File(dataPath).writeText(userDataRaw)
             } catch (ex: SecurityException) {
-                logger.error("An error occurred while saving commands configuration", ex)
+                logger.error("An error occurred while saving user configuration", ex)
             }
         }
-    }
-
-    private fun createConfigDirs(path: String) {
-        logger.info("        - creating config directory for user data ($path)")
-        val configDirectory = File(path)
-        if (!configDirectory.exists()) configDirectory.mkdirs()
     }
 }
