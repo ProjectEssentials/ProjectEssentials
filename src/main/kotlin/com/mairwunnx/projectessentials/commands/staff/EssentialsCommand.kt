@@ -36,7 +36,7 @@ object EssentialsCommand {
     fun register(
         dispatcher: CommandDispatcher<CommandSource>
     ) {
-        logger.info("    - register \"/$ESSENTIALS_COMMAND\" command ...")
+        logger.info("Register \"/$ESSENTIALS_COMMAND\" command ...")
 
         dispatcher.register(
             literal<CommandSource>("essentials").executes {
