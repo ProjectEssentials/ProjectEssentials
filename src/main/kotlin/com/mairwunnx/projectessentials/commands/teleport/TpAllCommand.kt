@@ -50,9 +50,9 @@ object TpAllCommand : CommandBase() {
 
         if (PermissionsAPI.hasPermission(senderName, "ess.tpall", senderIsServer)) {
             val entity = argument as ServerPlayerEntity
-            val entityPosX = entity.posX
-            val entityPosY = entity.posY
-            val entityPosZ = entity.posZ
+            val entityPosX = entity.positionVec.x
+            val entityPosY = entity.positionVec.y
+            val entityPosZ = entity.positionVec.z
             val entityWorld = entity.serverWorld
             val entityYaw = entity.rotationYaw
             val entityPitch = entity.rotationPitch

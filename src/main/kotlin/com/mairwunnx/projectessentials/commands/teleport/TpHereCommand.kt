@@ -49,9 +49,9 @@ object TpHereCommand : CommandBase() {
         super.execute(c, argument)
 
         if (PermissionsAPI.hasPermission(senderName, "ess.tphere", senderIsServer)) {
-            val senderPosX = senderPlayer.posX
-            val senderPosY = senderPlayer.posY
-            val senderPosZ = senderPlayer.posZ
+            val senderPosX = senderPlayer.positionVec.x
+            val senderPosY = senderPlayer.positionVec.y
+            val senderPosZ = senderPlayer.positionVec.z
             val senderWorld = senderPlayer.serverWorld
             val senderYaw = senderPlayer.rotationYaw
             val senderPitch = senderPlayer.rotationPitch

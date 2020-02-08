@@ -84,9 +84,9 @@ object SendPosCommand : CommandBase() {
                     "sendpos.pattern",
                     senderName,
                     senderPlayer.serverWorld.dimName(),
-                    senderPlayer.posX.roundToInt().toString(),
-                    senderPlayer.posY.roundToInt().toString(),
-                    senderPlayer.posZ.roundToInt().toString()
+                    senderPlayer.positionVec.x.roundToInt().toString(),
+                    senderPlayer.positionVec.y.roundToInt().toString(),
+                    senderPlayer.positionVec.z.roundToInt().toString()
                 )
             } else {
                 @Suppress("UNCHECKED_CAST")
@@ -97,9 +97,9 @@ object SendPosCommand : CommandBase() {
                         "sendpos.pattern",
                         senderName,
                         senderPlayer.serverWorld.dimName(),
-                        senderPlayer.posX.roundToInt().toString(),
-                        senderPlayer.posY.roundToInt().toString(),
-                        senderPlayer.posZ.roundToInt().toString()
+                        senderPlayer.positionVec.x.roundToInt().toString(),
+                        senderPlayer.positionVec.y.roundToInt().toString(),
+                        senderPlayer.positionVec.z.roundToInt().toString()
                     )
                 }
             }

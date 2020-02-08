@@ -53,7 +53,7 @@ object LightningCommand : CommandBase() {
 
             targets.forEach {
                 val lightning = LightningBoltEntity(
-                    it.world, it.posX, it.posY, it.posZ, true
+                    it.world, it.positionVec.x, it.positionVec.y, it.positionVec.z, true
                 )
                 senderPlayer.serverWorld.addLightningBolt(lightning)
                 it.onStruckByLightning(lightning)

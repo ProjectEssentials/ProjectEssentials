@@ -57,9 +57,9 @@ object GetPosCommand : CommandBase() {
 
         if (senderIsServer) {
             return if (targetIsExists) {
-                val posX = targetPlayer.posX.roundToInt()
-                val posY = targetPlayer.posY.roundToInt()
-                val posZ = targetPlayer.posZ.roundToInt()
+                val posX = targetPlayer.positionVec.x.roundToInt()
+                val posY = targetPlayer.positionVec.y.roundToInt()
+                val posZ = targetPlayer.positionVec.z.roundToInt()
                 logger.info("Player $targetName current position XYZ: $posX / $posY / $posZ")
                 0
             } else {
@@ -81,9 +81,9 @@ object GetPosCommand : CommandBase() {
                         }
                     }
 
-                    val posX = targetPlayer.posX.roundToInt()
-                    val posY = targetPlayer.posY.roundToInt()
-                    val posZ = targetPlayer.posZ.roundToInt()
+                    val posX = targetPlayer.positionVec.x.roundToInt()
+                    val posY = targetPlayer.positionVec.y.roundToInt()
+                    val posZ = targetPlayer.positionVec.z.roundToInt()
                     sendMsg(
                         sender, "getpos.other.out", targetName,
                         posX.toString(), posY.toString(), posZ.toString()
@@ -102,9 +102,9 @@ object GetPosCommand : CommandBase() {
                     sendMsg(
                         sender,
                         "getpos.self.out",
-                        senderPlayer.posX.roundToInt().toString(),
-                        senderPlayer.posY.roundToInt().toString(),
-                        senderPlayer.posZ.roundToInt().toString()
+                        senderPlayer.positionVec.x.roundToInt().toString(),
+                        senderPlayer.positionVec.y.roundToInt().toString(),
+                        senderPlayer.positionVec.z.roundToInt().toString()
                     )
                 } else {
                     logger.warn(

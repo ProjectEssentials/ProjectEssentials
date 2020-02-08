@@ -58,9 +58,9 @@ object TpAcceptCommand : CommandBase() {
                     requestInitiator != null -> {
                         requestInitiator.teleport(
                             senderPlayer.serverWorld,
-                            senderPlayer.posX,
-                            senderPlayer.posY,
-                            senderPlayer.posZ,
+                            senderPlayer.positionVec.x,
+                            senderPlayer.positionVec.y,
+                            senderPlayer.positionVec.z,
                             senderPlayer.rotationYaw,
                             senderPlayer.rotationPitch
                         )
@@ -77,9 +77,9 @@ object TpAcceptCommand : CommandBase() {
                     requestHereInitiator != null -> {
                         senderPlayer.teleport(
                             requestHereInitiator.serverWorld,
-                            requestHereInitiator.posX,
-                            requestHereInitiator.posY,
-                            requestHereInitiator.posZ,
+                            requestHereInitiator.positionVec.x,
+                            requestHereInitiator.positionVec.y,
+                            requestHereInitiator.positionVec.z,
                             requestHereInitiator.rotationYaw,
                             requestHereInitiator.rotationPitch
                         )
