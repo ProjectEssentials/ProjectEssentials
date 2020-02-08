@@ -19,6 +19,7 @@ import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.core.EssBase
 import com.mairwunnx.projectessentials.core.extensions.commandName
+import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.core.extensions.player
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND
 import com.mairwunnx.projectessentials.core.helpers.MOD_CONFIG_FOLDER
@@ -32,7 +33,6 @@ import com.mairwunnx.projectessentials.storage.UserData
 import com.mojang.brigadier.CommandDispatcher
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.entity.player.PlayerEvent.*
@@ -125,10 +125,10 @@ class ProjectEssentials : EssBase() {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onPlayerCommand(it: CommandEvent) {
-        if (it.parseResults.context.source.entity is ServerPlayerEntity) {
+        if (it.isPlayerSender) {
             val commandName = it.commandName
             val commandSender = it.player
-            val commandSenderNickName = commandSender.name.string
+            val commandSenderNickName = commandSender!!.name.string
             if (isBlockedCommand(it)) {
                 logger.warn(
                     DISABLED_COMMAND
@@ -187,7 +187,7 @@ class ProjectEssentials : EssBase() {
         StorageBase.setData(
             uuidString, UserData(
                 player.world.fullName(),
-                "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}",
+                "${player.positionVec.x.toInt()}, ${player.positionVec.y.toInt()}, ${player.positionVec.z.toInt()}",
                 getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyEnabledInWorlds),
                 getGodEnabledWorlds(player, StorageBase.getData(uuidString).godEnabledWorlds)
             )
