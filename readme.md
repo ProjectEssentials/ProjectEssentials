@@ -4,7 +4,7 @@
 
 ### Explore
 
-#### [Download mod](https://github.com/ProjectEssentials/ProjectEssentials/releases/download/v1.14.4-0.3.0/Project.Essentials-1.14.4-0.3.0.jar) · [Commands](https://mairwunnx.gitbook.io/project-essentials/#commands-and-permissions) · [Configuration](https://mairwunnx.gitbook.io/project-essentials/#configuration) · [How to install](https://mairwunnx.gitbook.io/project-essentials/#how-to-install) · [Troubleshooting](https://github.com/ProjectEssentials/ProjectEssentials/issues/new/choose) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/ProjectEssentials) · [Change log](changelog.md)
+#### [Download mod](https://github.com/ProjectEssentials/ProjectEssentials/releases/download/v1.15.2-1.0.0/Project.Essentials-1.15.2-1.0.0.jar) · [Commands](https://mairwunnx.gitbook.io/project-essentials/#commands-and-permissions) · [Configuration](https://mairwunnx.gitbook.io/project-essentials/#configuration) · [How to install](https://mairwunnx.gitbook.io/project-essentials/#how-to-install) · [Troubleshooting](https://github.com/ProjectEssentials/ProjectEssentials/issues/new/choose) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/ProjectEssentials) · [Change log](changelog.md)
 
 ### Dependencies
 
@@ -23,7 +23,7 @@
 
 ### Compatibility
 
-This mod branch supported forge version `28.0.X` and `28.1.X` (Minecraft `1.14.4`).
+This mod branch supported forge version `31.0.X` and `31.1.X` (Minecraft `1.15.2`).
 
 ### Credits
 
