@@ -56,6 +56,9 @@ class ProjectEssentials : EssBase() {
         modInstance = this
         afkPresenter = AfkPresenter()
         modVersion = "1.14.4-0.3.0"
+        modModuleName = "Essentials"
+        modSources = "https://github.com/ProjectEssentials/ProjectEssentials/"
+        modCurseForge = "https://www.curseforge.com/minecraft/mc-mods/project-essentials/"
         logBaseInfo()
         validateForgeVersion()
         MinecraftForge.EVENT_BUS.register(this)
@@ -125,7 +128,7 @@ class ProjectEssentials : EssBase() {
         if (it.parseResults.context.source.entity is ServerPlayerEntity) {
             val commandName = it.commandName
             val commandSender = it.player
-            val commandSenderNickName = commandSender.name.string
+            val commandSenderNickName = commandSender!!.name.string
             if (isBlockedCommand(it)) {
                 logger.warn(
                     DISABLED_COMMAND
@@ -243,9 +246,7 @@ class ProjectEssentials : EssBase() {
 
     private fun loadAdditionalModules() {
         try {
-            Class.forName(
-                "com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases"
-            )
+            Class.forName(cooldownAPIClassPath)
             cooldownsInstalled = true
         } catch (_: ClassNotFoundException) {
             // ignored
