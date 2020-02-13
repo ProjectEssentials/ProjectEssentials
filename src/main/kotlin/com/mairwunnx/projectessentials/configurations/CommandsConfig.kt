@@ -85,7 +85,9 @@ data class CommandsConfig(
         @SerialName("TpToggle")
         val tpToggle: TpToggle = TpToggle(),
         @SerialName("TpaCancel")
-        val tpaCancel: TpaCancel = TpaCancel()
+        val tpaCancel: TpaCancel = TpaCancel(),
+        @SerialName("Help")
+        val help: Help = Help()
     ) {
         @Serializable
         data class Heal(
@@ -382,6 +384,12 @@ data class CommandsConfig(
         data class TpaCancel(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etpacancel")
+        )
+
+        @Serializable
+        data class Help(
+            @SerialName("Help")
+            val aliases: kotlin.collections.List<String> = listOf("ehelp")
         )
     }
 }
