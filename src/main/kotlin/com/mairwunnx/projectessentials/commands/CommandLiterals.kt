@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.commands.general.HelpCommand
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
@@ -10,5 +11,7 @@ val helpLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("help").then(
         Commands.argument(
             "page", IntegerArgumentType.integer()
-        )
+        ).executes {
+            HelpCommand.execute(it)
+        }
     )

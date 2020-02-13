@@ -389,7 +389,25 @@ data class CommandsConfig(
         @Serializable
         data class Help(
             @SerialName("Help")
-            val aliases: kotlin.collections.List<String> = listOf("ehelp")
+            val aliases: kotlin.collections.List<String> = listOf("ehelp"),
+            @SerialName("ReplaceDefault")
+            val replaceDefault: Boolean = true,
+            @SerialName("MaxLines")
+            val maxLines: Int = 8,
+            @SerialName("TryColorize")
+            val tryColorize: Boolean = true,
+            @SerialName("CommandColor")
+            val commandColor: String = "§7",
+            @SerialName("BracketColor")
+            val bracketColor: String = "§8",
+            @SerialName("OrOperatorColor")
+            val orOperatorColor: String = "§8",
+            @SerialName("PlainTextColor")
+            val plainTextColor: String = "§7",
+            @SerialName("MandatoryColor")
+            val mandatoryColor: String = "§c",
+            @SerialName("RedirectColor")
+            val redirectColor: String = "§d"
         )
     }
 }

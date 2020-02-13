@@ -5,8 +5,10 @@ package com.mairwunnx.projectessentials.api.commands
 import com.mairwunnx.projectessentials.ProjectEssentials
 import com.mairwunnx.projectessentials.cooldown.essentials.CommandsAliases
 import com.mairwunnx.projectessentials.core.extensions.playerName
+import com.mairwunnx.projectessentials.core.vanilla.utils.NativeCommandUtils
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
@@ -21,10 +23,14 @@ import org.apache.logging.log4j.LogManager
 abstract class CommandsAPI(
     val commandName: String,
     var aliases: List<String> = emptyList(),
-    var literal: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>(commandName)
+    var literal: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>(commandName),
+    needReplace: Boolean = false
 ) {
+    private lateinit var commandDispatcher: CommandDispatcher<CommandSource>
     private val logger = LogManager.getLogger()
     private var onCommandExecute: ((CommandContext<CommandSource>) -> Int)? = null
+
+    fun getDispatcher() = commandDispatcher
 
     fun onCommandExecute(
         function: (CommandContext<CommandSource>) -> Int
@@ -34,10 +40,14 @@ abstract class CommandsAPI(
 
     init {
         logger.info("Initializing $commandName command")
+        if (needReplace) {
+            NativeCommandUtils.removeCommand(commandName)
+        }
     }
 
     fun register(dispatcher: CommandDispatcher<CommandSource>) {
         logger.info("Starting registering $commandName command")
+        commandDispatcher = dispatcher
         registerAliases()
 
         val literalNode =
@@ -83,6 +93,21 @@ abstract class CommandsAPI(
         context: CommandContext<CommandSource>,
         argumentName: String
     ): String = StringArgumentType.getString(context, argumentName)
+
+    fun getIntExisting(
+        context: CommandContext<CommandSource>,
+        argumentName: String
+    ): Boolean = try {
+        IntegerArgumentType.getInteger(context, argumentName)
+        true
+    } catch (_: IllegalArgumentException) {
+        false
+    }
+
+    fun getInt(
+        context: CommandContext<CommandSource>,
+        argumentName: String
+    ): Int = IntegerArgumentType.getInteger(context, argumentName)
 
     fun getBoolExisting(
         context: CommandContext<CommandSource>,
