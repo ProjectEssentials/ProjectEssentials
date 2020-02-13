@@ -85,7 +85,9 @@ data class CommandsConfig(
         @SerialName("TpToggle")
         val tpToggle: TpToggle = TpToggle(),
         @SerialName("TpaCancel")
-        val tpaCancel: TpaCancel = TpaCancel()
+        val tpaCancel: TpaCancel = TpaCancel(),
+        @SerialName("Help")
+        val help: Help = Help()
     ) {
         @Serializable
         data class Heal(
@@ -382,6 +384,30 @@ data class CommandsConfig(
         data class TpaCancel(
             @SerialName("Aliases")
             val aliases: kotlin.collections.List<String> = listOf("etpacancel")
+        )
+
+        @Serializable
+        data class Help(
+            @SerialName("Help")
+            val aliases: kotlin.collections.List<String> = listOf("ehelp"),
+            @SerialName("ReplaceDefault")
+            val replaceDefault: Boolean = true,
+            @SerialName("MaxLines")
+            val maxLines: Int = 8,
+            @SerialName("TryColorize")
+            val tryColorize: Boolean = true,
+            @SerialName("CommandColor")
+            val commandColor: String = "§7",
+            @SerialName("BracketColor")
+            val bracketColor: String = "§8",
+            @SerialName("OrOperatorColor")
+            val orOperatorColor: String = "§8",
+            @SerialName("PlainTextColor")
+            val plainTextColor: String = "§7",
+            @SerialName("MandatoryColor")
+            val mandatoryColor: String = "§c",
+            @SerialName("RedirectColor")
+            val redirectColor: String = "§d"
         )
     }
 }

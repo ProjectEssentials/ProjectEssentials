@@ -77,6 +77,7 @@ class ProjectEssentials : EssBase() {
     private fun registerCommands(
         cmdDispatcher: CommandDispatcher<CommandSource>
     ) {
+        HelpCommand.register(cmdDispatcher)
         GetPosCommand.register(cmdDispatcher)
         SendPosCommand.register(cmdDispatcher)
         PingCommand.register(cmdDispatcher)

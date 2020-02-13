@@ -6,7 +6,7 @@ import net.minecraft.util.text.TranslationTextComponent
 fun sendMsg(
     commandSource: CommandSource,
     l10nString: String,
-    vararg args: String
+    vararg args: Any
 ) {
     commandSource.sendFeedback(
         TranslationTextComponent(
