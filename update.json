@@ -1,6 +1,7 @@
 {
-  "homepage": "https://github.com/ProjectEssentials/ProjectEssentials/releases/tag/v1.14.4-0.3.0",
+  "homepage": "https://github.com/ProjectEssentials/ProjectEssentials",
   "1.14.4": {
+    "1.14.4-1.0.0": "changelog for 1.14.4-1.0.0 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.14.4/changelog.md#1144-100---2020-02-14",
     "1.14.4-0.3.0": "changelog for 1.14.4-0.3.0 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.14.4/changelog.md#1144-030---2020-01-25"
   },
   "promos": {
