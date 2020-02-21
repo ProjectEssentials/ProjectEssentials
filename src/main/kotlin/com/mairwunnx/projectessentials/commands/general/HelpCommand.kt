@@ -75,8 +75,7 @@ object HelpCommand : CommandsAPI(
 
         return input
             .replace(
-                Regex("^/[a-zA-Z-0-9]+"),
-                "${help.commandColor}${Regex("^/[a-zA-Z-0-9]+").find(input)!!.value}"
+                "/", "${help.commandColor}/"
             ).replace(
                 " ", "${help.plainTextColor} "
             ).replace(
