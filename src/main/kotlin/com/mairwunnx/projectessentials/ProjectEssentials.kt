@@ -66,7 +66,7 @@ class ProjectEssentials : EssBase() {
         StorageBase.loadUserData()
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onServerStarting(it: FMLServerStartingEvent) {
         teleportPresenter = TeleportPresenter(it.server)
         teleportPresenter.configureTimeOut()
