@@ -49,7 +49,6 @@ object HelpCommand : CommandsAPI(
                 val displayedLines = page * linesPerPage
                 val droppedLines = displayedLines - linesPerPage
                 val values = map.values.take(displayedLines).drop(droppedLines)
-
                 if (context.isPlayerSender()) {
                     sendMsg(context.source, "help.pages_out", page, pages)
                 } else {
@@ -75,8 +74,7 @@ object HelpCommand : CommandsAPI(
 
         return input
             .replace(
-                Regex("^/[a-zA-Z-0-9]+"),
-                "${help.commandColor}${Regex("^/[a-zA-Z-0-9]+").find(input)!!.value}"
+                "/", "${help.commandColor}/"
             ).replace(
                 " ", "${help.plainTextColor} "
             ).replace(
