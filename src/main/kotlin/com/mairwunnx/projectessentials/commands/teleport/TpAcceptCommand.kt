@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands.teleport
 import com.mairwunnx.projectessentials.ProjectEssentials
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -56,6 +57,7 @@ object TpAcceptCommand : CommandBase() {
 
                 when {
                     requestInitiator != null -> {
+                        BackLocationProvider.commit(requestInitiator)
                         requestInitiator.teleport(
                             senderPlayer.serverWorld,
                             senderPlayer.posX,
@@ -75,6 +77,7 @@ object TpAcceptCommand : CommandBase() {
                         )
                     }
                     requestHereInitiator != null -> {
+                        BackLocationProvider.commit(requestHereInitiator)
                         senderPlayer.teleport(
                             requestHereInitiator.serverWorld,
                             requestHereInitiator.posX,
