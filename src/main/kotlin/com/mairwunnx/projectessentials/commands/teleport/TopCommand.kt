@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands.teleport
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -63,6 +64,7 @@ object TopCommand : CommandBase() {
                 logger.info(
                     "Player ($senderName) top pos (y) changed from ${position.y.toDouble()} to $heightTop"
                 )
+                BackLocationProvider.commit(senderPlayer)
                 senderPlayer.setPositionAndUpdate(
                     position.x + centerOfBlockPos,
                     heightTop,
