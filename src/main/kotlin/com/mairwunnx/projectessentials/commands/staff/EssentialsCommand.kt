@@ -15,7 +15,7 @@ import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mairwunnx.projectessentials.storage.StorageBase
@@ -88,10 +88,9 @@ object EssentialsCommand {
             }
             return 0
         } else {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", commandSenderNickName)
-                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_VERSION")
+            throwPermissionLevel(
+                commandSenderNickName,
+                "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_VERSION"
             )
             sendMsg(commandSender, "common.version.restricted")
             return 0
@@ -121,10 +120,9 @@ object EssentialsCommand {
             }
             return 0
         } else {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", commandSenderNickName)
-                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_RELOAD")
+            throwPermissionLevel(
+                commandSenderNickName,
+                "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_RELOAD"
             )
             sendMsg(commandSender, "common.reload.restricted")
             return 0
@@ -193,10 +191,9 @@ object EssentialsCommand {
             }
             return 0
         } else {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", commandSenderNickName)
-                    .replace("%1", "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_SAVE")
+            throwPermissionLevel(
+                commandSenderNickName,
+                "$ESSENTIALS_COMMAND $ESSENTIALS_COMMAND_SAVE"
             )
             sendMsg(commandSender, "common.save.restricted")
             return 0
