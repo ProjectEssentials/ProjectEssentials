@@ -8,13 +8,12 @@ import net.minecraft.util.text.TranslationTextComponent
 fun sendMsg(
     commandSource: CommandSource,
     l10nString: String,
-    vararg args: Any
+    vararg args: String
 ) {
     if (LocalizationConfigurationUtils.getConfig().enabled) {
-        @Suppress("UNCHECKED_CAST")
         sendMsgV2(
             commandSource.asPlayer(),
-            "project_essentials.$l10nString", *args as Array<out String>
+            "project_essentials.$l10nString", *args
         )
     } else {
         commandSource.sendFeedback(

@@ -51,7 +51,11 @@ object HelpCommand : CommandsAPI(
                 val values = map.values.take(displayedLines).drop(droppedLines)
 
                 if (context.isPlayerSender()) {
-                    sendMsg(context.source, "help.pages_out", page, pages)
+                    sendMsg(
+                        context.source,
+                        "help.pages_out",
+                        page.toString(), pages.toString()
+                    )
                 } else {
                     logger.info("Help page $page of $pages")
                 }
