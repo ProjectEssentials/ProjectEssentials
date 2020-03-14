@@ -18,10 +18,12 @@ import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.core.EssBase
+import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
 import com.mairwunnx.projectessentials.core.extensions.commandName
 import com.mairwunnx.projectessentials.core.extensions.player
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND
 import com.mairwunnx.projectessentials.core.helpers.MOD_CONFIG_FOLDER
+import com.mairwunnx.projectessentials.core.localization.processLocalizations
 import com.mairwunnx.projectessentials.extensions.fullName
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
@@ -64,6 +66,18 @@ class ProjectEssentials : EssBase() {
         MinecraftForge.EVENT_BUS.register(this)
         ModConfiguration.loadConfig()
         StorageBase.loadUserData()
+        loadLocalization()
+    }
+
+    private fun loadLocalization() {
+        if (LocalizationConfigurationUtils.getConfig().enabled) {
+            processLocalizations(
+                ProjectEssentials::class.java, listOf(
+                    "/assets/projectessentials/lang/ru_ru.json",
+                    "/assets/projectessentials/lang/en_us.json"
+                )
+            )
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
