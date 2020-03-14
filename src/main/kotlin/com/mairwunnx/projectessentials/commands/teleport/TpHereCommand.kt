@@ -2,7 +2,7 @@ package com.mairwunnx.projectessentials.commands.teleport
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -61,11 +61,7 @@ object TpHereCommand : CommandBase() {
 
             sendMsg(sender, "tphere.success", target.name.string)
         } else {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", senderName)
-                    .replace("%1", command)
-            )
+            throwPermissionLevel(senderName, command)
             sendMsg(sender, "tphere.restricted", senderName)
             return 0
         }

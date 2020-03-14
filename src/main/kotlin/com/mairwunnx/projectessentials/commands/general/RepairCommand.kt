@@ -2,8 +2,8 @@ package com.mairwunnx.projectessentials.commands.general
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -52,7 +52,7 @@ object RepairCommand : CommandBase() {
     ): Int {
         super.execute(c, argument)
         if (senderIsServer) {
-            logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            throwOnlyPlayerCan(command)
             return 0
         } else {
             if (argument is String && argument == "all") {
@@ -69,11 +69,7 @@ object RepairCommand : CommandBase() {
                     }
                     sendMsg(sender, "repair.all.out")
                 } else {
-                    logger.warn(
-                        PERMISSION_LEVEL
-                            .replace("%0", senderName)
-                            .replace("%1", command)
-                    )
+                    throwPermissionLevel(senderName, command)
                     sendMsg(sender, "repair.all.restricted", senderName)
                     return 0
                 }
@@ -87,11 +83,7 @@ object RepairCommand : CommandBase() {
                         sendMsg(sender, "repair.fulldamage")
                     }
                 } else {
-                    logger.warn(
-                        PERMISSION_LEVEL
-                            .replace("%0", senderName)
-                            .replace("%1", command)
-                    )
+                    throwPermissionLevel(senderName, command)
                     sendMsg(sender, "repair.restricted", senderName)
                     return 0
                 }
