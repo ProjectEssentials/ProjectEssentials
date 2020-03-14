@@ -55,7 +55,7 @@ class ProjectEssentials : EssBase() {
     init {
         modInstance = this
         afkPresenter = AfkPresenter()
-        modVersion = "1.14.4-1.0.0"
+        modVersion = "1.14.4-1.0.1"
         modModuleName = "Essentials"
         modSources = "https://github.com/ProjectEssentials/ProjectEssentials/"
         modCurseForge = "https://www.curseforge.com/minecraft/mc-mods/project-essentials/"
