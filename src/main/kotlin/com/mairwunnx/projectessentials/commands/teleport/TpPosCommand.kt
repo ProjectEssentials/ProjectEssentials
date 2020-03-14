@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands.teleport
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -54,6 +55,7 @@ object TpPosCommand : CommandBase() {
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tppos")) {
                 val position = BlockPosArgument.getBlockPos(c, "position")
+                BackLocationProvider.commit(senderPlayer)
                 senderPlayer.teleport(
                     senderPlayer.serverWorld,
                     position.x.toDouble() + 0.5,
