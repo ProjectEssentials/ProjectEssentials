@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands.teleport
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
@@ -58,6 +59,7 @@ object TpAllCommand : CommandBase() {
             val entityPitch = entity.rotationPitch
 
             senderPlayer.server.playerList.players.forEach {
+                BackLocationProvider.commit(it)
                 it.teleport(entityWorld, entityPosX, entityPosY, entityPosZ, entityYaw, entityPitch)
             }
             sendMsg(sender, "tpall.success")
