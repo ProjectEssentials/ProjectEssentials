@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager
 abstract class CommandsAPI(
     val commandName: String,
     var aliases: List<String> = emptyList(),
-    var literal: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>(commandName),
+    var literal: LiteralArgumentBuilder<CommandSource> = literal(commandName),
     needReplace: Boolean = false
 ) {
     private lateinit var commandDispatcher: CommandDispatcher<CommandSource>

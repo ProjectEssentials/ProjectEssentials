@@ -70,10 +70,10 @@ minecraft {
 repositories {
     jcenter()
     mavenCentral()
-    maven { url("https://jitpack.io") }
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     minecraft(group: "net.minecraftforge", name: "forge", version: forge_version)
     compile(group: "com.mojang", name: "brigadier", version: brigadier_version)
     compile(
@@ -85,21 +85,6 @@ dependencies {
         group: "org.jetbrains.kotlin",
         name: "kotlin-stdlib-$kotlin_jdk_version_target",
         version: kotlin_version
-    )
-    compile(
-        group: "com.github.projectessentials",
-        name: "ProjectEssentials-Core",
-        version: ess_core_version
-    )
-    compile(
-        group: "com.github.projectessentials",
-        name: "ProjectEssentials-Permissions",
-        version: ess_perm_version
-    )
-    compile(
-        group: "com.github.projectessentials",
-        name: "ProjectEssentials-Cooldown",
-        version: ess_cooldown_version
     )
 }
 

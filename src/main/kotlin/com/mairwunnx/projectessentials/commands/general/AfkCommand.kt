@@ -3,8 +3,8 @@ package com.mairwunnx.projectessentials.commands.general
 import com.mairwunnx.projectessentials.ProjectEssentials.Companion.afkPresenter
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentials.core.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -48,7 +48,7 @@ object AfkCommand : CommandBase() {
     ): Int {
         super.execute(c, argument)
         if (senderIsServer) {
-            logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            throwOnlyPlayerCan(command)
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.afk")) {
@@ -68,11 +68,7 @@ object AfkCommand : CommandBase() {
                     )
                 }
             } else {
-                logger.warn(
-                    PERMISSION_LEVEL
-                        .replace("%0", senderName)
-                        .replace("%1", command)
-                )
+                throwPermissionLevel(senderName, command)
                 sendMsg(sender, "afk.restricted", senderName)
                 return 0
             }

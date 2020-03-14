@@ -3,8 +3,8 @@ package com.mairwunnx.projectessentials.commands.teleport
 import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -46,7 +46,7 @@ object TpaAllCommand : CommandBase() {
         super.execute(c, argument)
 
         if (senderIsServer) {
-            logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            throwOnlyPlayerCan(command)
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tpaall")) {
@@ -55,11 +55,7 @@ object TpaAllCommand : CommandBase() {
                     senderPlayer.server.playerList.players
                 )
             } else {
-                logger.warn(
-                    PERMISSION_LEVEL
-                        .replace("%0", senderName)
-                        .replace("%1", command)
-                )
+                throwPermissionLevel(senderName, command)
                 sendMsg(sender, "tpaall.restricted")
                 return 0
             }

@@ -2,7 +2,8 @@ package com.mairwunnx.projectessentials.commands.teleport
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -58,15 +59,12 @@ object TpAllCommand : CommandBase() {
             val entityPitch = entity.rotationPitch
 
             senderPlayer.server.playerList.players.forEach {
+                BackLocationProvider.commit(it)
                 it.teleport(entityWorld, entityPosX, entityPosY, entityPosZ, entityYaw, entityPitch)
             }
             sendMsg(sender, "tpall.success")
         } else {
-            logger.warn(
-                PERMISSION_LEVEL
-                    .replace("%0", senderName)
-                    .replace("%1", command)
-            )
+            throwPermissionLevel(senderName, command)
             sendMsg(sender, "tpall.restricted", senderName)
             return 0
         }

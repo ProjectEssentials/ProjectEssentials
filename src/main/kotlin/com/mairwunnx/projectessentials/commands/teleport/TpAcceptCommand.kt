@@ -3,8 +3,9 @@ package com.mairwunnx.projectessentials.commands.teleport
 import com.mairwunnx.projectessentials.ProjectEssentials
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
+import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
 import com.mojang.brigadier.CommandDispatcher
@@ -44,7 +45,7 @@ object TpAcceptCommand : CommandBase() {
         super.execute(c, argument)
 
         if (senderIsServer) {
-            logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+            throwOnlyPlayerCan(command)
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.tpaccept")) {
@@ -56,6 +57,7 @@ object TpAcceptCommand : CommandBase() {
 
                 when {
                     requestInitiator != null -> {
+                        BackLocationProvider.commit(requestInitiator)
                         requestInitiator.teleport(
                             senderPlayer.serverWorld,
                             senderPlayer.positionVec.x,
@@ -75,6 +77,7 @@ object TpAcceptCommand : CommandBase() {
                         )
                     }
                     requestHereInitiator != null -> {
+                        BackLocationProvider.commit(requestHereInitiator)
                         senderPlayer.teleport(
                             requestHereInitiator.serverWorld,
                             requestHereInitiator.positionVec.x,
@@ -98,11 +101,7 @@ object TpAcceptCommand : CommandBase() {
                     }
                 }
             } else {
-                logger.warn(
-                    PERMISSION_LEVEL
-                        .replace("%0", senderName)
-                        .replace("%1", command)
-                )
+                throwPermissionLevel(senderName, command)
                 sendMsg(sender, "tpaccept.restricted")
                 return 0
             }

@@ -3,8 +3,8 @@ package com.mairwunnx.projectessentials.commands.health
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND_ARG
-import com.mairwunnx.projectessentials.core.helpers.ONLY_PLAYER_CAN
-import com.mairwunnx.projectessentials.core.helpers.PERMISSION_LEVEL
+import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
+import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.isNeedFood
 import com.mairwunnx.projectessentials.extensions.sendMsg
 import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
@@ -89,7 +89,7 @@ object FeedCommand : CommandBase() {
                     senderName
                 )
             } else {
-                logger.warn(ONLY_PLAYER_CAN.replace("%0", command))
+                throwOnlyPlayerCan(command)
             }
             return 0
         } else {
@@ -123,11 +123,7 @@ object FeedCommand : CommandBase() {
                         senderName
                     )
                 } else {
-                    logger.warn(
-                        PERMISSION_LEVEL
-                            .replace("%0", senderName)
-                            .replace("%1", command)
-                    )
+                    throwPermissionLevel(senderName, command)
                     sendMsg(sender, "feed.other.restricted", targetName)
                     return 0
                 }
@@ -144,11 +140,7 @@ object FeedCommand : CommandBase() {
                     saturateTarget(senderPlayer)
                     sendMsg(sender, "feed.self.success")
                 } else {
-                    logger.warn(
-                        PERMISSION_LEVEL
-                            .replace("%0", senderName)
-                            .replace("%1", command)
-                    )
+                    throwPermissionLevel(senderName, command)
                     sendMsg(sender, "feed.self.restricted", senderName)
                     return 0
                 }

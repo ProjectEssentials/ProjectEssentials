@@ -362,7 +362,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
      * Just remove all expired requests from teleport state.
      * It method remove only `Requested` type requests.
      */
-    @UseExperimental(ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class)
     private fun removeRequestedExpiredRequest() {
         logger.info("Removing expired `Requested` type teleport requests")
         state.removeAll {
@@ -381,7 +381,7 @@ class TeleportPresenter(private val server: MinecraftServer) {
      * Just remove all expired requests from teleport state.
      * It method remove only `RequestedHere` type requests.
      */
-    @UseExperimental(ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class)
     private fun removeRequestedHereExpiredRequest() {
         logger.info("Removing expired `RequestedHere` type teleport requests")
         state.removeAll {
