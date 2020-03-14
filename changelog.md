@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.4-1.0.1] - 2020-03-14
+
+### Added
+- Project Essentials Libraries added to `libs` directory.
+- Localization processing added.
+- Support safe-localization added.
+- Top command compatibility with back location api added.
+- Tpaccept command compatibility with back location api added.
+- Tpall command compatibility with back location api added.
+- Tphere command compatibility with back location api added.
+- Tppos command compatibility with back location api added.
+
+### Changed
+- Kotlin dependency updated.
+- KotlinX Serialization dependency updated.
+- Forge version updated to `28.2.0`.
+- `@UseExperimental` annotation replaced with `@OptIn` in `TeleportPresenter.kt`.
+- Deprecated API functions replaced on actual functions.
+
+### Removed
+- ess modules from `gradle.properties` removed.
+- Ess modules removed from dependencies in `build.gradle`.
+- `jitpack.io` maven repository removed from repositories in `build.gradle`.
+
 ## [1.14.4-1.0.0] - 2020-02-21
 
 ### Added
