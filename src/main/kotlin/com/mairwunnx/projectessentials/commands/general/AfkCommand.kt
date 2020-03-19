@@ -11,7 +11,6 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 
 // todo: make out of afk when player change position
@@ -54,18 +53,14 @@ object AfkCommand : CommandBase() {
             if (PermissionsAPI.hasPermission(senderName, "ess.afk")) {
                 if (afkPresenter.isInAfk(senderPlayer)) {
                     afkPresenter.removeAfkPlayer(senderPlayer)
-                    senderPlayer.server.playerList.sendMessage(
-                        TranslationTextComponent(
-                            "project_essentials.afk_disabled", senderPlayer.name.string
-                        ), false
-                    )
+                    senderPlayer.server.playerList.players.forEach {
+                        sendMsg(it.commandSource, "afk_disabled", senderPlayer.name.string)
+                    }
                 } else {
                     afkPresenter.setAfkPlayer(senderPlayer)
-                    senderPlayer.server.playerList.sendMessage(
-                        TranslationTextComponent(
-                            "project_essentials.afk_enabled", senderPlayer.name.string
-                        ), false
-                    )
+                    senderPlayer.server.playerList.players.forEach {
+                        sendMsg(it.commandSource, "afk_enabled", senderPlayer.name.string)
+                    }
                 }
             } else {
                 throwPermissionLevel(senderName, command)
