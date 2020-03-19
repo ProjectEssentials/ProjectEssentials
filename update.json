@@ -1,12 +1,13 @@
 {
   "homepage": "https://github.com/ProjectEssentials/ProjectEssentials",
   "1.15.2": {
+    "1.15.2-1.1.2": "Changelog for 1.15.2-1.1.2 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.15.2/changelog.md#1152-112---2020-03-19",
     "1.15.2-1.1.1": "Changelog for 1.15.2-1.1.1 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.15.2/changelog.md#1152-111---2020-03-14",
     "1.15.2-1.1.0": "Changelog for 1.15.2-1.1.0 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.15.2/changelog.md#1152-110---2020-02-21",
     "1.15.2-1.0.0": "Changelog for 1.15.2-1.0.0 https://github.com/ProjectEssentials/ProjectEssentials/blob/MC-1.15.2/changelog.md#1152-100---2020-02-08"
   },
   "promos": {
-    "1.15.2-latest": "1.15.2-1.1.1",
-    "1.15.2-recommended": "1.15.2-1.1.1"
+    "1.15.2-latest": "1.15.2-1.1.2",
+    "1.15.2-recommended": "1.15.2-1.1.2"
   }
 }
