@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands.general
 
 import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -49,12 +50,21 @@ object SuicideCommand : CommandBase() {
             return 0
         } else {
             if (PermissionsAPI.hasPermission(senderName, "ess.suicide")) {
-                senderPlayer.attackEntityFrom(
-                    DamageSource("suicide")
-                        .setDamageBypassesArmor()
-                        .setDamageAllowedInCreativeMode(),
-                    Float.MAX_VALUE
-                )
+                if (LocalizationConfigurationUtils.getConfig().enabled) {
+                    senderPlayer.attackEntityFrom(
+                        DamageSource("magic") // uses vanilla localization.
+                            .setDamageBypassesArmor()
+                            .setDamageAllowedInCreativeMode(),
+                        Float.MAX_VALUE
+                    )
+                } else {
+                    senderPlayer.attackEntityFrom(
+                        DamageSource("suicide") // required localization on client.
+                            .setDamageBypassesArmor()
+                            .setDamageAllowedInCreativeMode(),
+                        Float.MAX_VALUE
+                    )
+                }
                 sendMsg(sender, "suicide.success")
             } else {
                 throwPermissionLevel(senderName, command)
