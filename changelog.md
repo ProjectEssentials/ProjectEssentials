@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.15.2-1.1.2] - 2020-03-19
+
+### Fixed
+- Incorrect output with enabled localization for `afk` command.
+- Incorrect output with enabled localization for `suicide` command.
+
 ## [1.15.2-1.1.1] - 2020-03-14 *Synced with 1.14.4-1.0.1*
 
 ### Added
