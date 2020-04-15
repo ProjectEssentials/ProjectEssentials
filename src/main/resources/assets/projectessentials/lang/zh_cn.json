@@ -83,7 +83,7 @@
   "project_essentials.ping.restricted": "§c你 §7没有权限 §cping 服务器。",
   "project_essentials.afk.restricted": "§c你 §7没有权限 §c设置为 离开模式。",
   "project_essentials.afk_disabled": "§7§o玩家 §6%s§7§o 退出了离开模式，现在已回来。",
-  "project_essentials.afk_enabled": "§7§o玩家 §6%s§7§o 现在处于离开模式，可能不能及时回复消息。,
+  "project_essentials.afk_enabled": "§7§o玩家 §6%s§7§o 现在处于离开模式，可能不能及时回复消息。",
   "project_essentials.burn.restricted": "§c你 §7没有权限 §c点燃玩家。",
   "project_essentials.burn.success": "§6你让玩家 §7%s §6着火 时间 §7%s §6秒。",
   "project_essentials.lightning.restricted": "§c你 §7没有权限 §c召唤闪电。",
