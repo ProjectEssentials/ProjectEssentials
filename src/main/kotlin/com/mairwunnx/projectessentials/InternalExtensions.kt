@@ -1,6 +1,15 @@
-package com.mairwunnx.projectessentials.extensions
+package com.mairwunnx.projectessentials
 
+import net.minecraft.entity.player.ServerPlayerEntity
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.FoodStats
+
+/**
+ * @return server player instance by nickname. Return null
+ * if player not exist.
+ */
+fun MinecraftServer.findPlayer(nickname: String): ServerPlayerEntity? =
+    playerList.getPlayerByUsername(nickname)
 
 /**
  * Return true if food level or saturation level
