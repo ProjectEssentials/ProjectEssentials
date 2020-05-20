@@ -1,0 +1,10 @@
+{
+  "homepage": "https://github.com/ProjectEssentials/ProjectEssentials",
+  "1.14.4": {
+    "2.0.0-RC.1": "change log -> https://github.com/ProjectEssentials/ProjectEssentials/blob/master/changelog.md#200-rc1---2020-05-21"
+  },
+  "promos": {
+    "1.14.4-latest": "2.0.0-RC.1",
+    "1.14.4-recommended": "2.0.0"
+  }
+}
