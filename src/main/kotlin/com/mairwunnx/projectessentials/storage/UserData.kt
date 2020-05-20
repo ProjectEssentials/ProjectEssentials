@@ -1,12 +1,12 @@
 package com.mairwunnx.projectessentials.storage
 
-import com.mairwunnx.projectessentials.core.extensions.empty
+import com.mairwunnx.projectessentials.core.api.v1.extensions.empty
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserData(
     var lastWorld: String = String.empty,
-    var lastWorldPos: String = String.empty,
-    var flyEnabledInWorlds: List<String> = listOf(),
-    var godEnabledWorlds: List<String> = listOf()
+    var lastPosition: String = String.empty,
+    var flyWorlds: List<String> = listOf(),
+    var godWorlds: List<String> = listOf()
 )

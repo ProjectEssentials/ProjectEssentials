@@ -152,7 +152,7 @@ object FlyCommand : CommandBase() {
         }
 
         if (isAutoFly) {
-            return if (store.flyEnabledInWorlds.contains(target.world.worldInfo.worldName)) {
+            return if (store.flyWorlds.contains(target.world.worldInfo.worldName)) {
                 if (isRestrictedWorld(target)) {
                     installFly(false)
                     false

@@ -66,18 +66,6 @@ class ProjectEssentials : EssBase() {
         MinecraftForge.EVENT_BUS.register(this)
         ModConfiguration.loadConfig()
         StorageBase.loadUserData()
-        loadLocalization()
-    }
-
-    private fun loadLocalization() {
-        if (LocalizationConfigurationUtils.getConfig().enabled) {
-            processLocalizations(
-                ProjectEssentials::class.java, listOf(
-                    "/assets/projectessentials/lang/ru_ru.json",
-                    "/assets/projectessentials/lang/en_us.json"
-                )
-            )
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -203,8 +191,8 @@ class ProjectEssentials : EssBase() {
             uuidString, UserData(
                 player.world.fullName(),
                 "${player.posX.toInt()}, ${player.posY.toInt()}, ${player.posZ.toInt()}",
-                getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyEnabledInWorlds),
-                getGodEnabledWorlds(player, StorageBase.getData(uuidString).godEnabledWorlds)
+                getFlyEnabledWorlds(player, StorageBase.getData(uuidString).flyWorlds),
+                getGodEnabledWorlds(player, StorageBase.getData(uuidString).godWorlds)
             )
         )
     }
@@ -257,15 +245,6 @@ class ProjectEssentials : EssBase() {
     private fun getGod(player: PlayerEntity?): Boolean {
         if (player == null) return false
         return player.abilities.disableDamage
-    }
-
-    private fun loadAdditionalModules() {
-        try {
-            Class.forName(cooldownAPIClassPath)
-            cooldownsInstalled = true
-        } catch (_: ClassNotFoundException) {
-            // ignored
-        }
     }
 
     companion object {

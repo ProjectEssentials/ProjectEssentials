@@ -154,7 +154,7 @@ object GodCommand : CommandBase() {
         }
 
         if (isAutoGod) {
-            return if (store.godEnabledWorlds.contains(target.world.worldInfo.worldName)) {
+            return if (store.godWorlds.contains(target.world.worldInfo.worldName)) {
                 if (isRestrictedWorld(target)) {
                     installGod(false)
                     false
