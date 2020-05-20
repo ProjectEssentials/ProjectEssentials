@@ -26,8 +26,6 @@ data class CommandsConfig(
         val god: God = God(),
         @SerialName("List")
         val list: List = List(),
-        @SerialName("Break")
-        val `break`: Break = Break(),
         @SerialName("GetPos")
         val getPos: GetPos = GetPos(),
         @SerialName("SendPos")
@@ -165,14 +163,6 @@ data class CommandsConfig(
                 "who",
                 "ewho"
             )
-        )
-
-        @Serializable
-        data class Break(
-            @SerialName("RestrictedBlocks")
-            val restrictedBlocks: kotlin.collections.List<String> = listOf("minecraft:bedrock"),
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("ebreak")
         )
 
         @Serializable
