@@ -1,34 +1,17 @@
-# ![image](assets/ProjectEssentials-Transparent@x1.png)
+### What is it
 
-## Minecraft command mod, adds useful commands in game and more for Forge
+A basic module of Project Essentials. This module adds a few basic commands in minecraft for the project. Many of the commands in this module will be familiar to you from EssentialsX.
 
 ### Explore
 
-#### [Download mod](https://github.com/ProjectEssentials/ProjectEssentials/releases/download/v1.14.4-1.0.2/Project.Essentials-1.14.4-1.0.2.jar) · [Commands](https://mairwunnx.gitbook.io/project-essentials/#commands-and-permissions) · [Configuration](https://mairwunnx.gitbook.io/project-essentials/#configuration) · [How to install](https://mairwunnx.gitbook.io/project-essentials/#how-to-install) · [Troubleshooting](https://github.com/ProjectEssentials/ProjectEssentials/issues/new/choose) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/ProjectEssentials) · [Change log](changelog.md)
+#### [Download mod](https://github.com/ProjectEssentials/ProjectEssentials/releases/download/v1.14.4-1.0.2/Project.Essentials-1.14.4-1.0.2.jar) · [User guide](https://mairwunnx.gitbook.io/project-essentials/#how-to-install) · [Troubleshooting](https://github.com/ProjectEssentials/ProjectEssentials/issues/new/choose) · [Telegram](https://t.me/minecraftforge) · [Discord](https://discord.gg/VU9XZAt) · [Change log](https://github.com/ProjectEssentials/ProjectEssentials/blob/master/changelog.md)
 
-### Dependencies
-
-```none
-    - mandatory (game will not start without a mod)
-    - recommended (without a mod, game can start, but I recommend using it)
-```
-
-#### Mandatory
-
-#### [Project Essentials Core](https://github.com/ProjectEssentials/ProjectEssentials-Core/releases) · [Project Essentials Permissions](https://github.com/ProjectEssentials/ProjectEssentials-Permissions/releases)
-
-#### Recommended
-
-#### [Project Essentials Cooldown](https://github.com/ProjectEssentials/ProjectEssentials-Cooldown/releases)
-
-### Compatibility
-
-This mod branch supported forge version `28.0.X` and `28.1.X` (Minecraft `1.14.4`).
+[![](https://github.com/ProjectEssentials/ProjectEssentials-Assets/raw/ASSETS-20-Q2/assets/common/support.png)](https://gist.github.com/MairwunNx/fda95062618db6880ef8ee06e1bba54f)
 
 ### Credits
 
-- Author: Pavel Erokhin [@mairwunnx](https://github.com/mairwunnx)
-- [JetBrains](https://www.jetbrains.com/) for Licenses 🥰
-- And you for contibuting and using it 😊🤗
+- `hujle` for testing this mod and almost all modules in production
+- [JetBrains](https://www.jetbrains.com/) for product licenses
+- [KuroNoSeiHai](https://github.com/KuroNoSeiHai) for Chinese simplified translation
 
-[![image](https://github.com/ProjectEssentials/ProjectEssentials-Core/raw/MC-1.14.4/assets/support_social.png)](https://ko-fi.com/mairwunnx)
+### Inspired by: [EssentialsX](https://github.com/EssentialsX)
