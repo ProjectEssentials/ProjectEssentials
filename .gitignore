@@ -49,14 +49,10 @@ forge*changelog.txt
 hs_err_pid*
 
 ### Gradle ###
-.gradle
 build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
 
 # Cache of project
 .gradletasknamecache
@@ -68,15 +64,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/gradle
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
@@ -125,9 +112,6 @@ cmake-build-*/
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
 
-# File-based project format
-*.iws
-
 # IntelliJ
 out/
 run/
@@ -165,5 +149,4 @@ fabric.properties
 
 # Sonarlint plugin
 .idea/sonarlint
-
-!/libs/*
+!/gradle/wrapper/gradle-wrapper.jar
