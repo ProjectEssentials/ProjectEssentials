@@ -24,36 +24,12 @@ data class CommandsConfig(
         val fly: Fly = Fly(),
         @SerialName("God")
         val god: God = God(),
-        @SerialName("List")
-        val list: List = List(),
-        @SerialName("GetPos")
-        val getPos: GetPos = GetPos(),
         @SerialName("SendPos")
         val sendPos: SendPos = SendPos(),
         @SerialName("More")
         val more: More = More(),
-        @SerialName("Day")
-        val day: Day = Day(),
-        @SerialName("Night")
-        val night: Night = Night(),
-        @SerialName("MidNight")
-        val midNight: MidNight = MidNight(),
-        @SerialName("Noon")
-        val noon: Noon = Noon(),
-        @SerialName("Sunset")
-        val sunset: Sunset = Sunset(),
-        @SerialName("Sunrise")
-        val sunrise: Sunrise = Sunrise(),
-        @SerialName("Time")
-        val time: Time = Time(),
         @SerialName("Suicide")
         val suicide: Suicide = Suicide(),
-        @SerialName("Rain")
-        val rain: Rain = Rain(),
-        @SerialName("Storm")
-        val storm: Storm = Storm(),
-        @SerialName("Sun")
-        val sun: Sun = Sun(),
         @SerialName("Repair")
         val repair: Repair = Repair(),
         @SerialName("Ping")
@@ -92,7 +68,7 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("eheal")
+            val aliases: List<String> = listOf("eheal")
         )
 
         @Serializable
@@ -104,7 +80,7 @@ data class CommandsConfig(
             @SerialName("MaxFoodLevel")
             val maxFoodLevel: Int = 20,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "eat", "eeat", "efeed"
             )
         )
@@ -112,7 +88,7 @@ data class CommandsConfig(
         @Serializable
         data class Top(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etop")
+            val aliases: List<String> = listOf("etop")
         )
 
         @Serializable
@@ -120,7 +96,7 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("eair")
+            val aliases: List<String> = listOf("eair")
         )
 
         @Serializable
@@ -128,11 +104,11 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("efly"),
+            val aliases: List<String> = listOf("efly"),
             @SerialName("AutoFlyEnabled")
             val autoFlyEnabled: Boolean = true,
             @SerialName("FlyDisabledWorlds")
-            val flyDisabledWorlds: kotlin.collections.List<String> = listOf()
+            val flyDisabledWorlds: List<String> = listOf()
         )
 
         @Serializable
@@ -140,46 +116,17 @@ data class CommandsConfig(
             @SerialName("EnableArgs")
             val enableArgs: Boolean = true,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("egod", "tgm"),
+            val aliases: List<String> = listOf("egod", "tgm"),
             @SerialName("AutoGodModeEnabled")
             val autoGodModeEnabled: Boolean = true,
             @SerialName("GodModeDisabledWorlds")
-            val godModeDisabledWorlds: kotlin.collections.List<String> = listOf()
-        )
-
-        @Serializable
-        data class List(
-            @SerialName("MaxDisplayedPlayers")
-            val maxDisplayedPlayers: Int = 16,
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "elist",
-                "online",
-                "eonline",
-                "playerlist",
-                "eplayerlist",
-                "plist",
-                "eplist",
-                "who",
-                "ewho"
-            )
-        )
-
-        @Serializable
-        data class GetPos(
-            @SerialName("EnableArgs")
-            val enableArgs: Boolean = true,
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "eposition",
-                "mypos"
-            )
+            val godModeDisabledWorlds: List<String> = listOf()
         )
 
         @Serializable
         data class SendPos(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "esendpos"
             )
         )
@@ -187,93 +134,19 @@ data class CommandsConfig(
         @Serializable
         data class More(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("emore", "dupe")
-        )
-
-        @Serializable
-        data class Day(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("eday")
-        )
-
-        @Serializable
-        data class Night(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("enight")
-        )
-
-        @Serializable
-        data class MidNight(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("emidnight")
-        )
-
-        @Serializable
-        data class Noon(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "enoon", "midday", "noonday"
-            )
-        )
-
-        @Serializable
-        data class Sunset(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "esunset", "dusk", "sundown", "evening"
-            )
-        )
-
-        @Serializable
-        data class Sunrise(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "esunrise", "dawn", "morning", "morn"
-            )
-        )
-
-        @Serializable
-        data class Time(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etime")
+            val aliases: List<String> = listOf("emore", "dupe")
         )
 
         @Serializable
         data class Suicide(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("esuicide")
-        )
-
-        @Serializable
-        data class Rain(
-            @SerialName("DefaultDuration")
-            val defaultDuration: Int = 13000,
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("erain")
-        )
-
-        @Serializable
-        data class Storm(
-            @SerialName("DefaultDuration")
-            val defaultDuration: Int = 13000,
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "estorm", "thunder", "ethunder", "goodweather"
-            )
-        )
-
-        @Serializable
-        data class Sun(
-            @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
-                "esun", "weatherclear", "clearsky", "sky", "esky"
-            )
+            val aliases: List<String> = listOf("esuicide")
         )
 
         @Serializable
         data class Repair(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "fix", "efix", "erepair"
             )
         )
@@ -281,13 +154,13 @@ data class CommandsConfig(
         @Serializable
         data class Ping(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("eping")
+            val aliases: List<String> = listOf("eping")
         )
 
         @Serializable
         data class Afk(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "afk", "eafk", "away", "eaway"
             )
         )
@@ -297,7 +170,7 @@ data class CommandsConfig(
             @SerialName("DefaultDuration")
             val defaultDuration: Int = 10,
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "burn", "eburn"
             )
         )
@@ -305,7 +178,7 @@ data class CommandsConfig(
         @Serializable
         data class Lightning(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "lightning", "elightning", "shock", "eshock", "thor", "ethor"
             )
         )
@@ -313,25 +186,25 @@ data class CommandsConfig(
         @Serializable
         data class TpPos(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etppos")
+            val aliases: List<String> = listOf("etppos")
         )
 
         @Serializable
         data class TpAll(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpall")
+            val aliases: List<String> = listOf("etpall")
         )
 
         @Serializable
         data class TpHere(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etphere", "s")
+            val aliases: List<String> = listOf("etphere", "s")
         )
 
         @Serializable
         data class Tpa(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpa", "call", "ecall"),
+            val aliases: List<String> = listOf("etpa", "call", "ecall"),
             @SerialName("TimeOut")
             val timeOut: Int = 45
         )
@@ -339,13 +212,13 @@ data class CommandsConfig(
         @Serializable
         data class TpaAll(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpaall", "callall", "ecallall")
+            val aliases: List<String> = listOf("etpaall", "callall", "ecallall")
         )
 
         @Serializable
         data class TpaHere(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf(
+            val aliases: List<String> = listOf(
                 "etpahere",
                 "callhere",
                 "ecallhere"
@@ -355,31 +228,31 @@ data class CommandsConfig(
         @Serializable
         data class TpAccept(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpaccept", "tpyes", "etpyes")
+            val aliases: List<String> = listOf("etpaccept", "tpyes", "etpyes")
         )
 
         @Serializable
         data class TpDeny(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpdeny", "tpno", "etpno")
+            val aliases: List<String> = listOf("etpdeny", "tpno", "etpno")
         )
 
         @Serializable
         data class TpToggle(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etptoggle", "tpoff", "etpoff")
+            val aliases: List<String> = listOf("etptoggle", "tpoff", "etpoff")
         )
 
         @Serializable
         data class TpaCancel(
             @SerialName("Aliases")
-            val aliases: kotlin.collections.List<String> = listOf("etpacancel")
+            val aliases: List<String> = listOf("etpacancel")
         )
 
         @Serializable
         data class Help(
             @SerialName("Help")
-            val aliases: kotlin.collections.List<String> = listOf("ehelp"),
+            val aliases: List<String> = listOf("ehelp"),
             @SerialName("ReplaceDefault")
             val replaceDefault: Boolean = true,
             @SerialName("MaxLines")
