@@ -2,6 +2,7 @@
 
 package com.mairwunnx.projectessentials
 
+import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
 import com.mairwunnx.projectessentials.core.api.v1.events.forge.FMLCommonSetupEventData
@@ -9,6 +10,7 @@ import com.mairwunnx.projectessentials.core.api.v1.events.forge.ForgeEventType
 import com.mairwunnx.projectessentials.core.api.v1.localization.Localization
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.IModule
+import com.mairwunnx.projectessentials.core.api.v1.providers.ProviderAPI
 import com.mairwunnx.projectessentials.core.impl.commands.ConfigureEssentialsCommandAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
@@ -25,9 +27,15 @@ class ModuleObject : IModule {
         getConfigurationByName<GeneralConfiguration>("general")
     }
 
+    private val providers = listOf(
+        UserDataConfiguration::class.java,
+        ModuleObject::class.java
+    )
+
     private val logger = LogManager.getLogger()
 
     init {
+        providers.forEach(ProviderAPI::addProvider)
         subscribeEvents()
         EVENT_BUS.register(this)
     }
