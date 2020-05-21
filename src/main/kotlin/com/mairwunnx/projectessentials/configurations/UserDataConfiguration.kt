@@ -31,9 +31,18 @@ object UserDataConfiguration : IConfiguration<UserDataConfigurationModel> {
             logger.info("Loaded local user data (${take().users.count()})")
             logger.debug("Purging data of old users for ${take().purgeDaysDelay} days").also {
                 take().users.removeIf {
-                    Duration.between(
+                    (Duration.between(
                         ZonedDateTime.parse(it.lastDateTime), ZonedDateTime.now()
-                    ).toDays() >= take().purgeDaysDelay
+                    ).toDays() >= take().purgeDaysDelay).also { result ->
+                        if (result) {
+                            logger.debug(
+                                """
+User ${it.name} was removed from user-data. Account was inactive for ${take().purgeDaysDelay} days.
+Removed data: $it
+                                """
+                            )
+                        }
+                    }
                 }
             }
         }
