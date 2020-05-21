@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.abilities
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND_ARG
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
@@ -41,11 +40,16 @@ object FlyCommand : CommandBase() {
                     Commands.argument(
                         "player", EntityArgument.player()
                     ).executes {
-                        return@executes execute(it, true)
+                        return@executes execute(
+                            it,
+                            true
+                        )
                     }
                 )
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }
@@ -63,7 +67,10 @@ object FlyCommand : CommandBase() {
                 logger.info(
                     "Player ($targetName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderName"
                 )
-                if (!setFly(targetPlayer)) return 0
+                if (!setFly(
+                        targetPlayer
+                    )
+                ) return 0
                 logger.info("You changed fly mode of player $targetName.")
                 sendMsg(
                     targetPlayer.commandSource,
@@ -93,7 +100,10 @@ object FlyCommand : CommandBase() {
                     logger.info(
                         "Player ($targetName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying} by $senderName"
                     )
-                    if (!setFly(targetPlayer)) return 0
+                    if (!setFly(
+                            targetPlayer
+                        )
+                    ) return 0
                     sendMsg(sender, "fly.other.success", targetName)
                     sendMsg(
                         target,
@@ -111,7 +121,10 @@ object FlyCommand : CommandBase() {
                     logger.info(
                         "Player ($senderName) fly state changed from ${playerAbilities.isFlying} to ${!playerAbilities.isFlying}"
                     )
-                    if (!setFly(senderPlayer)) return 0
+                    if (!setFly(
+                            senderPlayer
+                        )
+                    ) return 0
                     sendMsg(sender, "fly.self.success")
                 } else {
                     throwPermissionLevel(senderName, command)
@@ -153,7 +166,10 @@ object FlyCommand : CommandBase() {
 
         if (isAutoFly) {
             return if (store.flyWorlds.contains(target.world.worldInfo.worldName)) {
-                if (isRestrictedWorld(target)) {
+                if (isRestrictedWorld(
+                        target
+                    )
+                ) {
                     installFly(false)
                     false
                 } else {
@@ -166,7 +182,10 @@ object FlyCommand : CommandBase() {
             }
         }
 
-        if (isRestrictedWorld(target)) {
+        if (isRestrictedWorld(
+                target
+            )
+        ) {
             installFly(false)
             if (!isHasTarget) {
                 sendMsg(target.commandSource, "fly.incompatible_world")

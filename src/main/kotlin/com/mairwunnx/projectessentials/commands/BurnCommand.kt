@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg

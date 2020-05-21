@@ -1,7 +1,7 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
+import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -10,20 +10,20 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.util.Hand
+import net.minecraft.util.DamageSource
 import org.apache.logging.log4j.LogManager
 
-object MoreCommand : CommandBase() {
+object SuicideCommand : CommandBase() {
     private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.more
+    private var config = getCommandsConfig().commands.suicide
 
     init {
-        command = "more"
+        command = "suicide"
         aliases = config.aliases.toMutableList()
     }
 
     override fun reload() {
-        config = getCommandsConfig().commands.more
+        config = getCommandsConfig().commands.suicide
         aliases = config.aliases.toMutableList()
         super.reload()
     }
@@ -33,7 +33,9 @@ object MoreCommand : CommandBase() {
         aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }
@@ -44,22 +46,30 @@ object MoreCommand : CommandBase() {
         argument: Any?
     ): Int {
         super.execute(c, argument)
-
         if (senderIsServer) {
             throwOnlyPlayerCan(command)
             return 0
         } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.more")) {
-                val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
-                if (item.count < item.maxStackSize) {
-                    item.count = item.maxStackSize
-                    sendMsg(sender, "more.out")
+            if (PermissionsAPI.hasPermission(senderName, "ess.suicide")) {
+                if (LocalizationConfigurationUtils.getConfig().enabled) {
+                    senderPlayer.attackEntityFrom(
+                        DamageSource("magic") // uses vanilla localization.
+                            .setDamageBypassesArmor()
+                            .setDamageAllowedInCreativeMode(),
+                        Float.MAX_VALUE
+                    )
                 } else {
-                    sendMsg(sender, "more.fullstack")
+                    senderPlayer.attackEntityFrom(
+                        DamageSource("suicide") // required localization on client.
+                            .setDamageBypassesArmor()
+                            .setDamageAllowedInCreativeMode(),
+                        Float.MAX_VALUE
+                    )
                 }
+                sendMsg(sender, "suicide.success")
             } else {
                 throwPermissionLevel(senderName, command)
-                sendMsg(sender, "more.restricted", senderName)
+                sendMsg(sender, "suicide.restricted", senderName)
                 return 0
             }
         }

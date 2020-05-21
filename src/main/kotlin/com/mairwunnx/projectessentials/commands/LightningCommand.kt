@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -35,7 +34,9 @@ object LightningCommand : CommandBase() {
             dispatcher.register(literal<CommandSource>(command)
                 .then(
                     Commands.argument("entities", EntityArgument.entities()).executes {
-                        return@executes execute(it)
+                        return@executes execute(
+                            it
+                        )
                     }
                 )
             )

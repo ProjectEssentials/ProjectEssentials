@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.health
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND_ARG
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
@@ -38,11 +37,16 @@ object HealCommand : CommandBase() {
                     Commands.argument(
                         "player", EntityArgument.player()
                     ).executes {
-                        return@executes execute(it, true)
+                        return@executes execute(
+                            it,
+                            true
+                        )
                     }
                 )
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }

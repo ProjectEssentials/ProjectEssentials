@@ -1,7 +1,6 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.api.commands.CommandsAPI
-import com.mairwunnx.projectessentials.commands.helpLiteral
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
 import com.mairwunnx.projectessentials.core.extensions.playerName
@@ -22,7 +21,7 @@ object HelpCommand : CommandsAPI(
     private val logger = LogManager.getLogger()
 
     init {
-        onCommandExecute(::execute)
+        onCommandExecute(HelpCommand::execute)
     }
 
     fun execute(
@@ -62,7 +61,11 @@ object HelpCommand : CommandsAPI(
 
                 values.forEach {
                     context.source.sendFeedback(
-                        StringTextComponent(colorize("/$it")), false
+                        StringTextComponent(
+                            colorize(
+                                "/$it"
+                            )
+                        ), false
                     )
                 }
             }

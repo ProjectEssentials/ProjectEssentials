@@ -1,12 +1,6 @@
-package com.mairwunnx.projectessentials.commands.staff
+package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.ProjectEssentials
-import com.mairwunnx.projectessentials.commands.abilities.FlyCommand
-import com.mairwunnx.projectessentials.commands.abilities.GodCommand
-import com.mairwunnx.projectessentials.commands.general.*
-import com.mairwunnx.projectessentials.commands.health.AirCommand
-import com.mairwunnx.projectessentials.commands.health.FeedCommand
-import com.mairwunnx.projectessentials.commands.health.HealCommand
 import com.mairwunnx.projectessentials.commands.moderator.GetPosCommand
 import com.mairwunnx.projectessentials.commands.teleport.*
 import com.mairwunnx.projectessentials.commands.time.*

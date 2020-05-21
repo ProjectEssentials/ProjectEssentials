@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
@@ -10,19 +9,20 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
+import net.minecraft.util.Hand
 import org.apache.logging.log4j.LogManager
 
-object PingCommand : CommandBase() {
+object MoreCommand : CommandBase() {
     private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.ping
+    private var config = getCommandsConfig().commands.more
 
     init {
-        command = "ping"
+        command = "more"
         aliases = config.aliases.toMutableList()
     }
 
     override fun reload() {
-        config = getCommandsConfig().commands.ping
+        config = getCommandsConfig().commands.more
         aliases = config.aliases.toMutableList()
         super.reload()
     }
@@ -32,7 +32,9 @@ object PingCommand : CommandBase() {
         aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }
@@ -43,15 +45,22 @@ object PingCommand : CommandBase() {
         argument: Any?
     ): Int {
         super.execute(c, argument)
+
         if (senderIsServer) {
             throwOnlyPlayerCan(command)
             return 0
         } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.ping")) {
-                sendMsg(sender, "ping.out", senderPlayer.ping.toString())
+            if (PermissionsAPI.hasPermission(senderName, "ess.more")) {
+                val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
+                if (item.count < item.maxStackSize) {
+                    item.count = item.maxStackSize
+                    sendMsg(sender, "more.out")
+                } else {
+                    sendMsg(sender, "more.fullstack")
+                }
             } else {
                 throwPermissionLevel(senderName, command)
-                sendMsg(sender, "ping.restricted", targetName)
+                sendMsg(sender, "more.restricted", senderName)
                 return 0
             }
         }

@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
@@ -34,13 +33,20 @@ object RepairCommand : CommandBase() {
         aliases.forEach { command ->
             dispatcher.register(literal<CommandSource>(command)
                 .then(Commands.literal("all").executes {
-                    return@executes execute(it, "all")
+                    return@executes execute(
+                        it,
+                        "all"
+                    )
                 })
                 .then(Commands.literal("hand").executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 })
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }

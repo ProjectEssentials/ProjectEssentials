@@ -1,6 +1,5 @@
-package com.mairwunnx.projectessentials.commands.abilities
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
 import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
 import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND_ARG
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
@@ -41,11 +40,16 @@ object GodCommand : CommandBase() {
                     Commands.argument(
                         "player", EntityArgument.player()
                     ).executes {
-                        return@executes execute(it, true)
+                        return@executes execute(
+                            it,
+                            true
+                        )
                     }
                 )
                 .executes {
-                    return@executes execute(it)
+                    return@executes execute(
+                        it
+                    )
                 }
             )
         }
@@ -63,7 +67,11 @@ object GodCommand : CommandBase() {
                 logger.info(
                     "Player ($targetName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderName"
                 )
-                if (!setGod(targetPlayer, isHasTarget = true)) return 0
+                if (!setGod(
+                        targetPlayer,
+                        isHasTarget = true
+                    )
+                ) return 0
                 logger.info("You changed god mode of player $targetName.")
                 sendMsg(
                     target,
@@ -93,7 +101,11 @@ object GodCommand : CommandBase() {
                     logger.info(
                         "Player ($targetName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage} by $senderName"
                     )
-                    if (!setGod(targetPlayer, isHasTarget = true)) return 0
+                    if (!setGod(
+                            targetPlayer,
+                            isHasTarget = true
+                        )
+                    ) return 0
                     sendMsg(sender, "god.other.success", targetName)
                     sendMsg(
                         target,
@@ -111,7 +123,10 @@ object GodCommand : CommandBase() {
                     logger.info(
                         "Player ($senderName) god state changed from ${playerAbilities.disableDamage} to ${!playerAbilities.disableDamage}"
                     )
-                    if (!setGod(sender.asPlayer())) return 0
+                    if (!setGod(
+                            sender.asPlayer()
+                        )
+                    ) return 0
                     sendMsg(sender, "god.self.success")
                 } else {
                     throwPermissionLevel(senderName, command)
@@ -155,7 +170,10 @@ object GodCommand : CommandBase() {
 
         if (isAutoGod) {
             return if (store.godWorlds.contains(target.world.worldInfo.worldName)) {
-                if (isRestrictedWorld(target)) {
+                if (isRestrictedWorld(
+                        target
+                    )
+                ) {
                     installGod(false)
                     false
                 } else {
@@ -168,7 +186,10 @@ object GodCommand : CommandBase() {
             }
         }
 
-        if (isRestrictedWorld(target)) {
+        if (isRestrictedWorld(
+                target
+            )
+        ) {
             installGod(false)
             if (!isHasTarget) sendMsg(sender, "god.incompatible_world")
             return false

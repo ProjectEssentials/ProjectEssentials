@@ -1,8 +1,7 @@
-package com.mairwunnx.projectessentials.commands.general
+package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
+import com.mairwunnx.projectessentials.ProjectEssentials.Companion.afkPresenter
+import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
 import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
 import com.mairwunnx.projectessentials.extensions.sendMsg
@@ -11,20 +10,21 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.util.DamageSource
 import org.apache.logging.log4j.LogManager
 
-object SuicideCommand : CommandBase() {
+// todo: make out of afk when player change position
+
+object AfkCommand : CommandBase() {
     private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.suicide
+    private var config = ModConfiguration.getCommandsConfig().commands.afk
 
     init {
-        command = "suicide"
+        command = "afk"
         aliases = config.aliases.toMutableList()
     }
 
     override fun reload() {
-        config = getCommandsConfig().commands.suicide
+        config = ModConfiguration.getCommandsConfig().commands.afk
         aliases = config.aliases.toMutableList()
         super.reload()
     }
@@ -49,29 +49,25 @@ object SuicideCommand : CommandBase() {
             throwOnlyPlayerCan(command)
             return 0
         } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.suicide")) {
-                if (LocalizationConfigurationUtils.getConfig().enabled) {
-                    senderPlayer.attackEntityFrom(
-                        DamageSource("magic") // uses vanilla localization.
-                            .setDamageBypassesArmor()
-                            .setDamageAllowedInCreativeMode(),
-                        Float.MAX_VALUE
-                    )
+            if (PermissionsAPI.hasPermission(senderName, "ess.afk")) {
+                if (afkPresenter.isInAfk(senderPlayer)) {
+                    afkPresenter.removeAfkPlayer(senderPlayer)
+                    senderPlayer.server.playerList.players.forEach {
+                        sendMsg(it.commandSource, "afk_disabled", senderPlayer.name.string)
+                    }
                 } else {
-                    senderPlayer.attackEntityFrom(
-                        DamageSource("suicide") // required localization on client.
-                            .setDamageBypassesArmor()
-                            .setDamageAllowedInCreativeMode(),
-                        Float.MAX_VALUE
-                    )
+                    afkPresenter.setAfkPlayer(senderPlayer)
+                    senderPlayer.server.playerList.players.forEach {
+                        sendMsg(it.commandSource, "afk_enabled", senderPlayer.name.string)
+                    }
                 }
-                sendMsg(sender, "suicide.success")
             } else {
                 throwPermissionLevel(senderName, command)
-                sendMsg(sender, "suicide.restricted", senderName)
+                sendMsg(sender, "afk.restricted", senderName)
                 return 0
             }
         }
+
         logger.info("Executed command \"/$command\" from $senderName")
         return 0
     }
