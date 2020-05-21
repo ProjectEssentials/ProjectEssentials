@@ -47,6 +47,7 @@ class ModuleObject : IModule {
         generalConfiguration.getList(SETTING_FIRST_JOIN_COMMANDS, arrayListOf())
         generalConfiguration.getIntOrDefault(SETTING_AFK_IDLENESS_TIME, 300)
         generalConfiguration.getBoolOrDefault(SETTING_AFK_HANDLE_ACTIVITY, true)
+        generalConfiguration.getList(SETTING_DISABLED_COMMANDS, arrayListOf())
 
         ConfigureEssentialsCommandAPI.required(SETTING_REPLACE_NATIVE_HELP_COMMAND)
     }
