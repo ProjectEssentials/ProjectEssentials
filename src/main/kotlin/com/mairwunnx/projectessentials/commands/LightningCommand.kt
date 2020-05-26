@@ -12,7 +12,7 @@ import net.minecraft.command.CommandSource
 import net.minecraft.entity.effect.LightningBoltEntity
 import net.minecraft.world.server.ServerWorld
 
-object LightningCommand : CommandBase(helpLiteral) {
+object LightningCommand : CommandBase(lightningLiteral) {
     override val name = "lightning"
     override val aliases = listOf("thor")
 
