@@ -75,3 +75,5 @@ val lightningLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.entities()
         ).executes { LightningCommand.process(it) }
     )
+
+val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
