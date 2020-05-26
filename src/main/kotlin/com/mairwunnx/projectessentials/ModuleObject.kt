@@ -18,6 +18,7 @@ import com.mairwunnx.projectessentials.managers.AfkManager
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
 import net.minecraftforge.event.TickEvent
+import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import org.apache.logging.log4j.LogManager
@@ -91,6 +92,13 @@ class ModuleObject : IModule {
     fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
         if (event.player is ServerPlayerEntity) {
             AfkManager.handle(event.player as ServerPlayerEntity)
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
+        if (event.player is ServerPlayerEntity) {
+            AfkManager.getAfkPlayers().remove(event.player as ServerPlayerEntity)
         }
     }
 }
