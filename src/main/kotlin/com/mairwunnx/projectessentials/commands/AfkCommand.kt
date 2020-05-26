@@ -25,7 +25,7 @@ object AfkCommand : CommandBase(afkLiteral, false) {
         }
     }
 
-    fun afkSet(context: CommandContext<CommandSource>): Int = 0.also {
+    fun afkSet(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.afk.list", 3) { isServer ->
             if (isServer) {
                 ServerMessagingAPI.throwOnlyPlayerCan()
