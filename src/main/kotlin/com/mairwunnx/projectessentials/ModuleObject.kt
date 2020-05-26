@@ -43,7 +43,8 @@ class ModuleObject : IModule {
         HealCommand::class.java,
         FlyCommand::class.java,
         GodCommand::class.java,
-        HelpCommand::class.java
+        HelpCommand::class.java,
+        LightningCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
