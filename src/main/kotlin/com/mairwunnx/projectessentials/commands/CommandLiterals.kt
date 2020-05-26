@@ -88,5 +88,5 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("sendpos").then(
         Commands.argument(
             "targets", EntityArgument.players()
-        ).executes { SendPosCommand.execute(it) }
-    ).executes { SendPosCommand.execute(it) }
+        ).executes { SendPosCommand.process(it) }
+    ).executes { SendPosCommand.process(it) }

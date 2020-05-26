@@ -1,106 +1,39 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.dimName
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
-import net.minecraft.entity.player.ServerPlayerEntity
-import org.apache.logging.log4j.LogManager
-import kotlin.math.roundToInt
 
-object SendPosCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.sendPos
+object SendPosCommand : CommandBase(sendPosLiteral) {
+    override val name = "sendpos"
+    override val aliases = listOf("send-pos", "share-positions")
 
-    init {
-        command = "sendpos"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.sendPos
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument(
-                        "player", EntityArgument.player()
-                    ).executes {
-                        return@executes execute(
-                            it, EntityArgument.getPlayer(it, "player")
-                        )
-                    }
-                )
-                .then(
-                    Commands.argument(
-                        "players", EntityArgument.players()
-                    ).executes {
-                        return@executes execute(
-                            it, EntityArgument.getPlayers(it, "players")
-                        )
-                    }
-                )
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (!PermissionsAPI.hasPermission(senderName, "ess.sendpos")) {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "sendpos.restricted")
-                return 0
-            }
-
-            if (argument is ServerPlayerEntity) {
-                sendMsg(
-                    argument.commandSource,
-                    "sendpos.pattern",
-                    senderName,
-                    senderPlayer.serverWorld.dimName(),
-                    senderPlayer.posX.roundToInt().toString(),
-                    senderPlayer.posY.roundToInt().toString(),
-                    senderPlayer.posZ.roundToInt().toString()
-                )
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.sendpos", 0) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                @Suppress("UNCHECKED_CAST")
-                val players = argument as Collection<ServerPlayerEntity>
-                players.forEach {
-                    sendMsg(
-                        it.commandSource,
-                        "sendpos.pattern",
-                        senderName,
-                        senderPlayer.serverWorld.dimName(),
-                        senderPlayer.posX.roundToInt().toString(),
-                        senderPlayer.posY.roundToInt().toString(),
-                        senderPlayer.posZ.roundToInt().toString()
-                    )
+                val sender = context.getPlayer()!!
+                CommandAPI.getPlayers(context, "targets").forEach { player ->
+                    MessagingAPI.sendMessage(
+                        player, "${MESSAGE_MODULE_PREFIX}basic.sendpos.receiver.success",
+                        args = *arrayOf(
+                            sender.name.string,
+                            sender.currentDimensionName,
+                            sender.positionVec.x.toInt().toString(),
+                            sender.positionVec.y.toInt().toString(),
+                            sender.positionVec.z.toInt().toString()
+                        )
+                    ).also { super.process(context) }
                 }
             }
         }
-
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }
