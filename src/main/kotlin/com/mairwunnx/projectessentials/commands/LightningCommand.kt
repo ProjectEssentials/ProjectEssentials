@@ -1,88 +1,43 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
 import net.minecraft.entity.effect.LightningBoltEntity
-import org.apache.logging.log4j.LogManager
+import net.minecraft.world.server.ServerWorld
 
-object LightningCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.lightning
+object LightningCommand : CommandBase(helpLiteral) {
+    override val name = "lightning"
 
-    init {
-        command = "lightning"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.lightning
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument("entities", EntityArgument.entities()).executes {
-                        return@executes execute(
-                            it
-                        )
-                    }
-                )
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (PermissionsAPI.hasPermission(senderName, "ess.lightning", senderIsServer)) {
-            val targets = EntityArgument.getEntities(c, "entities")
-
-            targets.forEach {
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.lightning", 3) { isServer ->
+            val entities = CommandAPI.getEntities(context, "targets")
+            entities.forEach { entity ->
                 val lightning = LightningBoltEntity(
-                    it.world, it.posX, it.posY, it.posZ, true
+                    entity.world,
+                    entity.positionVec.x, entity.positionVec.y, entity.positionVec.z,
+                    true
                 )
-                senderPlayer.serverWorld.addLightningBolt(lightning)
-                it.onStruckByLightning(lightning)
+                (entity.world as ServerWorld).addLightningBolt(lightning)
+                entity.onStruckByLightning(lightning)
             }
-
-            if (senderIsServer) {
-                if (targets.count() == 1) {
-                    val target = targets.first()
-                    logger.info("You smiting by lightning strike ${target.name.string} player or entity.")
-                } else {
-                    logger.info("You smiting by lightning strike entities and players: ${targets.count()}.")
+            if (isServer) {
+                ServerMessagingAPI.response {
+                    "You've smiting by lightning strike the selected (${entities.count()}) entities"
                 }
-                return 0
             } else {
-                if (targets.count() == 1) {
-                    val target = targets.first()
-                    sendMsg(sender, "lightning_entity.success", target.name.string)
-                } else {
-                    sendMsg(sender, "lightning_entities.success", targets.count().toString())
-                }
+                MessagingAPI.sendMessage(
+                    context.getPlayer()!!,
+                    "${MESSAGE_MODULE_PREFIX}basic.lightning.success",
+                    args = *arrayOf(entities.count().toString())
+                ).also { super.process(context) }
             }
-        } else {
-            throwPermissionLevel(senderName, command)
-            sendMsg(sender, "lightning.restricted", senderName)
-            return 0
         }
-
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }
