@@ -7,15 +7,6 @@ import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.EntityArgument
 
-val helpLiteral: LiteralArgumentBuilder<CommandSource> =
-    literal<CommandSource>("help").then(
-        Commands.argument(
-            "page", IntegerArgumentType.integer()
-        ).executes {
-            HelpCommand.execute(it)
-        }
-    )
-
 val afkLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("afk").then(
         Commands.literal("list").then(
@@ -71,3 +62,12 @@ val godLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { GodCommand.godOther(it) }
     ).executes { GodCommand.godSelf(it) }
+
+val helpLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("help").then(
+        Commands.argument(
+            "page", IntegerArgumentType.integer()
+        ).executes {
+            HelpCommand.process(it)
+        }
+    )
