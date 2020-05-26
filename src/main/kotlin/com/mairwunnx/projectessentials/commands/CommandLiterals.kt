@@ -16,7 +16,6 @@ val afkLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { AfkCommand.afkList(it) }
     ).executes { AfkCommand.afkSet(it) }
 
-
 val airLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("air").then(
         Commands.argument(
@@ -67,9 +66,12 @@ val helpLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("help").then(
         Commands.argument(
             "page", IntegerArgumentType.integer()
-        ).executes {
-            HelpCommand.process(it)
-        }
-    ).executes {
-        HelpCommand.process(it)
-    }
+        ).executes { HelpCommand.process(it) }
+    ).executes { HelpCommand.process(it) }
+
+val lightningLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("lightning").then(
+        Commands.argument(
+            "targets", EntityArgument.entities()
+        ).executes { LightningCommand.process(it) }
+    )
