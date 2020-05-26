@@ -41,7 +41,8 @@ class ModuleObject : IModule {
         BurnCommand::class.java,
         FeedCommand::class.java,
         HealCommand::class.java,
-        FlyCommand::class.java
+        FlyCommand::class.java,
+        GodCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
