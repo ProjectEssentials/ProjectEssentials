@@ -9,6 +9,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
+/**
+ * !Experimental command, issues can be present in production.
+ */
 object AfkManager {
     private val logger = LogManager.getLogger()
 
@@ -23,8 +26,8 @@ object AfkManager {
     fun switch(player: ServerPlayerEntity, value: Boolean) {
         if (!value) {
             if (player in afkPlayers) {
-                afkPlayers.remove(player)
                 player.markPlayerActive()
+                afkPlayers.remove(player)
                 MessagingAPI.sendMessage(
                     player, "project_essentials.afk.disabled", args = *arrayOf(player.name.string)
                 ).also {
@@ -33,6 +36,8 @@ object AfkManager {
             }
         } else {
             if (player !in afkPlayers) {
+                player.playerLastActiveTime -=
+                    (generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME) + 15) * 1000
                 afkPlayers.add(player)
                 MessagingAPI.sendMessage(
                     player, "project_essentials.afk.enabled", args = *arrayOf(player.name.string)
@@ -49,11 +54,7 @@ object AfkManager {
             val lastActiveMs = player.lastActiveTime
             val nowMs = System.nanoTime() / 1000000L
             val diff = (nowMs - lastActiveMs).toDuration(TimeUnit.SECONDS).inSeconds
-            if (generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME) >= diff) {
-                switch(player, true)
-            } else {
-                switch(player, false)
-            }
+            switch(player, generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME) >= diff)
         }
     }
 }
