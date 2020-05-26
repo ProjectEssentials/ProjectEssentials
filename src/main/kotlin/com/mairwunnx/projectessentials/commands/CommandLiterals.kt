@@ -70,4 +70,6 @@ val helpLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes {
             HelpCommand.process(it)
         }
-    )
+    ).executes {
+        HelpCommand.process(it)
+    }
