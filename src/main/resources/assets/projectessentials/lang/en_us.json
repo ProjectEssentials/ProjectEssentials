@@ -1,4 +1,5 @@
 {
+  "project_essentials_basic.restricted": "§cYou §7don't have permission §cto execute that command.",
   "project_essentials.common.player.notonline": "§cPlayer §7%s §cnot online or not exists on server.",
   "project_essentials.common.cooldown.not_expired": "§cYou §7cannot type §cthat command for §7%s §cseconds.",
   "project_essentials.common.command.blocked": "§cYou §7can't execute §cit command, reason: it command §7blocked by configuration§c.",
