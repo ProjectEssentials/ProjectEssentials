@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
+import net.minecraft.command.arguments.EntityArgument
 
 val helpLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("help").then(
@@ -23,3 +24,11 @@ val afkLiteral: LiteralArgumentBuilder<CommandSource> =
             ).executes { AfkCommand.afkList(it) }
         ).executes { AfkCommand.afkList(it) }
     ).executes { AfkCommand.afkSet(it) }
+
+
+val airLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("air").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { AirCommand.airOther(it) }
+    ).executes { AirCommand.airSelf(it) }
