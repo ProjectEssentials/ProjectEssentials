@@ -1,5 +1,7 @@
 {
   "project_essentials_basic.restricted": "§cYou §7don't have permission §cto execute that command.",
+  "project_essentials_basic.afk.enabled": "§7§oPlayer §6%s§7§o is now AFK and may not respond to messages.",
+  "project_essentials_basic.afk.disabled": "§7§oPlayer §6%s§7§o exited AFK mode and is now active.",
   "project_essentials.common.player.notonline": "§cPlayer §7%s §cnot online or not exists on server.",
   "project_essentials.common.cooldown.not_expired": "§cYou §7cannot type §cthat command for §7%s §cseconds.",
   "project_essentials.common.command.blocked": "§cYou §7can't execute §cit command, reason: it command §7blocked by configuration§c.",
