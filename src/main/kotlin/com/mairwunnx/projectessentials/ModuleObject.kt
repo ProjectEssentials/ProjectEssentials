@@ -48,7 +48,8 @@ class ModuleObject : IModule {
         MoreCommand::class.java,
         PingCommand::class.java,
         RepairCommand::class.java,
-        SendPosCommand::class.java
+        SendPosCommand::class.java,
+        SuicideCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
