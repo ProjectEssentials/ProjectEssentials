@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
 /**
- * !Experimental command, issues can be present in production.
+ * !Experimental, issues can be present in production.
  */
 object AfkManager {
     private val logger = LogManager.getLogger()
