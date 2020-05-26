@@ -46,7 +46,8 @@ class ModuleObject : IModule {
         HelpCommand::class.java,
         LightningCommand::class.java,
         MoreCommand::class.java,
-        PingCommand::class.java
+        PingCommand::class.java,
+        RepairCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
