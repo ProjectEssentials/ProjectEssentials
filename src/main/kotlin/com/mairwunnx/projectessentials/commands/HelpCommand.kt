@@ -1,107 +1,59 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.api.commands.CommandsAPI
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.extensions.isPlayerSender
-import com.mairwunnx.projectessentials.core.extensions.playerName
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
+import com.mairwunnx.projectessentials.SETTING_HELP_COMMAND_COLORIZED_OUT
+import com.mairwunnx.projectessentials.SETTING_REPLACE_NATIVE_HELP_COMMAND
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.CommandNode
 import net.minecraft.command.CommandSource
-import net.minecraft.util.text.StringTextComponent
-import org.apache.logging.log4j.LogManager
 
-object HelpCommand : CommandsAPI(
-    "help",
-    getCommandsConfig().commands.help.aliases,
-    helpLiteral,
-    getCommandsConfig().commands.help.replaceDefault
-) {
-    private val logger = LogManager.getLogger()
-
-    init {
-        onCommandExecute(HelpCommand::execute)
+object HelpCommand : CommandBase(helpLiteral) {
+    private val generalConfiguration by lazy {
+        getConfigurationByName<GeneralConfiguration>("general")
     }
 
-    fun execute(
-        context: CommandContext<CommandSource>
-    ): Int {
-        when {
-            !context.isPlayerSender() || PermissionsAPI.hasPermission(
-                context.playerName(), "ess.help"
-            ) || PermissionsAPI.hasPermission(
-                context.playerName(), "native.help"
-            ) -> {
-                val dispatcher = getDispatcher()
-                val linesPerPage = getCommandsConfig().commands.help.maxLines
-                val map: Map<CommandNode<CommandSource>, String> =
-                    dispatcher.getSmartUsage(dispatcher.root, context.source)
+    override val name = "help"
+    override val override by lazy {
+        generalConfiguration.getBool(SETTING_REPLACE_NATIVE_HELP_COMMAND)
+    }
 
-                val pages = map.values.count() / linesPerPage + 1
-                val page = if (getIntExisting(context, "page")) {
-                    getInt(context, "page")
-                } else {
-                    1
-                }
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "native.help", 1) { isServer ->
+            val map = CommandAPI.getDispatcher().getSmartUsage(
+                CommandAPI.getDispatcher().root, context.source
+            )
+            val message =
+                if (generalConfiguration.getBool(SETTING_HELP_COMMAND_COLORIZED_OUT)) {
+                    if (isServer) map.values.toList() else highlight(map)
+                } else map.values.toList()
 
-                val displayedLines = page * linesPerPage
-                val droppedLines = displayedLines - linesPerPage
-                val values = map.values.take(displayedLines).drop(droppedLines)
-
-                if (context.isPlayerSender()) {
-                    sendMsg(
-                        context.source,
-                        "help.pages_out",
-                        page.toString(), pages.toString()
-                    )
-                } else {
-                    logger.info("Help page $page of $pages")
-                }
-
-                values.forEach {
-                    context.source.sendFeedback(
-                        StringTextComponent(
-                            colorize(
-                                "/$it"
-                            )
-                        ), false
-                    )
-                }
-            }
-            else -> {
-                sendMsg(context.source, "help.restricted")
+            if (isServer) {
+                ServerMessagingAPI.listAsResponse(message) { "Help" }
+            } else {
+                MessagingAPI.sendListAsMessage(context, message) { "Help" }
+                super.process(context)
             }
         }
-        return 0
     }
 
-    private fun colorize(input: String): String {
-        if (!getCommandsConfig().commands.help.tryColorize) return input
-        val help = getCommandsConfig().commands.help
-
-        return input
-            .replace(
-                "/", "${help.commandColor}/"
-            ).replace(
-                " ", "${help.plainTextColor} "
-            ).replace(
-                "(", "${help.bracketColor}(${help.mandatoryColor}"
-            ).replace(
-                "|", "${help.orOperatorColor}|${help.mandatoryColor}"
-            ).replace(
-                ")", "${help.bracketColor})${help.plainTextColor}"
-            ).replace(
-                "[", "${help.bracketColor}[${help.mandatoryColor}"
-            ).replace(
-                "]", "${help.bracketColor}]${help.plainTextColor}"
-            ).replace(
-                "<", "${help.bracketColor}<${help.mandatoryColor}"
-            ).replace(
-                ">", "${help.bracketColor}>${help.plainTextColor}"
-            ).replace(
-                "-${help.bracketColor}>${help.plainTextColor}",
-                "${help.redirectColor}->${help.plainTextColor}"
-            )
+    private fun highlight(map: Map<CommandNode<CommandSource>, String>): List<String> {
+        return map.values.map {
+            "/$it".replace("/", "§7/")
+                .replace(" ", "§7 ")
+                .replace("(", "§8(§c")
+                .replace("|", "§8|§c")
+                .replace(")", "§8)§7")
+                .replace("[", "§8[§c")
+                .replace("]", "§8]§7")
+                .replace("<", "§8<§c")
+                .replace(">", "§8>§7")
+                .replace("-§8>§7", "§d->§7")
+        }
     }
 }
