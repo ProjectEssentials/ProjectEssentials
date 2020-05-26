@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.managers
 
 import com.mairwunnx.projectessentials.SETTING_AFK_HANDLE_ACTIVITY
 import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_TIME
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
@@ -31,7 +32,9 @@ object AfkManager {
                 player.markPlayerActive()
                 afkPlayers.remove(player)
                 MessagingAPI.sendMessage(
-                    player, "project_essentials.afk.disabled", args = *arrayOf(player.name.string)
+                    player,
+                    "${MESSAGE_MODULE_PREFIX}basic.afk.disabled",
+                    args = *arrayOf(player.name.string)
                 ).also {
                     logger.debug("Player ${player.name.string} afk state changed to $value")
                 }
@@ -42,7 +45,9 @@ object AfkManager {
                     (generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME) + 15) * 1000
                 afkPlayers.add(player)
                 MessagingAPI.sendMessage(
-                    player, "project_essentials.afk.enabled", args = *arrayOf(player.name.string)
+                    player,
+                    "${MESSAGE_MODULE_PREFIX}basic.afk.enabled",
+                    args = *arrayOf(player.name.string)
                 ).also {
                     logger.debug("Player ${player.name.string} afk state changed to $value")
                 }
