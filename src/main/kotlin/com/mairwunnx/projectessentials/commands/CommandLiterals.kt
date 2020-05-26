@@ -73,3 +73,9 @@ val repairLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("repair").then(
         Commands.literal("all").executes { RepairCommand.repairAll(it) }
     ).executes { RepairCommand.repair(it) }
+val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("sendpos").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { SendPosCommand.execute(it) }
+    ).executes { SendPosCommand.execute(it) }
