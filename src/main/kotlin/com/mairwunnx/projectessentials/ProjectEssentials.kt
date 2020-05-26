@@ -11,8 +11,11 @@ import com.mairwunnx.projectessentials.commands.weather.RainCommand
 import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
+import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.EssBase
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
+import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
@@ -160,6 +163,10 @@ class ProjectEssentials : EssBase() {
     @SubscribeEvent
     fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) = processAbilities(event.player)
 
+    private val userDataConfiguration by lazy {
+        getConfigurationByName<UserDataConfiguration>("user-data")
+    }
+
     private fun processAbilities(player: PlayerEntity) {
         player as ServerPlayerEntity
         val config = ModConfiguration.getCommandsConfig().commands
@@ -172,10 +179,24 @@ class ProjectEssentials : EssBase() {
                 hasPermission(player, "ess.fly.self", 2)
             ) {
                 if (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player)) {
-                    FlyCommand.switchFly(player, true)
-                    MessagingAPI.sendMessage(
-                        player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
-                    )
+                    val abilities = player.abilities
+                    abilities.allowEdit = true
+
+                    // @formatter:off
+                    userDataConfiguration.take().users.find {
+                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
+                    }?.let {
+                        val result = player.currentDimensionName in it.flyWorlds && (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player))
+                        abilities.allowFlying = result
+                        abilities.isFlying = result
+                        player.sendPlayerAbilities()
+                        if (result) {
+                            MessagingAPI.sendMessage(
+                                player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
+                            )
+                        }
+                    }
+                    // @formatter:on
                 }
             }
         }
