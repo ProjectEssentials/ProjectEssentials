@@ -24,7 +24,7 @@ object HelpCommand : CommandBase(helpLiteral) {
     }
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
-        validateAndExecute(context, "native.help", 1) { isServer ->
+        validateAndExecute(context, "native.help", 0) { isServer ->
             val map = CommandAPI.getDispatcher().getSmartUsage(
                 CommandAPI.getDispatcher().root, context.source
             )
