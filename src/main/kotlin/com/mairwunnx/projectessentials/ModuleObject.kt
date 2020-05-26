@@ -44,7 +44,8 @@ class ModuleObject : IModule {
         FlyCommand::class.java,
         GodCommand::class.java,
         HelpCommand::class.java,
-        LightningCommand::class.java
+        LightningCommand::class.java,
+        MoreCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
