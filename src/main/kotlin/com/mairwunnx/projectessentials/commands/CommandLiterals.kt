@@ -50,3 +50,10 @@ val feedLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { FeedCommand.feedOther(it) }
     ).executes { FeedCommand.feedSelf(it) }
+
+val healLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("heal").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { HealCommand.healOther(it) }
+    ).executes { HealCommand.healSelf(it) }
