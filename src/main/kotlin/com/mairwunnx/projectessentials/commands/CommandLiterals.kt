@@ -32,3 +32,14 @@ val airLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { AirCommand.airOther(it) }
     ).executes { AirCommand.airSelf(it) }
+
+val burnLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("burn").then(
+        Commands.argument(
+            "duration", IntegerArgumentType.integer(1, 120)
+        ).then(
+            Commands.argument(
+                "targets", EntityArgument.players()
+            ).executes { BurnCommand.burnOther(it) }
+        ).executes { BurnCommand.burnSelf(it) }
+    )
