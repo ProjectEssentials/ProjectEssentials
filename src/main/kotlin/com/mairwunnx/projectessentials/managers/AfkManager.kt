@@ -1,5 +1,7 @@
-package com.mairwunnx.projectessentials
+package com.mairwunnx.projectessentials.managers
 
+import com.mairwunnx.projectessentials.SETTING_AFK_HANDLE_ACTIVITY
+import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_TIME
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
