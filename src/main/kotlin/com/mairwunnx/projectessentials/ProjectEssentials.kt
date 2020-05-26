@@ -170,9 +170,6 @@ class ProjectEssentials : EssBase() {
     private fun processAbilities(player: PlayerEntity) {
         player as ServerPlayerEntity
         val config = ModConfiguration.getCommandsConfig().commands
-        val playerCommandSource = player.commandSource
-        val serverPlayerEntity = player.commandSource.asPlayer()
-        val playerName = player.name.string
         if (config.fly.autoFlyEnabled) {
             if (
                 hasPermission(player, "ess.fly.auto", 3) ||
@@ -201,9 +198,28 @@ class ProjectEssentials : EssBase() {
             }
         }
         if (config.god.autoGodModeEnabled) {
-            if (PermissionsAPI.hasPermission(playerName, "ess.god")) {
-                if (GodCommand.setGod(serverPlayerEntity, true)) {
-                    sendMsg(playerCommandSource, "god.auto.success")
+            if (
+                hasPermission(player, "ess.god.auto", 3) ||
+                hasPermission(player, "ess.god.self", 2)
+            ) {
+                if (GodCommand.validateWorld(player) && GodCommand.validateMode(player)) {
+                    val abilities = player.abilities
+                    abilities.allowEdit = true
+
+                    // @formatter:off
+                    userDataConfiguration.take().users.find {
+                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
+                    }?.let {
+                        val result = player.currentDimensionName in it.godWorlds && (GodCommand.validateWorld(player) && GodCommand.validateMode(player))
+                        abilities.disableDamage = result
+                        player.sendPlayerAbilities()
+                        if (result) {
+                            MessagingAPI.sendMessage(
+                                player, "${MESSAGE_MODULE_PREFIX}basic.god.auto.success"
+                            )
+                        }
+                    }
+                    // @formatter:on
                 }
             }
         }
