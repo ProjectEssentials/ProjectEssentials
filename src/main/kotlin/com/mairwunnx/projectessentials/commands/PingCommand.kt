@@ -10,7 +10,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraftforge.fml.server.ServerLifecycleHooks
 
-object PingCommand : CommandBase(moreLiteral) {
+object PingCommand : CommandBase(pingLiteral) {
     override val name = "ping"
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
