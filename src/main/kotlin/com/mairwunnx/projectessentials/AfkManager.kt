@@ -27,14 +27,18 @@ object AfkManager {
                 player.markPlayerActive()
                 MessagingAPI.sendMessage(
                     player, "project_essentials.afk.disabled", args = *arrayOf(player.name.string)
-                )
+                ).also {
+                    logger.debug("Player ${player.name.string} afk state changed to $value")
+                }
             }
         } else {
             if (player !in afkPlayers) {
                 afkPlayers.add(player)
                 MessagingAPI.sendMessage(
                     player, "project_essentials.afk.enabled", args = *arrayOf(player.name.string)
-                )
+                ).also {
+                    logger.debug("Player ${player.name.string} afk state changed to $value")
+                }
             }
         }
     }
