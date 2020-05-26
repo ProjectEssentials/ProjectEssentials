@@ -76,9 +76,6 @@ val lightningLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { LightningCommand.process(it) }
     )
 
-val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
-val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
-
 val repairLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("repair").then(
         Commands.literal("all").executes { RepairCommand.repairAll(it) }
@@ -90,3 +87,7 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { SendPosCommand.process(it) }
     ).executes { SendPosCommand.process(it) }
+
+val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
+val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
+val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
