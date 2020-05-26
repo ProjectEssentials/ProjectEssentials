@@ -111,14 +111,15 @@ object FlyCommand : CommandBase(flyLiteral, false) {
     fun validateMode(player: ServerPlayerEntity) = !player.isCreative && !player.isSpectator
 
     fun switchFly(target: ServerPlayerEntity) {
-        val abilities = target.abilities
-        abilities.allowEdit = true
-        if (target.onGround) {
-            abilities.allowFlying = !abilities.allowFlying
-            abilities.isFlying = !abilities.allowFlying
-        } else {
-            abilities.allowFlying = !abilities.isFlying
-            abilities.isFlying = !abilities.isFlying
+        with(target.abilities) {
+            allowEdit = true
+            if (target.onGround) {
+                allowFlying = !allowFlying
+                isFlying = !allowFlying
+            } else {
+                allowFlying = !isFlying
+                isFlying = !isFlying
+            }
         }
         target.sendPlayerAbilities()
     }
