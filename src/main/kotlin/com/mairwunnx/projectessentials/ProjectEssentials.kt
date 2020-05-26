@@ -12,6 +12,9 @@ import com.mairwunnx.projectessentials.commands.weather.StormCommand
 import com.mairwunnx.projectessentials.commands.weather.SunCommand
 import com.mairwunnx.projectessentials.configurations.ModConfiguration
 import com.mairwunnx.projectessentials.core.EssBase
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.core.configuration.localization.LocalizationConfigurationUtils
 import com.mairwunnx.projectessentials.core.extensions.commandName
 import com.mairwunnx.projectessentials.core.extensions.player
@@ -158,14 +161,21 @@ class ProjectEssentials : EssBase() {
     fun onPlayerChangedDim(event: PlayerChangedDimensionEvent) = processAbilities(event.player)
 
     private fun processAbilities(player: PlayerEntity) {
+        player as ServerPlayerEntity
         val config = ModConfiguration.getCommandsConfig().commands
         val playerCommandSource = player.commandSource
         val serverPlayerEntity = player.commandSource.asPlayer()
         val playerName = player.name.string
         if (config.fly.autoFlyEnabled) {
-            if (PermissionsAPI.hasPermission(playerName, "ess.fly")) {
-                if (FlyCommand.setFly(serverPlayerEntity, true)) {
-                    sendMsg(playerCommandSource, "fly.auto.success")
+            if (
+                hasPermission(player, "ess.fly.auto", 3) ||
+                hasPermission(player, "ess.fly.self", 2)
+            ) {
+                if (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player)) {
+                    FlyCommand.switchFly(player, true)
+                    MessagingAPI.sendMessage(
+                        player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
+                    )
                 }
             }
         }
