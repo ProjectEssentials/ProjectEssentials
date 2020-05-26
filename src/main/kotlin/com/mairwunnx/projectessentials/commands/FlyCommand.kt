@@ -1,7 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.SETTING_FLY_WORLDS_DISABLED
-import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
@@ -23,10 +22,6 @@ object FlyCommand : CommandBase(flyLiteral, false) {
 
     private val generalConfiguration by lazy {
         getConfigurationByName<GeneralConfiguration>("general")
-    }
-
-    private val userDataConfiguration by lazy {
-        getConfigurationByName<UserDataConfiguration>("user-data")
     }
 
     fun flySelf(context: CommandContext<CommandSource>) = 0.also {
@@ -71,7 +66,7 @@ object FlyCommand : CommandBase(flyLiteral, false) {
                 ServerMessagingAPI.response {
                     if (players.count() == 1) {
                         if (!validateMode(players.first())) {
-                            "Can't change fly mode for player ${players.first().name.string}, game mode in which the player is prohibited for flights."
+                            "Can't change fly mode for player ${players.first().name.string}, game mode used by the player is prohibited for flights."
                         } else if (!validateWorld(players.first())) {
                             "Can't change fly mode for player ${players.first().name.string}, world in which the player is prohibited for flights."
                         } else {
@@ -115,29 +110,16 @@ object FlyCommand : CommandBase(flyLiteral, false) {
 
     fun validateMode(player: ServerPlayerEntity) = !player.isCreative && !player.isSpectator
 
-    fun switchFly(target: ServerPlayerEntity, isAutoFly: Boolean = false) {
+    fun switchFly(target: ServerPlayerEntity) {
         val abilities = target.abilities
         abilities.allowEdit = true
-
-        // @formatter:off
-        if (isAutoFly) {
-            userDataConfiguration.take().users.find {
-                target.name.string == it.name || target.uniqueID.toString() == it.uuid
-            }?.let {
-                val result = target.currentDimensionName in it.flyWorlds && (validateWorld(target) && validateMode(target))
-                abilities.allowFlying = result
-                abilities.isFlying = result
-            }
+        if (target.onGround) {
+            abilities.allowFlying = !abilities.allowFlying
+            abilities.isFlying = !abilities.allowFlying
         } else {
-            if (target.onGround) {
-                abilities.allowFlying = !abilities.allowFlying
-                abilities.isFlying = !abilities.allowFlying
-            } else {
-                abilities.allowFlying = !abilities.isFlying
-                abilities.isFlying = !abilities.isFlying
-            }
+            abilities.allowFlying = !abilities.isFlying
+            abilities.isFlying = !abilities.isFlying
         }
-        // @formatter:on
         target.sendPlayerAbilities()
     }
 }
