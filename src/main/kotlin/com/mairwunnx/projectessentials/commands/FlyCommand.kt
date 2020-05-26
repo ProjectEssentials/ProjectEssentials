@@ -18,7 +18,7 @@ import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.ServerPlayerEntity
 
 object FlyCommand : CommandBase(flyLiteral, false) {
-    override val name = "air"
+    override val name = "fly"
 
     private val generalConfiguration by lazy {
         getConfigurationByName<GeneralConfiguration>("general")
