@@ -13,7 +13,11 @@ import com.mairwunnx.projectessentials.core.api.v1.module.IModule
 import com.mairwunnx.projectessentials.core.api.v1.providers.ProviderAPI
 import com.mairwunnx.projectessentials.core.impl.commands.ConfigureEssentialsCommandAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.managers.AfkManager
+import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
+import net.minecraftforge.event.TickEvent
+import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import org.apache.logging.log4j.LogManager
 
@@ -75,6 +79,13 @@ class ModuleObject : IModule {
                     ), "basic", ModuleObject::class.java
                 )
             )
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
+        if (event.player is ServerPlayerEntity) {
+            AfkManager.handle(event.player as ServerPlayerEntity)
         }
     }
 }
