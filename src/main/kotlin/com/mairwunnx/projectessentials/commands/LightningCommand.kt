@@ -14,6 +14,7 @@ import net.minecraft.world.server.ServerWorld
 
 object LightningCommand : CommandBase(helpLiteral) {
     override val name = "lightning"
+    override val aliases = listOf("thor")
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.lightning", 3) { isServer ->
