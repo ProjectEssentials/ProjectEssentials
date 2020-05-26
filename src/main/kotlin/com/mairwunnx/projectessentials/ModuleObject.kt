@@ -53,7 +53,6 @@ class ModuleObject : IModule {
         generalConfiguration.getIntOrDefault(SETTING_MAX_FOOD_LEVEL, 20)
         generalConfiguration.getBoolOrDefault(SETTING_AUTO_FLY_MODE_ON_JOIN_ENABLED, true)
         generalConfiguration.getBoolOrDefault(SETTING_AUTO_GOD_MODE_ON_JOIN_ENABLED, true)
-        generalConfiguration.getIntOrDefault(SETTING_BURN_COMMAND_DURATION, 10)
         generalConfiguration.getIntOrDefault(SETTING_TELEPORT_REQUEST_TIMEOUT, 45)
         generalConfiguration.getBoolOrDefault(SETTING_REPLACE_NATIVE_HELP_COMMAND, true)
         generalConfiguration.getIntOrDefault(SETTING_HELP_COMMAND_MAX_LINES_OUT, 8)
