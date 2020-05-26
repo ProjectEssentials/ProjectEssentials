@@ -1,70 +1,35 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.util.Hand
-import org.apache.logging.log4j.LogManager
 
-object MoreCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.more
+object MoreCommand : CommandBase(moreLiteral) {
+    override val name = "more"
 
-    init {
-        command = "more"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.more
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes {
-                    return@executes execute(
-                        it
-                    )
-                }
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.more")) {
-                val item = senderPlayer.getHeldItem(Hand.MAIN_HAND)
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.more", 3) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
+            } else {
+                val item = context.getPlayer()!!.getHeldItem(Hand.MAIN_HAND)
                 if (item.count < item.maxStackSize) {
                     item.count = item.maxStackSize
-                    sendMsg(sender, "more.out")
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.more.success"
+                    ).also { super.process(context) }
                 } else {
-                    sendMsg(sender, "more.fullstack")
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.more.fullstack"
+                    )
                 }
-            } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "more.restricted", senderName)
-                return 0
             }
         }
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }
