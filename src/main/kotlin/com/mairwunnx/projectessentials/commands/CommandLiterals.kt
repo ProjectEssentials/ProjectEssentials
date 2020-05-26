@@ -43,3 +43,10 @@ val burnLiteral: LiteralArgumentBuilder<CommandSource> =
             ).executes { BurnCommand.burnOther(it) }
         ).executes { BurnCommand.burnSelf(it) }
     )
+
+val feedLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("feed").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { FeedCommand.feedOther(it) }
+    ).executes { FeedCommand.feedSelf(it) }
