@@ -14,3 +14,12 @@ val helpLiteral: LiteralArgumentBuilder<CommandSource> =
             HelpCommand.execute(it)
         }
     )
+
+val afkLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("afk").then(
+        Commands.literal("list").then(
+            Commands.argument(
+                "page", IntegerArgumentType.integer()
+            ).executes { AfkCommand.afkList(it) }
+        ).executes { AfkCommand.afkList(it) }
+    ).executes { AfkCommand.afkSet(it) }
