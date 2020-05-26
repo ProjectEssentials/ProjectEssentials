@@ -77,3 +77,5 @@ val lightningLiteral: LiteralArgumentBuilder<CommandSource> =
     )
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
+
+val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
