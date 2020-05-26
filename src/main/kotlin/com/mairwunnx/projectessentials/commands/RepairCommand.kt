@@ -28,7 +28,7 @@ object RepairCommand : CommandBase(repairLiteral) {
                     }
                     MessagingAPI.sendMessage(
                         context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.repair.success"
-                    ).also { damage = 0 }
+                    ).also { damage = 0 }.also { process(context) }
                 }
             }
         }
@@ -52,7 +52,7 @@ object RepairCommand : CommandBase(repairLiteral) {
                         context.getPlayer()!!,
                         "${MESSAGE_MODULE_PREFIX}basic.repair.all.success",
                         args = *arrayOf(repairedItems.toString())
-                    )
+                    ).also { process(context) }
                 }
             }
         }
