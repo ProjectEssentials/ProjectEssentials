@@ -39,7 +39,7 @@ object BurnCommand : CommandBase(burnLiteral, false) {
                 MessagingAPI.sendMessage(
                     player,
                     "${MESSAGE_MODULE_PREFIX}basic.burn.by.success",
-                    args = *arrayOf(context.playerName())
+                    args = *arrayOf(context.playerName(), duration.toString())
                 )
             }
             if (isServer) {
@@ -63,7 +63,8 @@ object BurnCommand : CommandBase(burnLiteral, false) {
                             players.first().name.string
                         } else {
                             players.count().toString()
-                        }
+                        },
+                        duration.toString()
                     )
                 ).also { process(context) }
             }
