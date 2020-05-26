@@ -70,7 +70,13 @@ object FlyCommand : CommandBase(flyLiteral, false) {
             if (isServer) {
                 ServerMessagingAPI.response {
                     if (players.count() == 1) {
-                        "You've changed fly mode for player ${players.first().name.string}"
+                        if (!validateMode(players.first())) {
+                            "Can't change fly mode for player ${players.first().name.string}, game mode in which the player is prohibited for flights."
+                        } else if (!validateWorld(players.first())) {
+                            "Can't change fly mode for player ${players.first().name.string}, world in which the player is prohibited for flights."
+                        } else {
+                            "You've changed fly mode for player ${players.first().name.string}"
+                        }
                     } else {
                         "You've changed fly mode for selected (${players.count()}) players"
                     }
