@@ -21,6 +21,7 @@ group = "com.projectessentials.basic"
 archivesBaseName = module_name
 
 minecraft {
+    accessTransformer = file 'src/main/resources/META-INF/accesstransformer.cfg'
     mappings channel: forge_mappings_channel_type, version: forge_mappings_channel_version
 }
 
