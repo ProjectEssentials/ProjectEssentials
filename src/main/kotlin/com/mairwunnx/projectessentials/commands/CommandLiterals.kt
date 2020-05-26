@@ -57,3 +57,10 @@ val healLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { HealCommand.healOther(it) }
     ).executes { HealCommand.healSelf(it) }
+
+val flyLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("fly").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { FlyCommand.flyOther(it) }
+    ).executes { FlyCommand.flySelf(it) }
