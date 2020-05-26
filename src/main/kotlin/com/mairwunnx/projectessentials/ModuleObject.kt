@@ -4,6 +4,7 @@ package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.AfkCommand
 import com.mairwunnx.projectessentials.commands.AirCommand
+import com.mairwunnx.projectessentials.commands.BurnCommand
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
@@ -37,7 +38,8 @@ class ModuleObject : IModule {
         UserDataConfiguration::class.java,
         ModuleObject::class.java,
         AfkCommand::class.java,
-        AirCommand::class.java
+        AirCommand::class.java,
+        BurnCommand::class.java
     )
 
     private val logger = LogManager.getLogger()
