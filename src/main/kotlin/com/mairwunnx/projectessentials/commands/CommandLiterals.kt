@@ -64,3 +64,10 @@ val flyLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { FlyCommand.flyOther(it) }
     ).executes { FlyCommand.flySelf(it) }
+
+val godLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("god").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { GodCommand.godOther(it) }
+    ).executes { GodCommand.godSelf(it) }
