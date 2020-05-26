@@ -1,130 +1,70 @@
 package com.mairwunnx.projectessentials.commands
 
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.DISABLED_COMMAND_ARG
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.extensions.playerName
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
-import org.apache.logging.log4j.LogManager
 
-object AirCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.air
+object AirCommand : CommandBase(airLiteral, false) {
+    override val name = "air"
 
-    init {
-        command = "air"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.air
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument(
-                        "player", EntityArgument.player()
-                    ).executes {
-                        return@executes execute(it, true)
-                    }
-                )
-                .executes {
-                    return@executes execute(it)
-                }
-            )
+    fun airSelf(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.air.self", 2) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
+            } else {
+                with(context.getPlayer()!!) {
+                    this.air = this.maxAir
+                    MessagingAPI.sendMessage(
+                        this, "${MESSAGE_MODULE_PREFIX}basic.air.self.success"
+                    )
+                }.also { process(context) }
+            }
         }
     }
 
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-        if (senderIsServer) {
-            if (targetIsExists) {
-                if (targetPlayer.air == targetPlayer.maxAir) {
-                    logger.info("Player $targetName have a full supply of air.")
-                    return 0
-                }
-                logger.info(
-                    "Player ($targetName) air level changed from ${targetPlayer.air} to ${targetPlayer.maxAir} by $senderName"
+    fun airOther(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.air.other", 3) { isServer ->
+            val players = CommandAPI.getPlayers(context, "targets")
+            players.forEach { player ->
+                player.air = player.maxAir
+                MessagingAPI.sendMessage(
+                    player,
+                    "${MESSAGE_MODULE_PREFIX}basic.air.by.success",
+                    args = *arrayOf(context.playerName())
                 )
-                targetPlayer.air = targetPlayer.maxAir
-                logger.info("You saved player $targetName from choking.")
-                sendMsg(
-                    targetPlayer.commandSource,
-                    "air.other.recipient_out",
-                    senderName
-                )
-            } else {
-                throwOnlyPlayerCan(command)
             }
-            return 0
-        } else {
-            if (targetIsExists) {
-                if (PermissionsAPI.hasPermission(senderName, "ess.air.other")) {
-                    when {
-                        !config.enableArgs -> {
-                            logger.warn(
-                                DISABLED_COMMAND_ARG
-                                    .replace("%0", senderName)
-                                    .replace("%1", command)
-                            )
-                            sendMsg(sender, "common.arg.disabled", command)
-                            return 0
+            if (isServer) {
+                ServerMessagingAPI.response {
+                    if (players.count() == 1) {
+                        "You've replenished the ${players.first().name.string}'s air supply"
+                    } else {
+                        "You've replenished the selected (${players.count()}) players's air supply"
+                    }
+                }
+            } else {
+                MessagingAPI.sendMessage(
+                    context.getPlayer()!!,
+                    if (players.count() == 1) {
+                        "${MESSAGE_MODULE_PREFIX}basic.air.other_single.success"
+                    } else {
+                        "${MESSAGE_MODULE_PREFIX}basic.air.other_multiple.success"
+                    },
+                    args = *arrayOf(
+                        if (players.count() == 1) {
+                            players.first().name.string
+                        } else {
+                            players.count().toString()
                         }
-                    }
-                    
-                    if (targetPlayer.air == targetPlayer.maxAir) {
-                        sendMsg(sender, "air.other.maxair", targetName)
-                        return 0
-                    }
-                    logger.info(
-                        "Player ($targetName) air level changed from ${targetPlayer.air} to ${targetPlayer.maxAir} by $senderName"
                     )
-                    targetPlayer.air = targetPlayer.maxAir
-                    sendMsg(sender, "air.other.success", targetName)
-                    sendMsg(
-                        targetPlayer.commandSource,
-                        "air.other.recipient_out",
-                        senderName
-                    )
-                } else {
-                    throwPermissionLevel(senderName, command)
-                    sendMsg(sender, "air.other.restricted", senderName)
-                    return 0
-                }
-            } else {
-                if (PermissionsAPI.hasPermission(senderName, "ess.air")) {
-                    if (senderPlayer.air == senderPlayer.maxAir) {
-                        sendMsg(sender, "air.self.maxair")
-                        return 0
-                    }
-                    logger.info(
-                        "Player ($senderName) air level changed from ${senderPlayer.air} to ${senderPlayer.maxAir}"
-                    )
-                    senderPlayer.air = senderPlayer.maxAir
-                    sendMsg(sender, "air.self.success")
-                } else {
-                    throwPermissionLevel(senderName, command)
-                    sendMsg(sender, "air.self.restricted", senderName)
-                    return 0
-                }
+                ).also { process(context) }
             }
         }
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }
