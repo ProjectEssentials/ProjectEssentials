@@ -9,6 +9,7 @@ import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAP
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.ModuleAPI
+import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.util.text.TextComponentUtils
@@ -69,24 +70,26 @@ object AfkManager {
             val diff = (nowMs - lastActiveMs).toDuration(TimeUnit.SECONDS).inSeconds
             switch(player, diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME))
             if (diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_KICK_TIME)) {
-                val coreVersion = ModuleAPI.getModuleByName("core").version
-                if (coreVersion.startsWith("2.0.0") && "RC." in coreVersion) {
-                    player.connection.disconnect(TextComponentUtils.toTextComponent {
-                        "§cKicked by Server, reason: §7long time AFK."
-                    })
-                } else {
-                    player.connection.disconnect(
-                        if (generalConfiguration.getBool(SETTING_LOC_ENABLED)) {
-                            TextComponentUtils.toTextComponent {
-                                LocalizationAPI.getLocalizedString(
-                                    LocalizationAPI.getPlayerLanguage(player),
-                                    "${MESSAGE_MODULE_PREFIX}basic.afk.kicked"
-                                )
+                if (!hasPermission(player, "ess.afk.kick.bypass", 3)) {
+                    val coreVersion = ModuleAPI.getModuleByName("core").version
+                    if (coreVersion.startsWith("2.0.0") && "RC." in coreVersion) {
+                        player.connection.disconnect(TextComponentUtils.toTextComponent {
+                            "§cKicked by Server, reason: §7long time AFK."
+                        })
+                    } else {
+                        player.connection.disconnect(
+                            if (generalConfiguration.getBool(SETTING_LOC_ENABLED)) {
+                                TextComponentUtils.toTextComponent {
+                                    LocalizationAPI.getLocalizedString(
+                                        LocalizationAPI.getPlayerLanguage(player),
+                                        "${MESSAGE_MODULE_PREFIX}basic.afk.kicked"
+                                    )
+                                }
+                            } else {
+                                TranslationTextComponent("${MESSAGE_MODULE_PREFIX}basic.afk.kicked")
                             }
-                        } else {
-                            TranslationTextComponent("${MESSAGE_MODULE_PREFIX}basic.afk.kicked")
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
