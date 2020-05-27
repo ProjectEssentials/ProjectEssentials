@@ -183,7 +183,7 @@ class ProjectEssentials : EssBase() {
                     userDataConfiguration.take().users.find {
                         player.name.string == it.name || player.uniqueID.toString() == it.uuid
                     }?.let {
-                        val result = player.currentDimensionName in it.flyWorlds && (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player))
+                        val result = player.currentDimensionName in it.flyDimensions && (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player))
                         abilities.allowFlying = result
                         abilities.isFlying = result
                         player.sendPlayerAbilities()
@@ -210,7 +210,7 @@ class ProjectEssentials : EssBase() {
                     userDataConfiguration.take().users.find {
                         player.name.string == it.name || player.uniqueID.toString() == it.uuid
                     }?.let {
-                        val result = player.currentDimensionName in it.godWorlds && (GodCommand.validateWorld(player) && GodCommand.validateMode(player))
+                        val result = player.currentDimensionName in it.godDimensions && (GodCommand.validateWorld(player) && GodCommand.validateMode(player))
                         abilities.disableDamage = result
                         player.sendPlayerAbilities()
                         if (result) {

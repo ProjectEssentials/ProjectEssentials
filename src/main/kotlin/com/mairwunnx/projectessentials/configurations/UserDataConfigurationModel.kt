@@ -15,7 +15,7 @@ data class UserDataConfigurationModel(
         var lastDimension: String,
         var lastPosition: String,
         var lastIPAddress: String,
-        val flyWorlds: MutableList<String> = mutableListOf(),
-        val godWorlds: MutableList<String> = mutableListOf()
+        val flyDimensions: MutableList<String> = mutableListOf(),
+        val godDimensions: MutableList<String> = mutableListOf()
     )
 }
