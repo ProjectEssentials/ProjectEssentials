@@ -10,21 +10,11 @@ data class KitsConfigurationModel(
             "newbies",
             43200,
             mutableListOf(
-                Kit.Item(
-                    "oak_wood", 8, "&7[&9Starter Item&7]", "%player's items from newbies kit"
-                ),
-                Kit.Item(
-                    "cooked_cod", 5, "&7[&9Starter Item&7]", "%player's items from newbies kit"
-                ),
-                Kit.Item(
-                    "cow_spawn_egg", 1, "&7[&9Starter Item&7]", "%player's items from newbies kit"
-                ),
-                Kit.Item(
-                    "stone", 16, "&7[&9Starter Item&7]", "%player's items from newbies kit"
-                ),
-                Kit.Item(
-                    "torch", 8, "&7[&9Starter Item&7]", "%player's items from newbies kit"
-                )
+                Kit.Item("oak_wood", 8, "&7[&9Starter Item&7]"),
+                Kit.Item("cooked_cod", 5, "&7[&9Starter Item&7]"),
+                Kit.Item("cow_spawn_egg", 1, "&7[&9Starter Item&7]"),
+                Kit.Item("stone", 16, "&7[&9Starter %player's Item&7]"),
+                Kit.Item("torch", 8, "&7[&9Starter Item&7]")
             )
         )
     )
@@ -40,7 +30,6 @@ data class KitsConfigurationModel(
             var name: String,
             var count: Int = 1,
             var displayName: String = String.empty,
-            var description: String = String.empty,
             var enchantments: MutableList<Enchantment> = mutableListOf()
         ) {
             @Serializable
