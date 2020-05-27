@@ -33,6 +33,10 @@ class ModuleObject : IModule {
         getConfigurationByName<GeneralConfiguration>("general")
     }
 
+    private val userDataConfiguration by lazy {
+        getConfigurationByName<UserDataConfiguration>("user-data")
+    }
+
     private val providers = listOf(
         UserDataConfiguration::class.java,
         ModuleObject::class.java,
@@ -108,6 +112,24 @@ class ModuleObject : IModule {
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
         if (event.player is ServerPlayerEntity) {
             AfkManager.getAfkPlayers().remove(event.player as ServerPlayerEntity)
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerJoin(event: PlayerEvent.PlayerLoggedInEvent) {
+        if (event.player is ServerPlayerEntity) {
+            val player = event.player as ServerPlayerEntity
+            executeFirstLoginCommands(player)
+        }
+    }
+
+    private fun executeFirstLoginCommands(player: ServerPlayerEntity) {
+        userDataConfiguration.take().users.find {
+            it.name == player.name.string || it.uuid == player.uniqueID.toString()
+        } ?: run {
+            generalConfiguration.getList(SETTING_FIRST_JOIN_COMMANDS).forEach {
+                player.server.commandManager.handleCommand(player.commandSource, it)
+            }
         }
     }
 }
