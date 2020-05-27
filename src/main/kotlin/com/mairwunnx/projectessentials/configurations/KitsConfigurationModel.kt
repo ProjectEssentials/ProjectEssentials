@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KitsConfigurationModel(
-    var kits: MutableList<Kit> = mutableListOf(
+    val kits: MutableList<Kit> = mutableListOf(
         Kit(
             "newbies",
             43200,
@@ -34,7 +34,6 @@ data class KitsConfigurationModel(
         var name: String,
         var delay: Int = 0,
         var items: MutableList<Item> = mutableListOf()
-
     ) {
         @Serializable
         data class Item(

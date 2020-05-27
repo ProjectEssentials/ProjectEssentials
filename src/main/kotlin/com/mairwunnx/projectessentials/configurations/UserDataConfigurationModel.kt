@@ -16,6 +16,9 @@ data class UserDataConfigurationModel(
         var lastDimension: String,
         var lastPosition: String,
         var lastIPAddress: String,
+        var lastKits: MutableList<String>,
+        // newbies:date
+        var lastKitsDates: MutableList<String>,
         var flyWorldDimensions: MutableList<String> = mutableListOf(),
         var godWorldDimensions: MutableList<String> = mutableListOf()
     )
