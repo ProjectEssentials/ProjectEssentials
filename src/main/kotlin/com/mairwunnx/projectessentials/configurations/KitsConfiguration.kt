@@ -7,11 +7,11 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.io.FileNotFoundException
 
-object KitConfiguration : IConfiguration<KitConfigurationModel> {
+object KitsConfiguration : IConfiguration<KitsConfigurationModel> {
     private val logger = LogManager.getLogger()
-    private var configurationData = KitConfigurationModel()
+    private var configurationData = KitsConfigurationModel()
 
-    override val name = "kit"
+    override val name = "kits"
     override val version = 1
     override val configuration = take()
     override val path = projectConfigDirectory + File.separator + "kits.json"
@@ -20,7 +20,7 @@ object KitConfiguration : IConfiguration<KitConfigurationModel> {
         try {
             val configRaw = File(path).readText()
             configurationData = jsonInstance.parse(
-                KitConfigurationModel.serializer(), configRaw
+                KitsConfigurationModel.serializer(), configRaw
             )
         } catch (ex: FileNotFoundException) {
             logger.error("Configuration file ($path) not found!")
@@ -35,7 +35,7 @@ object KitConfiguration : IConfiguration<KitConfigurationModel> {
 
         logger.info("Saving configuration `${name}`")
         val raw = jsonInstance.stringify(
-            KitConfigurationModel.serializer(), configuration
+            KitsConfigurationModel.serializer(), configuration
         )
         try {
             File(path).writeText(raw)

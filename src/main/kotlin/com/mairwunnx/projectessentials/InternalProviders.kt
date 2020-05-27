@@ -1,12 +1,12 @@
 package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.*
-import com.mairwunnx.projectessentials.configurations.KitConfiguration
+import com.mairwunnx.projectessentials.configurations.KitsConfiguration
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 
 internal val providers = listOf(
     UserDataConfiguration::class.java,
-    KitConfiguration::class.java,
+    KitsConfiguration::class.java,
     ModuleObject::class.java,
     AfkCommand::class.java,
     AirCommand::class.java,
