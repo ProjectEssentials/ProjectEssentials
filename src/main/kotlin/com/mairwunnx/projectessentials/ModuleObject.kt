@@ -2,6 +2,8 @@
 
 package com.mairwunnx.projectessentials
 
+import com.mairwunnx.projectessentials.commands.FlyCommand
+import com.mairwunnx.projectessentials.commands.GodCommand
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
@@ -9,14 +11,18 @@ import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
 import com.mairwunnx.projectessentials.core.api.v1.events.forge.FMLCommonSetupEventData
 import com.mairwunnx.projectessentials.core.api.v1.events.forge.ForgeEventType
 import com.mairwunnx.projectessentials.core.api.v1.extensions.commandName
+import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
+import com.mairwunnx.projectessentials.core.api.v1.extensions.directoryName
 import com.mairwunnx.projectessentials.core.api.v1.localization.Localization
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.IModule
+import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.core.api.v1.providers.ProviderAPI
 import com.mairwunnx.projectessentials.core.impl.commands.ConfigureEssentialsCommandAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import com.mairwunnx.projectessentials.managers.AfkManager
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
 import net.minecraftforge.event.CommandEvent
@@ -93,24 +99,32 @@ class ModuleObject : IModule {
 
     @SubscribeEvent
     fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
-        if (event.player is ServerPlayerEntity) {
-            AfkManager.handle(event.player as ServerPlayerEntity)
+        withServerPlayer(event.player) {
+            AfkManager.handle(it)
         }
     }
 
     @SubscribeEvent
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
-        if (event.player is ServerPlayerEntity) {
-            val player = event.player as ServerPlayerEntity
-            disposeAfkStates(player)
+        withServerPlayer(event.player) {
+            disposeAfkStates(it)
+            // Save player data
         }
     }
 
     @SubscribeEvent
     fun onPlayerJoin(event: PlayerEvent.PlayerLoggedInEvent) {
-        if (event.player is ServerPlayerEntity) {
-            val player = event.player as ServerPlayerEntity
-            executeFirstLoginCommands(player)
+        withServerPlayer(event.player) {
+            processPlayerAbilities(it)
+            executeFirstLoginCommands(it)
+        }
+    }
+
+    @SubscribeEvent
+    fun onPlayerChangedDimension(event: PlayerEvent.PlayerChangedDimensionEvent) {
+        withServerPlayer(event.player) {
+            processPlayerAbilities(it)
+            // Save player data
         }
     }
 
@@ -133,6 +147,68 @@ class ModuleObject : IModule {
         AfkManager.getAfkPlayers().remove(player)
     }
 
+    private fun processPlayerAbilities(player: ServerPlayerEntity) {
+        if (generalConfiguration.getBool(SETTING_AUTO_FLY_MODE_ON_JOIN_ENABLED)) {
+            processPlayerNamedAbility(player, "fly") {
+                with(player.abilities) {
+                    allowEdit = true
+                    userDataConfiguration.take().users.find {
+                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
+                    }?.let {
+                        val fullWorld =
+                            "${player.serverWorld.directoryName}&${player.currentDimensionName}"
+                        with(fullWorld in it.flyWorldDimensions) {
+                            allowFlying = this
+                            isFlying = this
+                            if (this) MessagingAPI.sendMessage(
+                                player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
+                            )
+                        }
+                        return@processPlayerNamedAbility
+                    }
+                    allowFlying = false
+                    isFlying = false
+                }
+            }
+        }
+
+        if (generalConfiguration.getBool(SETTING_AUTO_GOD_MODE_ON_JOIN_ENABLED)) {
+            processPlayerNamedAbility(player, "god") {
+                with(player.abilities) {
+                    allowEdit = true
+                    userDataConfiguration.take().users.find {
+                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
+                    }?.let {
+                        val fullWorld =
+                            "${player.serverWorld.directoryName}&${player.currentDimensionName}"
+                        with(fullWorld in it.godWorldDimensions) {
+                            disableDamage = this
+                            if (this) MessagingAPI.sendMessage(
+                                player, "${MESSAGE_MODULE_PREFIX}basic.god.auto.success"
+                            )
+                        }
+                        return@processPlayerNamedAbility
+                    }
+                    disableDamage = false
+                }
+            }
+        }
+
+        player.sendPlayerAbilities()
+    }
+
+    private fun processPlayerNamedAbility(
+        player: ServerPlayerEntity, ability: String, action: () -> Unit
+    ) {
+        if (
+            hasPermission(player, "ess.$ability.auto", 3) ||
+            hasPermission(player, "ess.$ability.self", 2)
+        ) when (ability) {
+            "fly" -> if (FlyCommand.validateWorld(player) && FlyCommand.validateMode(player)) action()
+            "god" -> if (GodCommand.validateWorld(player) && GodCommand.validateMode(player)) action()
+        }
+    }
+
     private fun executeFirstLoginCommands(player: ServerPlayerEntity) {
         userDataConfiguration.take().users.find {
             it.name == player.name.string || it.uuid == player.uniqueID.toString()
@@ -141,5 +217,11 @@ class ModuleObject : IModule {
                 player.server.commandManager.handleCommand(player.commandSource, it)
             }
         }
+    }
+
+    private fun withServerPlayer(
+        player: PlayerEntity?, spe: (ServerPlayerEntity) -> Unit
+    ) {
+        if (player is ServerPlayerEntity) spe(player)
     }
 }
