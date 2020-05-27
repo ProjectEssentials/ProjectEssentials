@@ -44,7 +44,7 @@
   "project_essentials_basic.repair.all.success": "§6All items in your inventory §7has been repaired§6.",
   "project_essentials_basic.repair.error": "§cThis item §7does not need to §crepair.",
   "project_essentials_basic.sendpos.receiver.success": "§6Player §7%s §6shared with you his coordinates:\n    §c> §7§odimension = §6%s§c,\n    §c> §7§ox = §6%s§c,\n    §c> §7§oy = §6%s§c,\n    §c> §7§oz = §6%s",
-  "project_essentials.common.command.blocked": "§cThe execution this command is prohibited by the server.",
+  "project_essentials_basic.command.blocked": "§cThe execution this command is prohibited by the server.",
   "death.attack.suicide": "§cKilled of his own free will.",
   "project_essentials.top.success": "§6You §7was teleported to top§6.",
   "project_essentials.tppos.success": "§6Teleporting to target position...",

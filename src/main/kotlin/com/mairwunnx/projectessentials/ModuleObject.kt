@@ -3,12 +3,15 @@
 package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
 import com.mairwunnx.projectessentials.core.api.v1.events.forge.FMLCommonSetupEventData
 import com.mairwunnx.projectessentials.core.api.v1.events.forge.ForgeEventType
+import com.mairwunnx.projectessentials.core.api.v1.extensions.commandName
 import com.mairwunnx.projectessentials.core.api.v1.localization.Localization
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.IModule
 import com.mairwunnx.projectessentials.core.api.v1.providers.ProviderAPI
 import com.mairwunnx.projectessentials.core.impl.commands.ConfigureEssentialsCommandAPI
@@ -16,8 +19,10 @@ import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfigura
 import com.mairwunnx.projectessentials.managers.AfkManager
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
+import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.TickEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
+import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import org.apache.logging.log4j.LogManager
@@ -81,6 +86,11 @@ class ModuleObject : IModule {
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    fun onPlayerCommand(it: CommandEvent) {
+        if (!handleBlockedCommand(it)) it.isCanceled = true
+    }
+
     @SubscribeEvent
     fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
         if (event.player is ServerPlayerEntity) {
@@ -91,7 +101,8 @@ class ModuleObject : IModule {
     @SubscribeEvent
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
         if (event.player is ServerPlayerEntity) {
-            AfkManager.getAfkPlayers().remove(event.player as ServerPlayerEntity)
+            val player = event.player as ServerPlayerEntity
+            disposeAfkStates(player)
         }
     }
 
@@ -101,6 +112,25 @@ class ModuleObject : IModule {
             val player = event.player as ServerPlayerEntity
             executeFirstLoginCommands(player)
         }
+    }
+
+    private fun handleBlockedCommand(it: CommandEvent): Boolean {
+        if (generalConfiguration.getList(SETTING_DISABLED_COMMANDS).isNotEmpty()) {
+            val player = it.parseResults.context.source.entity
+            if (player is ServerPlayerEntity) {
+                if (
+                    it.commandName in generalConfiguration.getList(SETTING_DISABLED_COMMANDS) ||
+                    isAliasesOfBlockedCommand(it.commandName)
+                ) MessagingAPI.sendMessage(
+                    player, "${MESSAGE_MODULE_PREFIX}basic.command.blocked"
+                ).run { return false }
+            }
+        }
+        return true
+    }
+
+    private fun disposeAfkStates(player: ServerPlayerEntity) {
+        AfkManager.getAfkPlayers().remove(player)
     }
 
     private fun executeFirstLoginCommands(player: ServerPlayerEntity) {
