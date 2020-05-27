@@ -169,6 +169,8 @@ class ModuleObject : IModule {
                     player.currentDimensionName,
                     player.position.toString(),
                     player.playerIP,
+                    mutableListOf(),
+                    mutableListOf(),
                     getFlyEnabledWorlds(player, mutableListOf()),
                     getGodEnabledWorlds(player, mutableListOf())
                 )
