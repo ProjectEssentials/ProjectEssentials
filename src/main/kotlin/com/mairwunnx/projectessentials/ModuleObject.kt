@@ -5,6 +5,7 @@ package com.mairwunnx.projectessentials
 import com.mairwunnx.projectessentials.commands.FlyCommand
 import com.mairwunnx.projectessentials.commands.GodCommand
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
+import com.mairwunnx.projectessentials.configurations.UserDataConfigurationModel
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
@@ -32,6 +33,7 @@ import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import org.apache.logging.log4j.LogManager
+import java.time.ZonedDateTime
 
 @Mod("project_essentials_basic")
 class ModuleObject : IModule {
@@ -108,7 +110,7 @@ class ModuleObject : IModule {
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
         withServerPlayer(event.player) {
             disposeAfkStates(it)
-            // Save player data
+            savePlayerData(it)
         }
     }
 
@@ -123,8 +125,41 @@ class ModuleObject : IModule {
     @SubscribeEvent
     fun onPlayerChangedDimension(event: PlayerEvent.PlayerChangedDimensionEvent) {
         withServerPlayer(event.player) {
+            /*
+                Saving player data after dimension changing can work
+                incorrectly, still experimental this.
+            */
+            savePlayerData(it)
             processPlayerAbilities(it)
-            // Save player data
+        }
+    }
+
+    private fun savePlayerData(player: ServerPlayerEntity) {
+        val uuid = player.uniqueID.toString()
+        val name = player.name.string
+        userDataConfiguration.take().users.find {
+            it.uuid == uuid || it.name == name
+        }?.let {
+            it.lastDateTime = ZonedDateTime.now().toString()
+            it.lastWorldName = player.serverWorld.directoryName
+            it.lastDimension = player.currentDimensionName
+            it.lastPosition = player.position.toString()
+            it.lastIPAddress = player.playerIP
+            it.flyWorldDimensions = getFlyEnabledWorlds(player, it.flyWorldDimensions)
+            it.godWorldDimensions = getGodEnabledWorlds(player, it.godWorldDimensions)
+        } ?: run {
+            userDataConfiguration.take().users.add(
+                UserDataConfigurationModel.User(
+                    name, uuid,
+                    ZonedDateTime.now().toString(),
+                    player.serverWorld.directoryName,
+                    player.currentDimensionName,
+                    player.position.toString(),
+                    player.playerIP,
+                    getFlyEnabledWorlds(player, mutableListOf()),
+                    getGodEnabledWorlds(player, mutableListOf())
+                )
+            )
         }
     }
 
@@ -215,6 +250,35 @@ class ModuleObject : IModule {
                 player.server.commandManager.handleCommand(player.commandSource, it)
             }
         }
+    }
+
+    private fun getFlyEnabledWorlds(
+        player: ServerPlayerEntity, flyAbleWorlds: MutableList<String>
+    ): MutableList<String> {
+        fun isFly() =
+            if (player.onGround) player.abilities.allowFlying else player.abilities.isFlying || player.abilities.allowFlying
+
+        if (isFly()) {
+            if ("${player.serverWorld.directoryName}&${player.currentDimensionName}" !in flyAbleWorlds) {
+                flyAbleWorlds.add("${player.serverWorld.directoryName}&${player.currentDimensionName}")
+            }
+        } else {
+            flyAbleWorlds.remove("${player.serverWorld.directoryName}&${player.currentDimensionName}")
+        }
+        return flyAbleWorlds
+    }
+
+    private fun getGodEnabledWorlds(
+        player: ServerPlayerEntity, godAbleWorlds: MutableList<String>
+    ): MutableList<String> {
+        if (player.abilities.disableDamage) {
+            if ("${player.serverWorld.directoryName}&${player.currentDimensionName}" !in godAbleWorlds) {
+                godAbleWorlds.add("${player.serverWorld.directoryName}&${player.currentDimensionName}")
+            }
+        } else {
+            godAbleWorlds.remove("${player.serverWorld.directoryName}&${player.currentDimensionName}")
+        }
+        return godAbleWorlds
     }
 
     private fun withServerPlayer(
