@@ -12,6 +12,7 @@ data class UserDataConfigurationModel(
         var name: String,
         var uuid: String,
         var lastDateTime: String,
+        var lastWorldName: String,
         var lastDimension: String,
         var lastPosition: String,
         var lastIPAddress: String,
