@@ -2,6 +2,7 @@
   "project_essentials_basic.restricted": "§cУ Вас §7нет прав §cна выполнение этой команды.",
   "project_essentials_basic.afk.enabled": "§7§oИгрок §6%s§7§o отошел в AFK и может не отвечать на сообщения.",
   "project_essentials_basic.afk.disabled": "§7§oИгрок §6%s§7§o вышел из AFK.",
+  "project_essentials_basic.afk.kicked": "§cВы были кикнуты сервером, причина: §7долгое время в AFK.",
   "project_essentials_basic.air.self.success": "§6Вы §7пополнили §6свой запас воздуха.",
   "project_essentials_basic.air.other_single.success": "§6Вы §7пополнили §6запас воздуха игрока §7%s§6.",
   "project_essentials_basic.air.other_multiple.success": "§6Вы §7пополнили §6запас воздуха выбранных §7(%s)§6 игроков.",

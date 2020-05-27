@@ -1,12 +1,18 @@
 package com.mairwunnx.projectessentials.managers
 
 import com.mairwunnx.projectessentials.SETTING_AFK_HANDLE_ACTIVITY
+import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_KICK_TIME
 import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_TIME
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.SETTING_LOC_ENABLED
 import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
+import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.module.ModuleAPI
 import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import net.minecraft.entity.player.ServerPlayerEntity
+import net.minecraft.util.text.TextComponentUtils
+import net.minecraft.util.text.TranslationTextComponent
 import org.apache.logging.log4j.LogManager
 import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
@@ -61,7 +67,28 @@ object AfkManager {
             val lastActiveMs = player.lastActiveTime
             val nowMs = System.nanoTime() / 1000000L
             val diff = (nowMs - lastActiveMs).toDuration(TimeUnit.SECONDS).inSeconds
-            switch(player, generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME) >= diff)
+            switch(player, diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME))
+            if (diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_KICK_TIME)) {
+                val coreVersion = ModuleAPI.getModuleByName("core").version
+                if (coreVersion.startsWith("2.0.0") && "RC." in coreVersion) {
+                    player.connection.disconnect(TextComponentUtils.toTextComponent {
+                        "§cKicked by Server, reason: §7long time AFK."
+                    })
+                } else {
+                    player.connection.disconnect(
+                        if (generalConfiguration.getBool(SETTING_LOC_ENABLED)) {
+                            TextComponentUtils.toTextComponent {
+                                LocalizationAPI.getLocalizedString(
+                                    LocalizationAPI.getPlayerLanguage(player),
+                                    "${MESSAGE_MODULE_PREFIX}basic.afk.kicked"
+                                )
+                            }
+                        } else {
+                            TranslationTextComponent("${MESSAGE_MODULE_PREFIX}basic.afk.kicked")
+                        }
+                    )
+                }
+            }
         }
     }
 }

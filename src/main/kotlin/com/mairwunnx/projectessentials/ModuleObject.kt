@@ -25,6 +25,7 @@ import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfigura
 import com.mairwunnx.projectessentials.managers.AfkManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
+import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.TickEvent
@@ -70,6 +71,7 @@ class ModuleObject : IModule {
         generalConfiguration.getBoolOrDefault(SETTING_HELP_COMMAND_COLORIZED_OUT, true)
         generalConfiguration.getList(SETTING_FIRST_JOIN_COMMANDS, arrayListOf())
         generalConfiguration.getIntOrDefault(SETTING_AFK_IDLENESS_TIME, 300)
+        generalConfiguration.getIntOrDefault(SETTING_AFK_IDLENESS_KICK_TIME, Int.MAX_VALUE)
         generalConfiguration.getBoolOrDefault(SETTING_AFK_HANDLE_ACTIVITY, true)
         generalConfiguration.getList(SETTING_DISABLED_COMMANDS, arrayListOf())
         generalConfiguration.getList(SETTING_FLY_WORLDS_DISABLED, arrayListOf())
@@ -119,6 +121,7 @@ class ModuleObject : IModule {
         withServerPlayer(event.player) {
             processPlayerAbilities(it)
             executeFirstLoginCommands(it)
+            processPlayerTabNick(it)
         }
     }
 
@@ -131,6 +134,16 @@ class ModuleObject : IModule {
             */
             savePlayerData(it)
             processPlayerAbilities(it)
+        }
+    }
+
+    private fun processPlayerTabNick(player: ServerPlayerEntity) {
+        // todo: remove this
+        if (
+            hasPermission(player, "*", 4) ||
+            player.name.string in player.server.playerList.oppedPlayerNames
+        ) {
+            player.customName = player.name.applyTextStyle { it.color = TextFormatting.DARK_RED }
         }
     }
 

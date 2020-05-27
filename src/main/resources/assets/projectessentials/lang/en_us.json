@@ -2,6 +2,7 @@
   "project_essentials_basic.restricted": "§cYou §7don't have permission §cto execute that command.",
   "project_essentials_basic.afk.enabled": "§7§oPlayer §6%s§7§o is now AFK and may not respond to messages.",
   "project_essentials_basic.afk.disabled": "§7§oPlayer §6%s§7§o exited AFK mode and is now active.",
+  "project_essentials_basic.afk.kicked": "§cKicked by Server, reason: §7long time AFK.",
   "project_essentials_basic.air.self.success": "§6You've §7replenished §6your air supply.",
   "project_essentials_basic.air.other_single.success": "§6You've §7replenished §6the §7%s's §6air supply.",
   "project_essentials_basic.air.other_multiple.success": "§6You've §7replenished §6the selected §7(%s)§6 players's air supply.",
