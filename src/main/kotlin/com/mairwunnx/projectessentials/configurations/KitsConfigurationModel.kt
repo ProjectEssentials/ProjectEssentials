@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 data class KitsConfigurationModel(
     val kits: MutableList<Kit> = mutableListOf(
         Kit(
-            "newbies",
-            43200,
-            mutableListOf(
+            name = "newbies",
+            delay = 43200,
+            items = mutableListOf(
                 Kit.Item("oak_wood", 8, "&7[&9Starter Item&7]"),
                 Kit.Item("cooked_cod", 5, "&7[&9Starter Item&7]"),
                 Kit.Item("cow_spawn_egg", 1, "&7[&9Starter Item&7]"),
@@ -23,6 +23,8 @@ data class KitsConfigurationModel(
     data class Kit(
         var name: String,
         var delay: Int = 0,
+        var requiredPermissionNode: String = "ess.kit.receive.$name",
+        var requiredMinOpLevel: Int = 0,
         var items: MutableList<Item> = mutableListOf()
     ) {
         @Serializable
