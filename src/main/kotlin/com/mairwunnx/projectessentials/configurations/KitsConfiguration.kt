@@ -26,7 +26,7 @@ object KitsConfiguration : IConfiguration<KitsConfigurationModel> {
             logger.error("Configuration file ($path) not found!")
             logger.warn("The default configuration will be used")
         } finally {
-//            logger.info("Loaded kits (${take().kits.count()})")
+            logger.info("Loaded kits (${take().kits.count()})")
         }
     }
 
