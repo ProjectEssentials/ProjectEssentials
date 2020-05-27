@@ -155,15 +155,14 @@ class ModuleObject : IModule {
                     userDataConfiguration.take().users.find {
                         player.name.string == it.name || player.uniqueID.toString() == it.uuid
                     }?.let {
-                        val fullWorld =
+                        val inFlyWorld = it.flyWorldDimensions.contains(
                             "${player.serverWorld.directoryName}&${player.currentDimensionName}"
-                        with(fullWorld in it.flyWorldDimensions) {
-                            allowFlying = this
-                            isFlying = this
-                            if (this) MessagingAPI.sendMessage(
-                                player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
-                            )
-                        }
+                        )
+                        allowFlying = inFlyWorld
+                        isFlying = inFlyWorld
+                        if (inFlyWorld) MessagingAPI.sendMessage(
+                            player, "${MESSAGE_MODULE_PREFIX}basic.fly.auto.success"
+                        )
                         return@processPlayerNamedAbility
                     }
                     allowFlying = false
@@ -179,14 +178,13 @@ class ModuleObject : IModule {
                     userDataConfiguration.take().users.find {
                         player.name.string == it.name || player.uniqueID.toString() == it.uuid
                     }?.let {
-                        val fullWorld =
+                        val inGodWorld = it.godWorldDimensions.contains(
                             "${player.serverWorld.directoryName}&${player.currentDimensionName}"
-                        with(fullWorld in it.godWorldDimensions) {
-                            disableDamage = this
-                            if (this) MessagingAPI.sendMessage(
-                                player, "${MESSAGE_MODULE_PREFIX}basic.god.auto.success"
-                            )
-                        }
+                        )
+                        disableDamage = inGodWorld
+                        if (inGodWorld) MessagingAPI.sendMessage(
+                            player, "${MESSAGE_MODULE_PREFIX}basic.god.auto.success"
+                        )
                         return@processPlayerNamedAbility
                     }
                     disableDamage = false
