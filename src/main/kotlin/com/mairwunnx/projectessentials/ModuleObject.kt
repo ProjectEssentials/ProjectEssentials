@@ -200,10 +200,12 @@ class ModuleObject : IModule {
     }
 
     private fun processPlayerAbilities(player: ServerPlayerEntity) {
-        userDataConfiguration.take().users.find {
-            it.name == player.name.string || it.uuid == player.uniqueID.toString()
-        }?.let {
-            player.isInvisible = it.isInvisible
+        if (hasPermission(player, "ess.vanish.auto", 4)) {
+            userDataConfiguration.take().users.find {
+                it.name == player.name.string || it.uuid == player.uniqueID.toString()
+            }?.let {
+                player.isInvisible = it.isInvisible
+            }
         }
 
         if (generalConfiguration.getBool(SETTING_AUTO_FLY_MODE_ON_JOIN_ENABLED)) {
