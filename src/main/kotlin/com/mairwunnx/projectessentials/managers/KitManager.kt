@@ -77,7 +77,7 @@ object KitManager {
             ItemStack(
                 Registry.ITEM.getValue(
                     ResourceLocation.read(StringReader(kitItem.name))
-                ).get(), kitItem.count
+                ).get(), checkIllegalItemCount(kitItem.count)
             ).apply {
                 if (kitItem.displayName.isNotBlank()) {
                     displayName = TextComponentUtils.toTextComponent {
@@ -100,6 +100,12 @@ object KitManager {
             !hasPermission(receiver, "${kit.requiredPermissionNode}.cooldown.bypass", 4) ||
             kit.delay != 0
         ) markAsTaken(receiver, kit.name)
+    }
+
+    private fun checkIllegalItemCount(count: Int): Int = when {
+        count < 1 -> 1
+        count > 64 -> 64
+        else -> count
     }
 
     private fun markAsTaken(receiver: ServerPlayerEntity, kitName: String) {
