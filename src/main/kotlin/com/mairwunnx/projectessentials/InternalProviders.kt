@@ -22,5 +22,6 @@ internal val providers = listOf(
     RepairCommand::class.java,
     SendPosCommand::class.java,
     SuicideCommand::class.java,
-    KitCommand::class.java
+    KitCommand::class.java,
+    EnderChestCommand::class.java
 )
