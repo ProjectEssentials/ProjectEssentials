@@ -56,6 +56,7 @@
   "project_essentials_basic.kit.other.kit_not_expired": "§cЗадержка для набора §7%s §cне истекла для игрока §7%s§c.",
   "project_essentials_basic.kit.other.cooldown_refresh.success": "§6Задержка для набора §7%s §6была удалена для игрока §7%s§6.",
   "project_essentials_basic.kit.other.cooldown_refresh.error": "§cУ игрока §7%s §cнет задержки для набора §7%s§c.",
+  "project_essentials_basic.invsee.error": "§cВы не можете посмотреть или редактировать инвентарь выбранного игрока.",
   "death.attack.suicide": "§cУбит по собственному желанию.",
   "project_essentials.top.success": "§6Вы §7были телепортированы наверх§6.",
   "project_essentials.tppos.success": "§6Телепортация к выбранной позиции...",
