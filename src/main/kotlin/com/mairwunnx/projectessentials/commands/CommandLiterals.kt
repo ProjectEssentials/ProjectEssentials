@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
 import com.mairwunnx.projectessentials.managers.KitManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.minecraft.command.CommandSource
@@ -133,7 +134,14 @@ val glowLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { GlowCommand.glowOther(it) }
     ).executes { GlowCommand.glowSelf(it) }
 
-val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("more")
-val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("ping")
-val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("suicide")
-val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("workbench")
+val skullLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("skull").then(
+        Commands.argument(
+            "nick", StringArgumentType.string()
+        ).executes { SkullCommand.skull(it) }
+    )
+
+val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
+val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
+val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
+val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal("workbench")
