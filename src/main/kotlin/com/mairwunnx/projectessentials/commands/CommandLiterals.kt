@@ -129,3 +129,4 @@ val invSeeLiteral: LiteralArgumentBuilder<CommandSource> =
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
+val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal("workbench")
