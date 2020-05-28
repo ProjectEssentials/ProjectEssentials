@@ -90,10 +90,6 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { SendPosCommand.process(it) }
     ).executes { SendPosCommand.process(it) }
 
-val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
-val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
-val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
-
 val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     literal<CommandSource>("kit").then(
         Commands.literal("get").then(
@@ -115,3 +111,7 @@ val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
         ).executes { KitCommand.kitList(it) }
     )
 }
+
+val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
+val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
+val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
