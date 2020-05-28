@@ -44,7 +44,7 @@ object KitManager {
         if (!isKitExist(name)) return Response.KitNotFound
         val kit = getKit(name)!!
 
-        if (hasPermission(playerEntity, kit.requiredPermissionNode, kit.requiredMinOpLevel)) {
+        if (hasPermission(playerEntity, "ess.kit.receive.kit.$name", kit.requiredMinOpLevel)) {
             userDataConfiguration.take().users.find {
                 it.name == playerEntity.name.string || it.uuid == playerEntity.uniqueID.toString()
             }?.let { user ->
@@ -57,7 +57,7 @@ object KitManager {
                         if (
                             hasPermission(
                                 playerEntity,
-                                "${kit.requiredPermissionNode}.cooldown.bypass", 4
+                                "ess.kit.receive.kit.$name.cooldown.bypass", 4
                             )
                         ) {
                             return Response.Success.also { unpackKit(playerEntity, kit) }
@@ -105,7 +105,7 @@ object KitManager {
             }
         }
         if (
-            !hasPermission(receiver, "${kit.requiredPermissionNode}.cooldown.bypass", 4) ||
+            !hasPermission(receiver, "ess.kit.receive.kit.${kit.name}.cooldown.bypass", 4) ||
             kit.delay != 0
         ) markAsTaken(receiver, kit.name)
     }

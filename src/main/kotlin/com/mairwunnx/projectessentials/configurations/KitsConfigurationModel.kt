@@ -23,7 +23,6 @@ data class KitsConfigurationModel(
     data class Kit(
         var name: String,
         var delay: Int = 0,
-        var requiredPermissionNode: String = "ess.kit.receive.$name",
         var requiredMinOpLevel: Int = 0,
         var items: MutableList<Item> = mutableListOf()
     ) {
