@@ -1,5 +1,7 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
+import com.mairwunnx.projectessentials.managers.KitManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
@@ -91,3 +93,26 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
+
+// kit <list|get <kit-name> [[target] [cooldown clear]]>
+val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
+    literal<CommandSource>("kit").then(
+        Commands.literal("get").then(
+            Commands.argument(
+                "kit-name", StringArrayArgument.with(KitManager.getKits().map { it.name })
+            ).then(
+                Commands.argument("target", EntityArgument.player()).then(
+                    Commands.literal("cooldown").then(Commands.literal("clear")).executes {
+                        KitCommand.kitClearCooldown(it)
+                    }
+                ).executes { KitCommand.kitOtherGet(it) }
+            ).executes { KitCommand.kitGet(it) }
+        )
+    ).then(
+        Commands.literal("list").then(
+            Commands.argument(
+                "page", IntegerArgumentType.integer()
+            ).executes { KitCommand.kitList(it) }
+        ).executes { KitCommand.kitList(it) }
+    )
+}

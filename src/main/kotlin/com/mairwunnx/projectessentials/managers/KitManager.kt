@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.mairwunnx.projectessentials.managers
 
 import com.mairwunnx.projectessentials.ModuleObject
@@ -35,6 +37,8 @@ object KitManager {
     fun isKitExist(name: String) = name in kitsConfiguration.take().kits.map { it.name }
 
     fun getKit(name: String) = kitsConfiguration.take().kits.find { it.name == name }
+
+    fun getKits() = kitsConfiguration.take().kits
 
     fun requestKit(playerEntity: ServerPlayerEntity, name: String): Response {
         if (!isKitExist(name)) return Response.KitNotFound
