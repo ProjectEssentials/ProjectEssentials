@@ -74,27 +74,29 @@ object KitManager {
 
     private fun unpackKit(receiver: ServerPlayerEntity, kit: KitsConfigurationModel.Kit) {
         kit.items.forEach { kitItem ->
-            ItemStack(
-                Registry.ITEM.getValue(
-                    ResourceLocation.read(StringReader(kitItem.name))
-                ).get(), checkIllegalItemCount(kitItem.count)
-            ).apply {
-                if (kitItem.displayName.isNotBlank()) {
-                    displayName = TextComponentUtils.toTextComponent {
-                        kitItem.displayName
-                            .replace("&", "§")
-                            .replace("%player", receiver.name.string)
-                            .replace("%kit", kit.name)
+            if (kitItem.name.isNotBlank()) {
+                ItemStack(
+                    Registry.ITEM.getValue(
+                        ResourceLocation.read(StringReader(kitItem.name))
+                    ).get(), checkIllegalItemCount(kitItem.count)
+                ).apply {
+                    if (kitItem.displayName.isNotBlank()) {
+                        displayName = TextComponentUtils.toTextComponent {
+                            kitItem.displayName
+                                .replace("&", "§")
+                                .replace("%player", receiver.name.string)
+                                .replace("%kit", kit.name)
+                        }
                     }
-                }
-                kitItem.enchantments.forEach {
-                    addEnchantment(
-                        Registry.ENCHANTMENT.getValue(
-                            ResourceLocation.read(StringReader(it.enchantment))
-                        ).get(), it.level
-                    )
-                }
-            }.also { receiver.addItemStackToInventory(it) }
+                    kitItem.enchantments.forEach {
+                        addEnchantment(
+                            Registry.ENCHANTMENT.getValue(
+                                ResourceLocation.read(StringReader(it.enchantment))
+                            ).get(), it.level
+                        )
+                    }
+                }.also { receiver.addItemStackToInventory(it) }
+            }
         }
         if (
             !hasPermission(receiver, "${kit.requiredPermissionNode}.cooldown.bypass", 4) ||
