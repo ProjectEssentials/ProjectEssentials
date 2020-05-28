@@ -93,7 +93,7 @@ object KitManager {
                             addEnchantment(
                                 Registry.ENCHANTMENT.getValue(
                                     ResourceLocation.read(StringReader(it.enchantment))
-                                ).get(), it.level
+                                ).get(), checkIllegalEnchantLevel(it.level)
                             )
                         }
                     }
@@ -106,10 +106,16 @@ object KitManager {
         ) markAsTaken(receiver, kit.name)
     }
 
-    private fun checkIllegalItemCount(count: Int): Int = when {
+    private fun checkIllegalItemCount(count: Int) = when {
         count < 1 -> 1
         count > 64 -> 64
         else -> count
+    }
+
+    private fun checkIllegalEnchantLevel(level: Int) = when {
+        level < 1 -> 1
+        level > 25 -> 25
+        else -> level
     }
 
     private fun markAsTaken(receiver: ServerPlayerEntity, kitName: String) {
