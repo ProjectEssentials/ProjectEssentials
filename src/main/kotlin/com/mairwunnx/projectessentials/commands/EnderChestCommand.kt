@@ -23,9 +23,9 @@ object EnderChestCommand : CommandBase(enderChestLiteral, false) {
             } else {
                 context.getPlayer()!!.openContainer(
                     SimpleNamedContainerProvider(
-                        IContainerProvider { idkWhatIt, inventory, _ ->
+                        IContainerProvider { id, inventory, _ ->
                             ChestContainer.createGeneric9X3(
-                                idkWhatIt, inventory, context.getPlayer()!!.inventoryEnderChest
+                                id, inventory, context.getPlayer()!!.inventoryEnderChest
                             )
                         }, EnderChestBlock.field_220115_d
                     )
@@ -42,9 +42,9 @@ object EnderChestCommand : CommandBase(enderChestLiteral, false) {
                 val target = CommandAPI.getPlayer(context, "target")
                 context.getPlayer()!!.openContainer(
                     SimpleNamedContainerProvider(
-                        IContainerProvider { idkWhatIt, inventory, _ ->
+                        IContainerProvider { id, inventory, _ ->
                             ChestContainer.createGeneric9X3(
-                                idkWhatIt, inventory, target.inventoryEnderChest
+                                id, inventory, target.inventoryEnderChest
                             )
                         }, EnderChestBlock.field_220115_d
                     )
