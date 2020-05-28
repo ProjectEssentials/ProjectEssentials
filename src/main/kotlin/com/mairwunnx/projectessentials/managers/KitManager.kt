@@ -56,8 +56,7 @@ object KitManager {
                     if (kit.delay > duration.seconds) {
                         if (
                             hasPermission(
-                                playerEntity,
-                                "ess.kit.receive.kit.$name.cooldown.bypass", 4
+                                playerEntity, "ess.kit.receive.kit.$name.cooldown.bypass", 4
                             )
                         ) {
                             return Response.Success.also { unpackKit(playerEntity, kit) }

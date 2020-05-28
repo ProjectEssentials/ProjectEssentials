@@ -1,8 +1,10 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
@@ -14,6 +16,10 @@ import net.minecraft.command.CommandSource
 
 object KitCommand : CommandBase(kitLiteral, false) {
     override val name = "kit"
+
+    private val userDataConfiguration by lazy {
+        getConfigurationByName<UserDataConfiguration>("user-data")
+    }
 
     fun kitList(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.kit.list", 0) { isServer ->
@@ -82,6 +88,34 @@ object KitCommand : CommandBase(kitLiteral, false) {
                 Response.KitNoHasPermissions -> out("no_permission", targetName, kit)
                 Response.KitNotFound -> out("not_found", kit)
                 Response.KitTimeNotExpired -> out("kit_not_expired", kit, targetName)
+            }
+        }
+    }
+
+    fun kitRefreshCooldown(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.kit.receive.other.cooldown.refresh", 4) { isServer ->
+            val kit = CommandAPI.getString(context, "kit-name")
+            val target = CommandAPI.getPlayer(context, "target")
+            val targetName = target.name.string
+
+            userDataConfiguration.take().users.find {
+                it.name == targetName || it.uuid == target.uniqueID.toString()
+            }?.let { user ->
+                user.lastKitsDates.map { value ->
+                    value.partition { it == ':' }
+                }.find { it.first == kit }?.let { expiredKit ->
+                    user.lastKitsDates.removeAll { expiredKit.first in it }
+                }
+            } ?: run {
+                if (isServer) {
+                    ServerMessagingAPI.response { "Kit $kit cooldown was removed for player $targetName" }
+                } else {
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!,
+                        "${MESSAGE_MODULE_PREFIX}basic.kit.other.cooldown_refresh",
+                        args = *arrayOf(kit, targetName)
+                    )
+                }
             }
         }
     }

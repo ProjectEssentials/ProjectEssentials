@@ -94,7 +94,6 @@ val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
 
-// kit <list|get <kit-name> [[target] [cooldown clear]]>
 val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     literal<CommandSource>("kit").then(
         Commands.literal("get").then(
@@ -102,8 +101,8 @@ val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
                 "kit-name", StringArrayArgument.with(KitManager.getKits().map { it.name })
             ).then(
                 Commands.argument("target", EntityArgument.player()).then(
-                    Commands.literal("cooldown").then(Commands.literal("clear")).executes {
-                        KitCommand.kitClearCooldown(it)
+                    Commands.literal("cooldown").then(Commands.literal("refresh")).executes {
+                        KitCommand.kitRefreshCooldown(it)
                     }
                 ).executes { KitCommand.kitOtherGet(it) }
             ).executes { KitCommand.kitGet(it) }
