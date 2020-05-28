@@ -12,7 +12,6 @@ import com.mairwunnx.projectessentials.managers.KitManager.Response
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.entity.player.ServerPlayerEntity
 
 object KitCommand : CommandBase(kitLiteral, false) {
     override val name = "kit"
@@ -33,20 +32,52 @@ object KitCommand : CommandBase(kitLiteral, false) {
         if (context.isPlayerSender()) {
             val kit = CommandAPI.getString(context, "kit-name")
             val player = context.getPlayer()!!
+
+            fun out(result: String) {
+                MessagingAPI.sendMessage(
+                    player, "${MESSAGE_MODULE_PREFIX}basic.kit.self.$result", args = *arrayOf(kit)
+                ).also { if (result == "success") process(context) }
+            }
+
             when (KitManager.requestKit(player, kit)) {
-                Response.Success -> kitSelfOut(player, kit, "success").also { process(context) }
-                Response.KitNoHasPermissions -> kitSelfOut(player, kit, "no_permission")
-                Response.KitNotFound -> kitSelfOut(player, kit, "not_found")
-                Response.KitTimeNotExpired -> kitSelfOut(player, kit, "kit_not_expired")
+                Response.Success -> out("success")
+                Response.KitNoHasPermissions -> out("no_permission")
+                Response.KitNotFound -> out("not_found")
+                Response.KitTimeNotExpired -> out("kit_not_expired")
             }
         } else {
             ServerMessagingAPI.throwOnlyPlayerCan()
         }
     }
 
-    private fun kitSelfOut(player: ServerPlayerEntity, kit: String, result: String) {
-        MessagingAPI.sendMessage(
-            player, "${MESSAGE_MODULE_PREFIX}basic.kit.self.$result", args = *arrayOf(kit)
-        )
+    fun kitOtherGet(context: CommandContext<CommandSource>) = 0.also {
+        val kit = CommandAPI.getString(context, "kit-name")
+        val target = CommandAPI.getPlayer(context, "target")
+        val targetName = target.name.string
+
+        fun out(result: String, vararg args: String) {
+            if (context.isPlayerSender()) {
+                val player = context.getPlayer()!!
+                MessagingAPI.sendMessage(
+                    player,
+                    "${MESSAGE_MODULE_PREFIX}basic.kit.other.$result",
+                    args = *args
+                ).also { if (result == "success") process(context) }
+            } else {
+                when (result) {
+                    "success" -> ServerMessagingAPI.response { "Kit $kit has been issued to the player $targetName" }
+                    "no_permission" -> ServerMessagingAPI.response { "Player $targetName has no permission for getting kit $kit" }
+                    "not_found" -> ServerMessagingAPI.response { "Requested kit $kit was not found" }
+                    "kit_not_expired" -> ServerMessagingAPI.response { "Kit $kit cooldown for player $targetName is not expired." }
+                }
+            }
+        }
+
+        when (KitManager.requestKit(target, kit)) {
+            Response.Success -> out("success", kit, targetName)
+            Response.KitNoHasPermissions -> out("no_permission", targetName, kit)
+            Response.KitNotFound -> out("not_found", kit)
+            Response.KitTimeNotExpired -> out("kit_not_expired", kit, targetName)
+        }
     }
 }
