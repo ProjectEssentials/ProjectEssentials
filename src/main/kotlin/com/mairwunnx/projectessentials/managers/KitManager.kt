@@ -79,11 +79,13 @@ object KitManager {
                     ResourceLocation.read(StringReader(kitItem.name))
                 ).get(), kitItem.count
             ).apply {
-                displayName = TextComponentUtils.toTextComponent {
-                    kitItem.displayName
-                        .replace("&", "§")
-                        .replace("%player", receiver.name.string)
-                        .replace("%kit", kit.name)
+                if (kitItem.displayName.isNotBlank()) {
+                    displayName = TextComponentUtils.toTextComponent {
+                        kitItem.displayName
+                            .replace("&", "§")
+                            .replace("%player", receiver.name.string)
+                            .replace("%kit", kit.name)
+                    }
                 }
                 kitItem.enchantments.forEach {
                     addEnchantment(
