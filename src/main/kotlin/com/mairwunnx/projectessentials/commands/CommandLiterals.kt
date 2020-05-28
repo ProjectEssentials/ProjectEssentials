@@ -112,6 +112,13 @@ val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     )
 }
 
+val enderChestLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("enderchest").then(
+        Commands.argument(
+            "target", EntityArgument.player()
+        ).executes { EnderChestCommand.openOther(it) }
+    ).executes { EnderChestCommand.openSelf(it) }
+
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
