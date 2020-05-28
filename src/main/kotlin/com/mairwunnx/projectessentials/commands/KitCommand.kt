@@ -68,10 +68,10 @@ object KitCommand : CommandBase(kitLiteral, false) {
             fun out(result: String, vararg args: String) {
                 if (isServer) {
                     when (result) {
-                        "success" -> ServerMessagingAPI.response { "Kit $kit has been issued to the player $targetName" }
-                        "no_permission" -> ServerMessagingAPI.response { "Player $targetName has no permission for getting kit $kit" }
-                        "not_found" -> ServerMessagingAPI.response { "Requested kit $kit was not found" }
-                        "kit_not_expired" -> ServerMessagingAPI.response { "Kit $kit cooldown for player $targetName is not expired." }
+                        "success" -> ServerMessagingAPI.response { "Kit $kit has been given to the player $targetName." }
+                        "no_permission" -> ServerMessagingAPI.response { "Player $targetName has no permission for getting kit $kit." }
+                        "not_found" -> ServerMessagingAPI.response { "Requested kit $kit was not found." }
+                        "kit_not_expired" -> ServerMessagingAPI.response { "Kit $kit cooldown is not expired for player $targetName." }
                     }
                 } else {
                     val player = context.getPlayer()!!
@@ -100,7 +100,7 @@ object KitCommand : CommandBase(kitLiteral, false) {
 
             fun refreshFailed() {
                 if (isServer) {
-                    ServerMessagingAPI.response { "Player $targetName has no cooldown for kit $kit" }
+                    ServerMessagingAPI.response { "Player $targetName has no cooldown for kit $kit." }
                 } else {
                     MessagingAPI.sendMessage(
                         context.getPlayer()!!,
@@ -119,7 +119,7 @@ object KitCommand : CommandBase(kitLiteral, false) {
                     user.lastKitsDates.removeAll { expiredKit.first in it }.also {
                         if (it) {
                             if (isServer) {
-                                ServerMessagingAPI.response { "Kit $kit cooldown was removed for player $targetName" }
+                                ServerMessagingAPI.response { "Kit $kit cooldown was removed for player $targetName." }
                             } else {
                                 MessagingAPI.sendMessage(
                                     context.getPlayer()!!,
