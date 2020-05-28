@@ -89,11 +89,13 @@ object KitManager {
                         }
                     }
                     kitItem.enchantments.forEach {
-                        addEnchantment(
-                            Registry.ENCHANTMENT.getValue(
-                                ResourceLocation.read(StringReader(it.enchantment))
-                            ).get(), it.level
-                        )
+                        if (it.enchantment.isNotBlank()) {
+                            addEnchantment(
+                                Registry.ENCHANTMENT.getValue(
+                                    ResourceLocation.read(StringReader(it.enchantment))
+                                ).get(), it.level
+                            )
+                        }
                     }
                 }.also { receiver.addItemStackToInventory(it) }
             }
