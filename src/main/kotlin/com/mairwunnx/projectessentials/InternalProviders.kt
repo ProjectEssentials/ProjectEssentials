@@ -26,5 +26,6 @@ internal val providers = listOf(
     EnderChestCommand::class.java,
     InvSeeCommand::class.java,
     WorkbenchCommand::class.java,
-    GlowCommand::class.java
+    GlowCommand::class.java,
+    SkullCommand::class.java
 )
