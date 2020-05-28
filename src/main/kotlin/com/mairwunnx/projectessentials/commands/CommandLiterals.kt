@@ -126,7 +126,14 @@ val invSeeLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { InvSeeCommand.process(it) }
     )
 
-val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
-val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
-val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
-val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal("workbench")
+val glowLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("glow").then(
+        Commands.argument(
+            "targets", EntityArgument.players()
+        ).executes { GlowCommand.glowOther(it) }
+    ).executes { GlowCommand.glowSelf(it) }
+
+val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("more")
+val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("ping")
+val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("suicide")
+val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal<CommandSource>("workbench")
