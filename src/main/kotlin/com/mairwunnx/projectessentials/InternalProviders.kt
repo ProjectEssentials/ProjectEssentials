@@ -21,5 +21,6 @@ internal val providers = listOf(
     PingCommand::class.java,
     RepairCommand::class.java,
     SendPosCommand::class.java,
-    SuicideCommand::class.java
+    SuicideCommand::class.java,
+    KitCommand::class.java
 )
