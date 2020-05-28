@@ -154,6 +154,7 @@ class ModuleObject : IModule {
         userDataConfiguration.take().users.find {
             it.uuid == uuid || it.name == name
         }?.let {
+            it.isInvisible = player.isInvisible
             it.lastDateTime = ZonedDateTime.now().toString()
             it.lastWorldName = player.serverWorld.directoryName
             it.lastDimension = player.currentDimensionName
@@ -165,6 +166,7 @@ class ModuleObject : IModule {
             userDataConfiguration.take().users.add(
                 UserDataConfigurationModel.User(
                     name, uuid,
+                    player.isInvisible,
                     ZonedDateTime.now().toString(),
                     player.serverWorld.directoryName,
                     player.currentDimensionName,
@@ -198,6 +200,12 @@ class ModuleObject : IModule {
     }
 
     private fun processPlayerAbilities(player: ServerPlayerEntity) {
+        userDataConfiguration.take().users.find {
+            it.name == player.name.string || it.uuid == player.uniqueID.toString()
+        }?.let {
+            player.isInvisible = it.isInvisible
+        }
+
         if (generalConfiguration.getBool(SETTING_AUTO_FLY_MODE_ON_JOIN_ENABLED)) {
             processPlayerNamedAbility(player, "fly") {
                 with(player.abilities) {

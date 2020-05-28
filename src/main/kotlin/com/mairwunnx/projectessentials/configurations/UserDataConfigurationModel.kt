@@ -11,6 +11,7 @@ data class UserDataConfigurationModel(
     data class User(
         var name: String,
         var uuid: String,
+        var isInvisible: Boolean,
         var lastDateTime: String,
         var lastWorldName: String,
         var lastDimension: String,
