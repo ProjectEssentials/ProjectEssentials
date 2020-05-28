@@ -147,7 +147,7 @@ class ModuleObject : IModule {
         }
     }
 
-    private fun savePlayerData(player: ServerPlayerEntity) {
+    internal fun savePlayerData(player: ServerPlayerEntity) {
         val uuid = player.uniqueID.toString()
         val name = player.name.string
         userDataConfiguration.take().users.find {
@@ -169,7 +169,6 @@ class ModuleObject : IModule {
                     player.currentDimensionName,
                     player.position.toString(),
                     player.playerIP,
-                    mutableListOf(),
                     mutableListOf(),
                     getFlyEnabledWorlds(player, mutableListOf()),
                     getGodEnabledWorlds(player, mutableListOf())
