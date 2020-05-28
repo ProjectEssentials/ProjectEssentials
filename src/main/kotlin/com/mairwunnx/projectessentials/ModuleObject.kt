@@ -76,6 +76,7 @@ class ModuleObject : IModule {
         generalConfiguration.getList(SETTING_DISABLED_COMMANDS, arrayListOf())
         generalConfiguration.getList(SETTING_FLY_WORLDS_DISABLED, arrayListOf())
         generalConfiguration.getList(SETTING_GOD_WORLDS_DISABLED, arrayListOf())
+        generalConfiguration.getBoolOrDefault(SETTING_INVSEE_DISABLE_DANGER_SLOTS, true)
 
         ConfigureEssentialsCommandAPI.required(SETTING_REPLACE_NATIVE_HELP_COMMAND)
     }
