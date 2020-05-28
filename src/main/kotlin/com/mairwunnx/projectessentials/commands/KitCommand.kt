@@ -98,25 +98,39 @@ object KitCommand : CommandBase(kitLiteral, false) {
             val target = CommandAPI.getPlayer(context, "target")
             val targetName = target.name.string
 
+            fun refreshFailed() {
+                if (isServer) {
+                    ServerMessagingAPI.response { "Player $targetName has no cooldown for kit $kit" }
+                } else {
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!,
+                        "${MESSAGE_MODULE_PREFIX}basic.kit.other.cooldown_refresh.error",
+                        args = *arrayOf(targetName, kit)
+                    )
+                }
+            }
+
             userDataConfiguration.take().users.find {
                 it.name == targetName || it.uuid == target.uniqueID.toString()
             }?.let { user ->
                 user.lastKitsDates.map { value ->
                     value.partition { it == ':' }
                 }.find { it.first == kit }?.let { expiredKit ->
-                    user.lastKitsDates.removeAll { expiredKit.first in it }
-                }
-            } ?: run {
-                if (isServer) {
-                    ServerMessagingAPI.response { "Kit $kit cooldown was removed for player $targetName" }
-                } else {
-                    MessagingAPI.sendMessage(
-                        context.getPlayer()!!,
-                        "${MESSAGE_MODULE_PREFIX}basic.kit.other.cooldown_refresh",
-                        args = *arrayOf(kit, targetName)
-                    )
-                }
-            }
+                    user.lastKitsDates.removeAll { expiredKit.first in it }.also {
+                        if (it) {
+                            if (isServer) {
+                                ServerMessagingAPI.response { "Kit $kit cooldown was removed for player $targetName" }
+                            } else {
+                                MessagingAPI.sendMessage(
+                                    context.getPlayer()!!,
+                                    "${MESSAGE_MODULE_PREFIX}basic.kit.other.cooldown_refresh.success",
+                                    args = *arrayOf(kit, targetName)
+                                )
+                            }
+                        } else refreshFailed()
+                    }
+                } ?: run { refreshFailed() }
+            } ?: run { refreshFailed() }
         }
     }
 }
