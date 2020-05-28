@@ -20,10 +20,9 @@ object SkullCommand : CommandBase(skullLiteral, false) {
             if (isServer) {
                 ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                val name = CommandAPI.getString(context, "nick")
-                ItemStack(Items.PLAYER_HEAD).apply {
+                ItemStack(Items.PLAYER_HEAD).also { process(context) }.apply {
                     setTagInfo("SkullOwner", INBT.create(8))
-                    tag?.putString("SkullOwner", name)
+                    tag?.putString("SkullOwner", CommandAPI.getString(context, "nick"))
                 }.also { context.getPlayer()!!.addItemStackToInventory(it) }
             }
         }
