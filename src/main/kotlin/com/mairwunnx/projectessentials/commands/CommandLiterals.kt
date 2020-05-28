@@ -123,7 +123,7 @@ val invSeeLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("invsee").then(
         Commands.argument(
             "target", EntityArgument.player()
-        ).executes { EnderChestCommand.openOther(it) }
+        ).executes { InvSeeCommand.process(it) }
     )
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
