@@ -10,11 +10,11 @@ data class KitsConfigurationModel(
             name = "newbies",
             delay = 43200,
             items = mutableListOf(
-                Kit.Item("oak_wood", 8, "&7[&9Starter Item&7]"),
-                Kit.Item("cooked_cod", 5, "&7[&9Starter Item&7]"),
-                Kit.Item("cow_spawn_egg", 1, "&7[&9Starter Item&7]"),
-                Kit.Item("stone", 16, "&7[&9Starter %player's Item&7]"),
-                Kit.Item("torch", 8, "&7[&9Starter Item&7]")
+                Kit.Item("oak_wood", 8, "&7[&cStarter %player's Item&7]"),
+                Kit.Item("cooked_cod", 5, "&7[&cStarter %player's Item&7]"),
+                Kit.Item("cow_spawn_egg", 1, "&7[&cctarter %player's Item&7]"),
+                Kit.Item("stone", 16, "&7[&cStarter %player's Item&7]"),
+                Kit.Item("torch", 8, "&7[&cStarter %player's Item&7]")
             )
         )
     )

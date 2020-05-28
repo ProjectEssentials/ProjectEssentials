@@ -56,21 +56,17 @@ object KitManager {
                                 "${kit.requiredPermissionNode}.cooldown.bypass", 4
                             )
                         ) {
-                            unpackKit(playerEntity, kit)
-                            return Response.Success
+                            return Response.Success.also { unpackKit(playerEntity, kit) }
                         }
                         return Response.KitTimeNotExpired
                     } else {
-                        unpackKit(playerEntity, kit)
-                        return Response.Success
+                        return Response.Success.also { unpackKit(playerEntity, kit) }
                     }
                 } ?: run {
-                    unpackKit(playerEntity, kit)
-                    return Response.Success
+                    return Response.Success.also { unpackKit(playerEntity, kit) }
                 }
             } ?: run {
-                unpackKit(playerEntity, kit)
-                return Response.Success
+                return Response.Success.also { unpackKit(playerEntity, kit) }
             }
         }
         return Response.KitNoHasPermissions
@@ -99,7 +95,8 @@ object KitManager {
             }.also { receiver.addItemStackToInventory(it) }
         }
         if (
-            !hasPermission(receiver, "${kit.requiredPermissionNode}.cooldown.bypass", 4)
+            !hasPermission(receiver, "${kit.requiredPermissionNode}.cooldown.bypass", 4) ||
+            kit.delay != 0
         ) markAsTaken(receiver, kit.name)
     }
 
