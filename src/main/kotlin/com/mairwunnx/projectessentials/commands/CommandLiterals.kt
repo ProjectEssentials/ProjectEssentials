@@ -119,6 +119,13 @@ val enderChestLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { EnderChestCommand.openOther(it) }
     ).executes { EnderChestCommand.openSelf(it) }
 
+val invSeeLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("invsee").then(
+        Commands.argument(
+            "target", EntityArgument.player()
+        ).executes { EnderChestCommand.openOther(it) }
+    )
+
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
