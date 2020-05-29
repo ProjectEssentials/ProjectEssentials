@@ -25,7 +25,7 @@ object SuicideCommand : CommandBase(suicideLiteral) {
             } else {
                 context.getPlayer()!!.attackEntityFrom(
                     DamageSource(
-                        if (generalConfiguration.getBool(SETTING_LOC_ENABLED)) "suicide" else "magic"
+                        if (!generalConfiguration.getBool(SETTING_LOC_ENABLED)) "suicide" else "magic"
                     ).setDamageBypassesArmor().setDamageAllowedInCreativeMode(), Float.MAX_VALUE
                 ).also { super.process(context) }
             }
