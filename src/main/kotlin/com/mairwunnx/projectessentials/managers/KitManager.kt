@@ -13,8 +13,8 @@ import com.mojang.brigadier.StringReader
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.registry.Registry
 import net.minecraft.util.text.TextComponentUtils
+import net.minecraftforge.registries.ForgeRegistries
 import java.time.Duration
 import java.time.ZonedDateTime
 
@@ -79,29 +79,29 @@ object KitManager {
     private fun unpackKit(receiver: ServerPlayerEntity, kit: KitsConfigurationModel.Kit) {
         kit.items.forEach { kitItem ->
             if (kitItem.name.isNotBlank()) {
-                ItemStack(
-                    Registry.ITEM.getValue(
-                        ResourceLocation.read(StringReader(kitItem.name))
-                    ).get(), checkIllegalItemCount(kitItem.count)
-                ).apply {
-                    if (kitItem.displayName.isNotBlank()) {
-                        displayName = TextComponentUtils.toTextComponent {
-                            kitItem.displayName
-                                .replace("&", "§")
-                                .replace("%player", receiver.name.string)
-                                .replace("%kit", kit.name)
+                val item = checkIllegalItem(kitItem.name)
+                if (item != null) {
+                    ItemStack(
+                        item, checkIllegalItemCount(kitItem.count)
+                    ).apply {
+                        if (kitItem.displayName.isNotBlank()) {
+                            displayName = TextComponentUtils.toTextComponent {
+                                kitItem.displayName
+                                    .replace("&", "§")
+                                    .replace("%player", receiver.name.string)
+                                    .replace("%kit", kit.name)
+                            }
                         }
-                    }
-                    kitItem.enchantments.forEach {
-                        if (it.enchantment.isNotBlank()) {
-                            addEnchantment(
-                                Registry.ENCHANTMENT.getValue(
-                                    ResourceLocation.read(StringReader(it.enchantment))
-                                ).get(), checkIllegalEnchantLevel(it.level)
-                            )
+                        kitItem.enchantments.forEach {
+                            if (it.enchantment.isNotBlank()) {
+                                val enchantment = checkIllegalEnchantment(it.enchantment)
+                                if (enchantment != null) {
+                                    addEnchantment(enchantment, checkIllegalEnchantLevel(it.level))
+                                }
+                            }
                         }
-                    }
-                }.also { receiver.addItemStackToInventory(it) }
+                    }.also { receiver.addItemStackToInventory(it) }
+                }
             }
         }
         if (
@@ -109,6 +109,16 @@ object KitManager {
             kit.delay != 0
         ) markAsTaken(receiver, kit.name)
     }
+
+    private fun checkIllegalItem(item: String) =
+        ForgeRegistries.ITEMS.getValue(
+            ResourceLocation.read(StringReader(item))
+        )?.item
+
+    private fun checkIllegalEnchantment(enchantment: String) =
+        ForgeRegistries.ENCHANTMENTS.getValue(
+            ResourceLocation.read(StringReader(enchantment))
+        )
 
     private fun checkIllegalItemCount(count: Int) = when {
         count < 1 -> 1
