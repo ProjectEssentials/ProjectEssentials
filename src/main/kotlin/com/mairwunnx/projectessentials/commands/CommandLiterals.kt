@@ -188,6 +188,13 @@ val tpaHereLiteral: LiteralArgumentBuilder<CommandSource> =
         ).executes { TpaHereCommand.process(it) }
     )
 
+val tpHereLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("tp-here").then(
+        Commands.argument(
+            "target", EntityArgument.player()
+        ).executes { TpHereCommand.process(it) }
+    )
+
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
 val suicideLiteral: LiteralArgumentBuilder<CommandSource> = literal("suicide")
