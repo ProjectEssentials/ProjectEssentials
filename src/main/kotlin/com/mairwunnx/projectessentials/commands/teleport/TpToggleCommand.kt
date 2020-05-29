@@ -1,69 +1,37 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpToggleLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import org.apache.logging.log4j.LogManager
 
-object TpToggleCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpToggle
+object TpToggleCommand : CommandBase(tpToggleLiteral) {
+    override val name = "tp-toggle"
 
-    init {
-        command = "tptoggle"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpToggle
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes { execute(it) }
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tptoggle")) {
-                if (senderName in teleportPresenter.ignoredPlayers) {
-                    teleportPresenter.ignoredPlayers.remove(senderName)
-                    sendMsg(sender, "tptoggle.removed_successfully")
-                    logger.info("Player $senderName removed from teleport ignore list")
-                } else {
-                    logger.info("player $senderName added to teleport ignore list")
-                    teleportPresenter.ignoredPlayers.add(senderName)
-                    sendMsg(sender, "tptoggle.added_successfully")
-                }
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tptoggle", 3) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tptoggle.restricted")
-                return 0
+                if (context.getPlayer()!!.name.string in TeleportManager.requestSuppressPlayers) {
+                    TeleportManager.requestSuppressPlayers.remove(context.getPlayer()!!.name.string)
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tptoggle.off"
+                    )
+                } else {
+                    TeleportManager.requestSuppressPlayers.add(context.getPlayer()!!.name.string)
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tptoggle.on"
+                    )
+                }
+                super.process(context)
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
     }
 }
