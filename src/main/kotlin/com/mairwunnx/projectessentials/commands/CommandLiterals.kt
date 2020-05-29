@@ -180,6 +180,6 @@ val platformStatusLiteral: LiteralArgumentBuilder<CommandSource> = literal("plat
 val breakLiteral: LiteralArgumentBuilder<CommandSource> = literal("break")
 val jumpLiteral: LiteralArgumentBuilder<CommandSource> = literal("jump")
 val topLiteral: LiteralArgumentBuilder<CommandSource> = literal("top")
-val tpaAllLiteral: LiteralArgumentBuilder<CommandSource> = literal("tpaall")
+val tpaAllLiteral: LiteralArgumentBuilder<CommandSource> = literal("tpa-all")
 val tpaCancelLiteral: LiteralArgumentBuilder<CommandSource> = literal("tpacancel")
 val tpaAcceptLiteral: LiteralArgumentBuilder<CommandSource> = literal("tpaaccept")
