@@ -39,7 +39,7 @@ object JumpCommand : CommandBase(jumpLiteral) {
                     }
                 }
                 if (locFound) {
-                    MessagingAPI.sendMessage(player, "Wooh!")
+                    MessagingAPI.sendMessage(player, "§6Wooh!", false)
                 } else {
                     MessagingAPI.sendMessage(player, "${MESSAGE_MODULE_PREFIX}basic.jump.error")
                 }
