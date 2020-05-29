@@ -166,7 +166,7 @@ val tpPosLiteral: LiteralArgumentBuilder<CommandSource> =
     )
 
 val tpAllLiteral: LiteralArgumentBuilder<CommandSource> =
-    literal<CommandSource>("tpall").then(
+    literal<CommandSource>("tp-all").then(
         Commands.argument(
             "target", EntityArgument.player()
         ).executes { TpAllCommand.process(it) }

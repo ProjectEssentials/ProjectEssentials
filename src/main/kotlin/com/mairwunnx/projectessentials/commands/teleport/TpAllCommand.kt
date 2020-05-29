@@ -13,8 +13,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 
 object TpAllCommand : CommandBase(tpAllLiteral, false) {
-    override val name = "tpall"
-    override val aliases = listOf("tp-all")
+    override val name = "tp-all"
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tpall", 4) { isServer ->
