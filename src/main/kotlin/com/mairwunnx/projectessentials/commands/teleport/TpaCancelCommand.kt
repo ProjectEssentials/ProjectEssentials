@@ -14,6 +14,7 @@ import net.minecraft.command.CommandSource
 
 object TpaCancelCommand : CommandBase(tpaCancelLiteral) {
     override val name = "tpa-cancel"
+    override val aliases = listOf("call-cancel")
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tpacancel", 0) { isServer ->
