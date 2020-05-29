@@ -2,6 +2,7 @@ package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
+import com.mairwunnx.projectessentials.commands.teleport.TpaCommand
 import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
 import com.mairwunnx.projectessentials.managers.KitManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
@@ -170,6 +171,13 @@ val tpAllLiteral: LiteralArgumentBuilder<CommandSource> =
         Commands.argument(
             "target", EntityArgument.player()
         ).executes { TpAllCommand.process(it) }
+    )
+
+val tpaLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("tpa").then(
+        Commands.argument(
+            "target", EntityArgument.player()
+        ).executes { TpaCommand.process(it) }
     )
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
