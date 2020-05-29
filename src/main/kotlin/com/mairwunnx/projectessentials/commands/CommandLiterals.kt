@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
 import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
 import com.mairwunnx.projectessentials.managers.KitManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
@@ -8,6 +9,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
+import net.minecraft.command.arguments.BlockPosArgument
 import net.minecraft.command.arguments.EntityArgument
 
 val afkLiteral: LiteralArgumentBuilder<CommandSource> =
@@ -154,6 +156,13 @@ val extLiteral: LiteralArgumentBuilder<CommandSource> =
             "targets", EntityArgument.players()
         ).executes { ExtCommand.extOther(it) }
     ).executes { ExtCommand.extSelf(it) }
+
+val tpPosLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("tppos").then(
+        Commands.argument(
+            "position", BlockPosArgument.blockPos()
+        ).executes { TpPosCommand.process(it) }
+    )
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
