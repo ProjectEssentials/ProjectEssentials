@@ -40,5 +40,6 @@ internal val providers = listOf(
     TpaAllCommand::class.java,
     TpaCancelCommand::class.java,
     TpAcceptCommand::class.java,
-    TpaCommand::class.java
+    TpaCommand::class.java,
+    TpaHereCommand::class.java
 )
