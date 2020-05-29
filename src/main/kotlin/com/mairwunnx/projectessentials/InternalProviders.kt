@@ -31,5 +31,6 @@ internal val providers = listOf(
     VanishCommand::class.java,
     PlatformStatusCommand::class.java,
     BreakCommand::class.java,
-    JumpCommand::class.java
+    JumpCommand::class.java,
+    ExtCommand::class.java
 )
