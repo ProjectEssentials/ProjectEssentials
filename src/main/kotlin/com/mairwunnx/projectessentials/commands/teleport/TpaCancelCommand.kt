@@ -1,67 +1,36 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpaCancelLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.managers.TeleportRemoveRequestResponse
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import org.apache.logging.log4j.LogManager
 
-object TpaCancelCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpaCancel
+object TpaCancelCommand : CommandBase(tpaCancelLiteral) {
+    override val name = "tpacancel"
 
-    init {
-        command = "tpacancel"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpaCancel
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes { execute(it) }
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpacancel")) {
-                val result = ProjectEssentials.teleportPresenter.removeAllRequests(senderName)
-
-                if (result) {
-                    sendMsg(sender, "tpacancel.requests_cancel_successfully")
-                } else {
-                    sendMsg(sender, "tpacancel.nothing_to_cancel")
-                }
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpacancel", 0) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tpacancel.restricted")
-                return 0
+                val result = TeleportManager.removeLastRequest(context.getPlayer()!!.name.string)
+                if (result == TeleportRemoveRequestResponse.NothingToRemove) {
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacencel.error"
+                    )
+                    return@validateAndExecute
+                }
+                MessagingAPI.sendMessage(
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacencel.success"
+                ).also { super.process(context) }
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
     }
 }
