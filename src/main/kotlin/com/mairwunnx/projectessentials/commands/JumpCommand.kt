@@ -41,7 +41,7 @@ object JumpCommand : CommandBase(jumpLiteral) {
                 if (locFound) {
                     MessagingAPI.sendMessage(player, "Wooh!")
                 } else {
-                    MessagingAPI.sendMessage(player, "${MESSAGE_MODULE_PREFIX}basic.jump.success")
+                    MessagingAPI.sendMessage(player, "${MESSAGE_MODULE_PREFIX}basic.jump.error")
                 }
                 super.process(context)
             }

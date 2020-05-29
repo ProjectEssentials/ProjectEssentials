@@ -71,6 +71,7 @@
   "project_essentials_basic.vanish.other_multiple.success": "§6Вы §7применили §6невидимость для выбранных §7(%s)§6 игроков.",
   "project_essentials_basic.vanish.by.enabled": "§6Игрок §7%s §2включил §6Вам невидимость.",
   "project_essentials_basic.vanish.by.disabled": "§6Игрок §7%s §4выключил §6Вам невидимость.",
+  "project_essentials_basic.jump.error": "§cВыбранная локация очень далеко.",
   "death.attack.suicide": "§cУбит по собственному желанию.",
   "project_essentials.top.success": "§6Вы §7были телепортированы наверх§6.",
   "project_essentials.tppos.success": "§6Телепортация к выбранной позиции...",
