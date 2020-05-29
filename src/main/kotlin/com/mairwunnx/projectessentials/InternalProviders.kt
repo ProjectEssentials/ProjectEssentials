@@ -1,6 +1,7 @@
 package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.*
+import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.configurations.KitsConfiguration
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 
@@ -32,5 +33,6 @@ internal val providers = listOf(
     PlatformStatusCommand::class.java,
     BreakCommand::class.java,
     JumpCommand::class.java,
-    ExtCommand::class.java
+    ExtCommand::class.java,
+    TopCommand::class.java
 )
