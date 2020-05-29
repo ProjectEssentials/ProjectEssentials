@@ -114,7 +114,7 @@ object KitCommand : CommandBase(kitLiteral, false) {
                 it.name == targetName || it.uuid == target.uniqueID.toString()
             }?.let { user ->
                 user.lastKitsDates.map { value ->
-                    value.partition { it == ':' }
+                    value.split(':')[0] to value.split(':')[1]
                 }.find { it.first == kit }?.let { expiredKit ->
                     user.lastKitsDates.removeAll { expiredKit.first in it }.also {
                         if (it) {
