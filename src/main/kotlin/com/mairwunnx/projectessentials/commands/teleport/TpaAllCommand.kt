@@ -14,6 +14,7 @@ import net.minecraft.command.CommandSource
 
 object TpaAllCommand : CommandBase(tpaAllLiteral) {
     override val name = "tpa-all"
+    override val aliases = listOf("call-all")
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tpaall", 2) { isServer ->
