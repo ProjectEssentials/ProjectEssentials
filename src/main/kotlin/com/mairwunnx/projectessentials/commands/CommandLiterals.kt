@@ -1,5 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
+import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
 import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
 import com.mairwunnx.projectessentials.managers.KitManager
@@ -162,6 +163,13 @@ val tpPosLiteral: LiteralArgumentBuilder<CommandSource> =
         Commands.argument(
             "position", BlockPosArgument.blockPos()
         ).executes { TpPosCommand.process(it) }
+    )
+
+val tpAllLiteral: LiteralArgumentBuilder<CommandSource> =
+    literal<CommandSource>("tpall").then(
+        Commands.argument(
+            "target", EntityArgument.player()
+        ).executes { TpAllCommand.process(it) }
     )
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
