@@ -48,8 +48,9 @@ object KitManager {
             userDataConfiguration.take().users.find {
                 it.name == playerEntity.name.string || it.uuid == playerEntity.uniqueID.toString()
             }?.let { user ->
-                val lastGiven = user.lastKitsDates.map { value -> value.partition { it == ':' } }
-                lastGiven.find { it.first == name }?.let {
+                user.lastKitsDates.map { value ->
+                    value.split(':')[0] to value.split(':')[1]
+                }.find { it.first == name }?.let {
                     val lastTime = ZonedDateTime.parse(it.second)
                     val nowTime = ZonedDateTime.now()
                     val duration = Duration.between(lastTime, nowTime)
@@ -126,8 +127,9 @@ object KitManager {
         userDataConfiguration.take().users.find {
             it.name == receiver.name.string || it.uuid == receiver.uniqueID.toString()
         }?.let { user ->
-            val lastGiven = user.lastKitsDates.map { value -> value.partition { it == ':' } }
-            lastGiven.find { it.first == kitName }?.let { expiredKit ->
+            user.lastKitsDates.map { value ->
+                value.split(':')[0] to value.split(':')[1]
+            }.find { it.first == kitName }?.let { expiredKit ->
                 user.lastKitsDates.removeAll { expiredKit.first in it }
             }
             user.lastKitsDates.add("$kitName:${ZonedDateTime.now()}")
