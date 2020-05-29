@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.commands.tpaallLiteral
+import com.mairwunnx.projectessentials.commands.tpaAllLiteral
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
@@ -12,7 +12,7 @@ import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 
-object TpaAllCommand : CommandBase(tpaallLiteral) {
+object TpaAllCommand : CommandBase(tpaAllLiteral) {
     override val name = "tpaall"
     override val aliases = listOf("tpa-all")
 
