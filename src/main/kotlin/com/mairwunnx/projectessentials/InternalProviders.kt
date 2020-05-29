@@ -29,5 +29,6 @@ internal val providers = listOf(
     GlowCommand::class.java,
     SkullCommand::class.java,
     VanishCommand::class.java,
-    PlatformStatusCommand::class.java
+    PlatformStatusCommand::class.java,
+    BreakCommand::class.java
 )
