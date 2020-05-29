@@ -4,6 +4,7 @@ import com.mairwunnx.projectessentials.commands.*
 import com.mairwunnx.projectessentials.commands.teleport.TopCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpAllCommand
 import com.mairwunnx.projectessentials.commands.teleport.TpPosCommand
+import com.mairwunnx.projectessentials.commands.teleport.TpaAllCommand
 import com.mairwunnx.projectessentials.configurations.KitsConfiguration
 import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 
@@ -38,5 +39,6 @@ internal val providers = listOf(
     ExtCommand::class.java,
     TopCommand::class.java,
     TpPosCommand::class.java,
-    TpAllCommand::class.java
+    TpAllCommand::class.java,
+    TpaAllCommand::class.java
 )
