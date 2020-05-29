@@ -1,66 +1,34 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpaallLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.managers.TeleportRequestType
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import org.apache.logging.log4j.LogManager
 
-object TpaAllCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpaAll
+object TpaAllCommand : CommandBase(tpaallLiteral) {
+    override val name = "tpaall"
+    override val aliases = listOf("tpa-all")
 
-    init {
-        command = "tpaall"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpaAll
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes {
-                    return@executes execute(it)
-                }
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpaall")) {
-                teleportPresenter.makeRequestToAll(
-                    senderName,
-                    senderPlayer.server.playerList.players
-                )
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpaall", 2) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tpaall.restricted")
-                return 0
+                TeleportManager.makeRequestToAll(
+                    TeleportRequestType.To, context.getPlayer()!!.name.string
+                ).also {
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaall.success"
+                    ).also { super.process(context) }
+                }
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
     }
 }
