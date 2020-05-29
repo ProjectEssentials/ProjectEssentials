@@ -31,7 +31,7 @@ object JumpCommand : CommandBase(jumpLiteral) {
                     if (player.world.getBlockState(blockPos).material != Material.AIR) {
                         player.teleport(
                             player.serverWorld,
-                            blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(),
+                            blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble(),
                             player.rotationYaw,
                             player.rotationPitch
                         ).also { locFound = true }
