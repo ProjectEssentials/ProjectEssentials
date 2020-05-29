@@ -1,6 +1,6 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.commands.tpaAcceptLiteral
+import com.mairwunnx.projectessentials.commands.tpAcceptLiteral
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
@@ -13,8 +13,8 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.entity.player.ServerPlayerEntity
 
-object TpAcceptCommand : CommandBase(tpaAcceptLiteral) {
-    override val name = "tpaccept"
+object TpAcceptCommand : CommandBase(tpAcceptLiteral) {
+    override val name = "tp-accept"
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tpaccept", 0) { isServer ->
