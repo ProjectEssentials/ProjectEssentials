@@ -7,6 +7,7 @@ import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
 import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.managers.TeleportRequestAllResponse
 import com.mairwunnx.projectessentials.managers.TeleportRequestType
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
@@ -24,9 +25,15 @@ object TpaAllCommand : CommandBase(tpaAllLiteral) {
                 TeleportManager.makeRequestToAll(
                     TeleportRequestType.To, context.getPlayer()!!.name.string
                 ).also {
-                    MessagingAPI.sendMessage(
-                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaall.success"
-                    ).also { super.process(context) }
+                    if (it == TeleportRequestAllResponse.Success) {
+                        MessagingAPI.sendMessage(
+                            context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaall.success"
+                        ).also { super.process(context) }
+                    } else {
+                        MessagingAPI.sendMessage(
+                            context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaall.error"
+                        )
+                    }
                 }
             }
         }
