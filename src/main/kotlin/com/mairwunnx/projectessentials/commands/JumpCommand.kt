@@ -3,12 +3,14 @@ package com.mairwunnx.projectessentials.commands
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.extensions.playSound
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.block.material.Material
 import net.minecraft.command.CommandSource
+import net.minecraft.util.SoundEvents
 import net.minecraft.util.math.BlockPos
 
 object JumpCommand : CommandBase(jumpLiteral) {
@@ -39,6 +41,7 @@ object JumpCommand : CommandBase(jumpLiteral) {
                     }
                 }
                 if (locFound) {
+                    player.playSound(player, SoundEvents.ENTITY_SLIME_JUMP)
                     MessagingAPI.sendMessage(player, "§6Wooh!", false)
                 } else {
                     MessagingAPI.sendMessage(player, "${MESSAGE_MODULE_PREFIX}basic.jump.error")
