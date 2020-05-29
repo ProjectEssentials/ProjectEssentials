@@ -12,7 +12,6 @@ import com.mairwunnx.projectessentials.managers.TeleportRemoveRequestResponse.Su
 import com.mairwunnx.projectessentials.managers.TeleportRequestResponse.*
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.fml.server.ServerLifecycleHooks.getCurrentServer
-import org.apache.logging.log4j.LogManager
 import java.time.Duration
 import java.time.ZonedDateTime
 
@@ -59,7 +58,6 @@ data class TeleportRequestFrom(
 ) : ITeleportRequestType
 
 object TeleportManager {
-    private val logger = LogManager.getLogger()
     private val requests = mutableListOf<ITeleportRequestType>()
     private val generalConfiguration by lazy {
         getConfigurationByName<GeneralConfiguration>("general")
