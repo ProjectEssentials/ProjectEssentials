@@ -13,8 +13,7 @@ import net.minecraft.command.CommandSource
 import net.minecraft.command.arguments.BlockPosArgument
 
 object TpPosCommand : CommandBase(tpPosLiteral, false) {
-    override val name = "tppos"
-    override val aliases = listOf("tp-pos")
+    override val name = "tp-pos"
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tppos", 2) { isServer ->

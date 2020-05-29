@@ -159,7 +159,7 @@ val extLiteral: LiteralArgumentBuilder<CommandSource> =
     ).executes { ExtCommand.extSelf(it) }
 
 val tpPosLiteral: LiteralArgumentBuilder<CommandSource> =
-    literal<CommandSource>("tppos").then(
+    literal<CommandSource>("tp-pos").then(
         Commands.argument(
             "position", BlockPosArgument.blockPos()
         ).executes { TpPosCommand.process(it) }
