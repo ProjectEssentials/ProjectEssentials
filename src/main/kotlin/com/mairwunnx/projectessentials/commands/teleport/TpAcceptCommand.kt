@@ -15,6 +15,7 @@ import net.minecraft.entity.player.ServerPlayerEntity
 
 object TpAcceptCommand : CommandBase(tpAcceptLiteral) {
     override val name = "tp-accept"
+    override val aliases = listOf("tp-yes")
 
     override fun process(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.teleport.tpaccept", 0) { isServer ->
