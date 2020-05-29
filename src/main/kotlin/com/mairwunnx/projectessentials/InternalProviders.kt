@@ -28,5 +28,6 @@ internal val providers = listOf(
     WorkbenchCommand::class.java,
     GlowCommand::class.java,
     SkullCommand::class.java,
-    VanishCommand::class.java
+    VanishCommand::class.java,
+    PlatformStatusCommand::class.java
 )
