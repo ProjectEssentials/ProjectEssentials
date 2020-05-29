@@ -152,8 +152,8 @@ val extLiteral: LiteralArgumentBuilder<CommandSource> =
     literal<CommandSource>("ext").then(
         Commands.argument(
             "targets", EntityArgument.players()
-        ).executes { VanishCommand.vanishOther(it) }
-    ).executes { VanishCommand.vanishSelf(it) }
+        ).executes { ExtCommand.extOther(it) }
+    ).executes { ExtCommand.extSelf(it) }
 
 val moreLiteral: LiteralArgumentBuilder<CommandSource> = literal("more")
 val pingLiteral: LiteralArgumentBuilder<CommandSource> = literal("ping")
