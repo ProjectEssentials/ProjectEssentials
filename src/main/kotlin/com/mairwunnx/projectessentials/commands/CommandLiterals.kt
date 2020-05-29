@@ -162,3 +162,4 @@ val workbenchLiteral: LiteralArgumentBuilder<CommandSource> = literal("workbench
 val platformStatusLiteral: LiteralArgumentBuilder<CommandSource> = literal("platform-status")
 val breakLiteral: LiteralArgumentBuilder<CommandSource> = literal("break")
 val jumpLiteral: LiteralArgumentBuilder<CommandSource> = literal("jump")
+val topLiteral: LiteralArgumentBuilder<CommandSource> = literal("top")
