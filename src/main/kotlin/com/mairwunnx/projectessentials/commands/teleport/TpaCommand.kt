@@ -1,77 +1,48 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpaLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.managers.TeleportRequestResponse.*
+import com.mairwunnx.projectessentials.managers.TeleportRequestType
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
-import org.apache.logging.log4j.LogManager
 
-object TpaCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpa
+object TpaCommand : CommandBase(tpaLiteral, false) {
+    override val name = "tpa"
+    override val aliases = listOf("call")
 
-    init {
-        command = "tpa"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpa
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument("player", EntityArgument.player()).executes {
-                        return@executes execute(it, true)
-                    }
-                )
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpa", 0) { isServer ->
+            fun out(result: String) = MessagingAPI.sendMessage(
+                context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpa.$result"
             )
-        }
-    }
 
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpa")) {
-                if (teleportPresenter.commitRequest(
-                        senderPlayer.name.string,
-                        targetPlayer.name.string
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
+            } else {
+                with(
+                    TeleportManager.makeRequest(
+                        TeleportRequestType.To,
+                        context.getPlayer()!!.name.string,
+                        CommandAPI.getPlayer(context, "target").name.string
                     )
                 ) {
-                    sendMsg(sender, "tpa.success", targetName)
-                    sendMsg(target, "tpa.recipient_success", senderName)
-                } else {
-                    sendMsg(sender, "tpa.request_exist", targetName)
-                    sendMsg(target, "tpa.tried_to_teleport", senderName)
+                    when (this) {
+                        RequestToSuccess -> out("success")
+                        RequestedIsIgnored -> out("requested_ignored")
+                        SuchRequestExist -> out("request_exist")
+                        RequestFromSuccess -> IllegalStateException()
+                    }
                 }
-            } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tpa.restricted")
-                return 0
+                super.process(context)
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
     }
 }
