@@ -26,11 +26,11 @@ fun isAliasesOfBlockedCommand(command: String): Boolean {
     return false
 }
 
-fun validateAndExecute(
+inline fun validateAndExecute(
     context: CommandContext<CommandSource>,
     node: String,
     opLevel: Int,
-    action: (isServer: Boolean) -> Unit
+    crossinline action: (isServer: Boolean) -> Unit
 ) = context.getPlayer()?.let {
     if (hasPermission(it, node, opLevel)) {
         action(false)
