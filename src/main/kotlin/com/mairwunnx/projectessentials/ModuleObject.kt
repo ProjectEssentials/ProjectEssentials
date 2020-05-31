@@ -38,7 +38,7 @@ import java.time.ZonedDateTime
 
 @Mod("project_essentials_basic")
 class ModuleObject : IModule {
-    override val name = this::class.java.`package`.implementationTitle.split("\\s+").last()
+    override val name = this::class.java.`package`.implementationTitle.split(" ").last()
     override val version = this::class.java.`package`.implementationVersion!!
     override val loadIndex = 2
 
