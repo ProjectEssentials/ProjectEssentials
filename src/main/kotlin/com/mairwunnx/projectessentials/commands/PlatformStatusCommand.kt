@@ -67,7 +67,7 @@ object PlatformStatusCommand : CommandBase(platformStatusLiteral) {
                         val tileEntities = formatNumber(it.loadedTileEntityList.count())
                         val entities = formatNumber(it.entities.count())
                         append(
-                            "    §6> (§7${it.dimension.type.registryName}§6/§7${it.dimension.type.id}§6): §7$loadedChunks §cchunks, §7$tileEntities §ctiles, §7$entities §centities\n"
+                            "    §7> §6(§7${it.dimension.type.registryName}§6/§7${it.dimension.type.id}§6): §7$loadedChunks §cchunks, §7$tileEntities §ctiles, §7$entities §centities\n"
                         )
                     }
                 }.toString()
