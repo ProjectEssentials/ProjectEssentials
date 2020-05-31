@@ -14,7 +14,6 @@ import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfigura
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.util.text.TextComponentUtils
 import net.minecraft.util.text.TranslationTextComponent
-import org.apache.logging.log4j.LogManager
 import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -23,8 +22,6 @@ import kotlin.time.toDuration
  * !Experimental, issues can be present in production.
  */
 object AfkManager {
-    private val logger = LogManager.getLogger()
-
     private val generalConfiguration by lazy {
         getConfigurationByName<GeneralConfiguration>("general")
     }
@@ -42,9 +39,7 @@ object AfkManager {
                     player,
                     "${MESSAGE_MODULE_PREFIX}basic.afk.disabled",
                     args = *arrayOf(player.name.string)
-                ).also {
-                    logger.debug("Player ${player.name.string} afk state changed to $value")
-                }
+                )
             }
         } else {
             if (player !in afkPlayers) {
@@ -55,9 +50,7 @@ object AfkManager {
                     player,
                     "${MESSAGE_MODULE_PREFIX}basic.afk.enabled",
                     args = *arrayOf(player.name.string)
-                ).also {
-                    logger.debug("Player ${player.name.string} afk state changed to $value")
-                }
+                )
             }
         }
     }
@@ -67,7 +60,7 @@ object AfkManager {
         if (generalConfiguration.getBool(SETTING_AFK_HANDLE_ACTIVITY)) {
             val lastActiveMs = player.lastActiveTime
             val nowMs = System.nanoTime() / 1000000L
-            val diff = (nowMs - lastActiveMs).toDuration(TimeUnit.SECONDS).inSeconds
+            val diff = (nowMs - lastActiveMs).toDuration(TimeUnit.MILLISECONDS).inSeconds
             switch(player, diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_TIME))
             if (diff >= generalConfiguration.getInt(SETTING_AFK_IDLENESS_KICK_TIME)) {
                 if (!hasPermission(player, "ess.afk.kick.bypass", 3)) {
