@@ -25,7 +25,6 @@ import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfigura
 import com.mairwunnx.projectessentials.managers.AfkManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
-import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.TickEvent
@@ -122,7 +121,6 @@ class ModuleObject : IModule {
         withServerPlayer(event.player) {
             processPlayerAbilities(it)
             executeFirstLoginCommands(it)
-            processPlayerTabNick(it)
         }
     }
 
@@ -138,22 +136,12 @@ class ModuleObject : IModule {
         }
     }
 
-    private fun processPlayerTabNick(player: ServerPlayerEntity) {
-        // todo: remove this
-        if (
-            hasPermission(player, "*", 4) ||
-            player.name.string in player.server.playerList.oppedPlayerNames
-        ) {
-            player.customName = player.name.applyTextStyle { it.color = TextFormatting.DARK_RED }
-        }
-    }
-
     internal fun savePlayerData(player: ServerPlayerEntity) {
         val uuid = player.uniqueID.toString()
         val name = player.name.string
         userDataConfiguration.take().users.find {
             it.uuid == uuid || it.name == name
-        }?.let {
+        }?.also {
             it.isInvisible = player.isInvisible
             it.lastDateTime = ZonedDateTime.now().toString()
             it.lastWorldName = player.serverWorld.directoryName
