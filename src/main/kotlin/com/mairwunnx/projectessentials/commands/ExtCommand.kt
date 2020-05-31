@@ -26,7 +26,7 @@ object ExtCommand : CommandBase(extLiteral, false) {
                     this.extinguish()
                     this.playSound(this, BLOCK_SMOKER_SMOKE)
                     MessagingAPI.sendMessage(
-                        this, "${MESSAGE_MODULE_PREFIX}basic.vanish.ext.success"
+                        this, "${MESSAGE_MODULE_PREFIX}basic.ext.self.success"
                     )
                 }.also { process(context) }
             }
