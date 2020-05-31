@@ -10,7 +10,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.util.Hand
 
-object RepairCommand : CommandBase(repairLiteral) {
+object RepairCommand : CommandBase(repairLiteral, false) {
     override val name = "repair"
     override val aliases = listOf("fix")
 
