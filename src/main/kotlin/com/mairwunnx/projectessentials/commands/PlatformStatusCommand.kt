@@ -24,12 +24,12 @@ object PlatformStatusCommand : CommandBase(platformStatusLiteral) {
         validateAndExecute(context, "ess.platformstatus", 0) { isServer ->
             val message = StringBuilder(String.empty)
 
+            message.append("§6Uptime: ")
             DurationFormatUtils.formatDuration(
                 context.source.server.serverTime, "d:H:m:s"
             ).split(':').asSequence().forEachIndexed { index, value ->
-                message.appendln(
+                message.append(
                     StringBuilder(String.empty).apply {
-                        append("§6Uptime: ")
                         when (index) {
                             0 -> if (value != "0") append("§7$value §cdays ")
                             1 -> if (value != "0" || contains("days")) append("§7$value §chours ")
@@ -38,35 +38,36 @@ object PlatformStatusCommand : CommandBase(platformStatusLiteral) {
                         }
                     }.toString()
                 )
-            }
+            }.also { message.append("\n") }
 
             val tickTime = mean(context.source.server.tickTimeArray) * 1.0E-6
             val tps = min(1000.0 / tickTime, 20.0)
             val tpsFormatted = timeFormatter.format(tps)
             message.append("§6Current TPS: ")
             when {
-                tps >= 18.0 -> message.appendln("§a$tpsFormatted")
-                tps >= 15.0 -> message.appendln("§e$tpsFormatted")
-                tps >= 14.0 -> message.appendln("§6$tpsFormatted")
-                else -> message.appendln("§c$tpsFormatted")
+                tps >= 18.0 -> message.append("§a$tpsFormatted\n")
+                tps >= 15.0 -> message.append("§e$tpsFormatted\n")
+                tps >= 14.0 -> message.append("§6$tpsFormatted\n")
+                else -> message.append("§c$tpsFormatted\n")
             }
 
             fun formatNumber(num: Number) = NumberFormat.getInstance().format(num)
             val maxMemory = formatNumber(getRuntime().maxMemory() / 1024 / 1024)
             val allocatedMemory = formatNumber(getRuntime().totalMemory() / 1024 / 1024)
             val freeMemory = formatNumber(getRuntime().freeMemory() / 1024 / 1024)
-            message.appendln("§6Maximum memory: §7$maxMemory §cMB")
-            message.appendln("§6Allocated memory: §7$allocatedMemory §cMB")
-            message.appendln("§6Free memory: §7$freeMemory §cMB")
+            message.append("§6Maximum memory: §7$maxMemory §cMB\n")
+            message.append("§6Allocated memory: §7$allocatedMemory §cMB\n")
+            message.append("§6Free memory: §7$freeMemory §cMB\n")
 
             message.append(
                 StringBuilder(String.empty).apply {
+                    append("§6Loaded worlds:\n")
                     context.source.server.worlds.asSequence().forEach {
                         val loadedChunks = formatNumber(it.chunkProvider.loadedChunkCount)
                         val tileEntities = formatNumber(it.loadedTileEntityList.count())
                         val entities = formatNumber(it.entities.count())
-                        appendln(
-                            "§6World (§7${it.dimension.type.registryName}§6/§7${it.dimension.type.id}§6): §7$loadedChunks §cchunks, §7$tileEntities §ctiles, §7$entities §centities"
+                        append(
+                            "    §6> (§7${it.dimension.type.registryName}§6/§7${it.dimension.type.id}§6): §7$loadedChunks §cchunks, §7$tileEntities §ctiles, §7$entities §centities\n"
                         )
                     }
                 }.toString()
