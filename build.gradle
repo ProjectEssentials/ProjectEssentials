@@ -41,7 +41,6 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:$forge_version"
-    implementation "com.mojang:brigadier:$brigadier_version"
     implementation "com.projectessentials.core:ProjectEssentials-Core:$core_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinx_serialization_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-$kotlin_jdk_version_target:$kotlin_version"
