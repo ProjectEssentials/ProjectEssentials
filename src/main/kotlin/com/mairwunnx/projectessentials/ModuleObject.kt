@@ -294,7 +294,7 @@ class ModuleObject : IModule {
         return godAbleWorlds
     }
 
-    private fun withServerPlayer(
+    private inline fun withServerPlayer(
         player: PlayerEntity?, spe: (ServerPlayerEntity) -> Unit
     ) {
         if (player is ServerPlayerEntity) spe(player)
