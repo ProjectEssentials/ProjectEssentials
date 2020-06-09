@@ -62,11 +62,11 @@ object KitCommand : CommandBase(kitLiteral, false) {
                 val sender = context.getPlayer()!!
                 val target = CommandAPI.getPlayer(context, "target")
 
-                fun out(result: String) {
+                fun out(result: String, vararg args: String) {
                     MessagingAPI.sendMessage(
                         sender,
                         "${MESSAGE_MODULE_PREFIX}basic.kit.other.$result",
-                        args = *arrayOf(kit)
+                        args = *args
                     ).also {
                         if (result == "success") {
                             MessagingAPI.sendMessage(
@@ -79,10 +79,10 @@ object KitCommand : CommandBase(kitLiteral, false) {
                 }
 
                 when (KitManager.requestKit(sender, target, kit)) {
-                    Response.Success -> out("success")
-                    Response.KitNoHasPermissions -> out("no_permission")
-                    Response.KitNotFound -> out("not_found")
-                    Response.KitTimeNotExpired -> out("kit_not_expired")
+                    Response.Success -> out("success", kit, target.name.string)
+                    Response.KitNoHasPermissions -> out("no_permission", kit)
+                    Response.KitNotFound -> out("not_found", kit)
+                    Response.KitTimeNotExpired -> out("kit_not_expired", kit)
                 }
             }
         }
