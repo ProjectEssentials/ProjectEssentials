@@ -96,7 +96,7 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
 val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     literal<CommandSource>("kit").then(
         Commands.literal("get").then(
-            Commands.argument("kit-name", StringArgumentType.string()).suggests { ctx, builder ->
+            Commands.argument("kit-name", StringArgumentType.string()).suggests { _, builder ->
                 ISuggestionProvider.suggest(KitManager.getKits().map { it.name }.toList(), builder)
             }
         ).then(
