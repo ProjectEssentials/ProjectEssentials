@@ -4,20 +4,15 @@ import com.mairwunnx.projectessentials.SETTING_HELP_COMMAND_COLORIZED_OUT
 import com.mairwunnx.projectessentials.SETTING_REPLACE_NATIVE_HELP_COMMAND
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.generalConfiguration
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.CommandNode
 import net.minecraft.command.CommandSource
 
 object HelpCommand : CommandBase(helpLiteral) {
-    private val generalConfiguration by lazy {
-        getConfigurationByName<GeneralConfiguration>("general")
-    }
-
     override val name = "help"
     override val override by lazy {
         generalConfiguration.getBool(SETTING_REPLACE_NATIVE_HELP_COMMAND)
