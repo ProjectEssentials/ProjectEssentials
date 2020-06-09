@@ -3,118 +3,87 @@
 package com.mairwunnx.projectessentials.managers
 
 import com.mairwunnx.projectessentials.ModuleObject
-import com.mairwunnx.projectessentials.configurations.KitsConfiguration
-import com.mairwunnx.projectessentials.configurations.KitsConfigurationModel
-import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
+import com.mairwunnx.projectessentials.configurations.KitsConfigurationModel.Kit
+import com.mairwunnx.projectessentials.configurations.UserDataConfigurationModel
 import com.mairwunnx.projectessentials.core.api.v1.module.ModuleAPI
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
+import com.mairwunnx.projectessentials.kitsConfiguration
+import com.mairwunnx.projectessentials.userDataConfiguration
 import com.mojang.brigadier.StringReader
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.text.TextComponentUtils
-import net.minecraftforge.registries.ForgeRegistries
+import net.minecraftforge.registries.ForgeRegistries.ENCHANTMENTS
+import net.minecraftforge.registries.ForgeRegistries.ITEMS
 import java.time.Duration
 import java.time.ZonedDateTime
 
 object KitManager {
     enum class Response { KitNotFound, KitNoHasPermissions, KitTimeNotExpired, Success }
 
-    private val userDataConfiguration by lazy {
-        getConfigurationByName<UserDataConfiguration>("user-data")
-    }
-
-    private val kitsConfiguration by lazy {
-        getConfigurationByName<KitsConfiguration>("kits").take()
-    }
-
     fun getKits() = kitsConfiguration.kits.asSequence()
-
     fun getKit(name: String) = getKits().find { it.name == name }
-
     fun isKitExist(name: String) = getKits().filter { it.name == name }.count() > 0
+    fun getKitItems(kit: Kit) = kit.items.asSequence()
 
-    fun requestKit(playerEntity: ServerPlayerEntity, name: String): Response {
+    fun requestKit(
+        from: ServerPlayerEntity, to: ServerPlayerEntity, name: String
+    ): Response {
         if (!isKitExist(name)) return Response.KitNotFound
         val kit = getKit(name)!!
-
-        if (hasPermission(playerEntity, "ess.kit.receive.kit.$name", kit.requiredMinOpLevel)) {
-            userDataConfiguration.take().users.find {
-                it.name == playerEntity.name.string || it.uuid == playerEntity.uniqueID.toString()
+        if (hasPermission(from, permissionOf(name), kit.requiredMinOpLevel)) {
+            userDataConfiguration.users.find {
+                it.name == from.name.string || it.uuid == from.uniqueID.toString()
             }?.let { user ->
-                user.lastKitsDates.map { value ->
-                    value.split('@').let { it[0] to it[1] }
-                }.find { it.first == name }?.let {
-                    val lastTime = ZonedDateTime.parse(it.second)
-                    val nowTime = ZonedDateTime.now()
-                    val duration = Duration.between(lastTime, nowTime)
-                    if (kit.delay > duration.seconds) {
-                        if (
-                            hasPermission(
-                                playerEntity, "ess.kit.receive.kit.$name.cooldown.bypass", 4
-                            )
-                        ) return Response.Success.also { unpackKit(playerEntity, kit) }
-                        return Response.KitTimeNotExpired
-                    } else return Response.Success.also { unpackKit(playerEntity, kit) }
-                } ?: run { return Response.Success.also { unpackKit(playerEntity, kit) } }
-            } ?: run { return Response.Success.also { unpackKit(playerEntity, kit) } }
-        }
-        return Response.KitNoHasPermissions
+                if (isKitExpired(user, kit, from)) {
+                    unpackKit(from, to, kit).let { return Response.Success }
+                } else return Response.KitTimeNotExpired
+            } ?: run { return Response.Success.also { unpackKit(from, to, kit) } }
+        } else return Response.KitNoHasPermissions
     }
 
-    private fun unpackKit(receiver: ServerPlayerEntity, kit: KitsConfigurationModel.Kit) {
-        kit.items.forEach { kitItem ->
-            if (kitItem.name.isNotBlank()) {
-                checkIllegalItem(kitItem.name)?.also { item ->
-                    ItemStack(item, checkIllegalItemCount(kitItem.count)).apply {
-                        if (kitItem.displayName.isNotBlank()) {
-                            displayName = TextComponentUtils.toTextComponent {
-                                kitItem.displayName
-                                    .replace("&", "§")
-                                    .replace("%player", receiver.name.string)
-                                    .replace("%kit", kit.name)
-                            }
-                        }
-                        kitItem.enchantments.forEach {
-                            if (it.enchantment.isNotBlank()) {
-                                checkIllegalEnchantment(it.enchantment)?.also { ench ->
-                                    addEnchantment(ench, checkIllegalEnchantLevel(it.level))
-                                }
-                            }
-                        }
-                    }.also { receiver.addItemStackToInventory(it) }
+    private fun isKitExpired(
+        user: UserDataConfigurationModel.User, kit: Kit, target: ServerPlayerEntity
+    ) = user.lastKitsDates.map { value ->
+        value.split('@').let { it[0] to it[1] }
+    }.find { it.first == kit.name }?.let {
+        val duration = Duration.between(ZonedDateTime.parse(it.second), ZonedDateTime.now())
+        if (kit.delay > duration.seconds) {
+            return@let hasPermission(target, "ess.kit.bypass", 4)
+        } else return@let true
+    } ?: let { return@let true }
+
+    private fun unpackKit(
+        sender: ServerPlayerEntity, receiver: ServerPlayerEntity, kit: Kit
+    ) = getKitItems(kit).forEach { kitItem ->
+        nullIfIllegalItem(kitItem.name)?.also { item ->
+            ItemStack(item, fixItemCount(kitItem.count)).apply {
+                if (kitItem.displayName.isNotBlank()) {
+                    displayName = TextComponentUtils.toTextComponent {
+                        kitItem.displayName
+                            .replace("&", "§")
+                            .replace("%player", sender.name.string)
+                            .replace("%kit", kit.name)
+                    }
                 }
-            }
+                kitItem.enchantments.forEach {
+                    nullIfIllegalEnchantment(it.enchantment)?.also { ench ->
+                        addEnchantment(ench, fixEnchantLevel(it.level))
+                    }
+                }
+            }.also { receiver.addItemStackToInventory(it) }
         }
-        if (
-            !hasPermission(receiver, "ess.kit.receive.kit.${kit.name}.cooldown.bypass", 4) ||
-            kit.delay != 0
-        ) markAsTaken(receiver, kit.name)
+    }.also {
+        if (!hasPermission(sender, "ess.kit.bypass", 4) || kit.delay != 0) {
+            markAsTaken(sender, kit.name)
+        }
     }
 
-    private fun checkIllegalItem(item: String) =
-        ForgeRegistries.ITEMS.getValue(ResourceLocation.read(StringReader(item)))?.item
-
-    private fun checkIllegalEnchantment(enchantment: String) =
-        ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.read(StringReader(enchantment)))
-
-    private fun checkIllegalItemCount(count: Int) = when {
-        count < 1 -> 1
-        count > 64 -> 64
-        else -> count
-    }
-
-    private fun checkIllegalEnchantLevel(level: Int) = when {
-        level < 1 -> 1
-        level > 25 -> 25
-        else -> level
-    }
-
-    private fun markAsTaken(receiver: ServerPlayerEntity, kitName: String) {
-        (ModuleAPI.getModuleByName("basic") as ModuleObject).savePlayerData(receiver)
-        userDataConfiguration.take().users.find {
-            it.name == receiver.name.string || it.uuid == receiver.uniqueID.toString()
+    private fun markAsTaken(target: ServerPlayerEntity, kitName: String) {
+        (ModuleAPI.getModuleByName("basic") as ModuleObject).savePlayerData(target)
+        userDataConfiguration.users.find {
+            it.name == target.name.string || it.uuid == target.uniqueID.toString()
         }?.let { user ->
             user.lastKitsDates.map { value ->
                 value.split('@').let { it[0] to it[1] }
@@ -124,4 +93,11 @@ object KitManager {
             user.lastKitsDates.add("$kitName@${ZonedDateTime.now()}")
         }
     }
+
+    private fun permissionOf(kitName: String) = "ess.kit.receive.$kitName"
+    private fun nullIfIllegalItem(item: String) = ITEMS.getValue(resource(item))?.item
+    private fun nullIfIllegalEnchantment(value: String) = ENCHANTMENTS.getValue(resource(value))
+    private fun fixItemCount(count: Int) = if (count < 1) 1 else if (count > 64) 64 else count
+    private fun fixEnchantLevel(level: Int) = if (level < 1) 1 else level
+    private fun resource(value: String) = ResourceLocation.read(StringReader(value))
 }
