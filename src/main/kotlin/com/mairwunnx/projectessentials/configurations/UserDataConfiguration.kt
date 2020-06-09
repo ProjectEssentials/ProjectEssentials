@@ -54,9 +54,9 @@ Removed data: $it
     }
 
     override fun save() {
-        getCurrentServer().playerList.players.forEach(
-            (ModuleAPI.getModuleByName("basic") as ModuleObject)::savePlayerData
-        ).also { File(path).parentFile.mkdirs() }
+        (ModuleAPI.getModuleByName("basic") as ModuleObject).also {
+            getCurrentServer().playerList.players.forEach(it::savePlayerData)
+        }.also { File(path).parentFile.mkdirs() }
 
         logger.info("Saving configuration `${name}`")
         val raw = jsonInstance.stringify(

@@ -26,7 +26,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent
 import org.apache.logging.log4j.LogManager
 import java.time.ZonedDateTime
 
@@ -86,10 +85,6 @@ class ModuleObject : IModule {
     fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
         withServerPlayer(event.player) { AfkManager.handle(it) }
     }
-
-    @SubscribeEvent
-    fun onServerShutdown(event: FMLServerStoppingEvent) =
-        event.server.playerList.players.forEach(this::savePlayerData)
 
     @SubscribeEvent
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
