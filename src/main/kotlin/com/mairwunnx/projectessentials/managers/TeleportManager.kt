@@ -2,10 +2,9 @@ package com.mairwunnx.projectessentials.managers
 
 import com.mairwunnx.projectessentials.SETTING_TELEPORT_REQUEST_TIMEOUT
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import com.mairwunnx.projectessentials.findPlayer
+import com.mairwunnx.projectessentials.generalConfiguration
 import com.mairwunnx.projectessentials.managers.TeleportAcceptRequestResponse.*
 import com.mairwunnx.projectessentials.managers.TeleportRemoveRequestResponse.NothingToRemove
 import com.mairwunnx.projectessentials.managers.TeleportRemoveRequestResponse.Success
@@ -59,9 +58,6 @@ data class TeleportRequestFrom(
 
 object TeleportManager {
     private val requests = mutableListOf<ITeleportRequestType>()
-    private val generalConfiguration by lazy {
-        getConfigurationByName<GeneralConfiguration>("general")
-    }
 
     val requestSuppressPlayers = mutableListOf<String>()
 
