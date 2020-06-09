@@ -1,7 +1,11 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.commands.teleport.*
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.extensions.isPlayerSender
+import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.managers.KitManager
+import com.mairwunnx.projectessentials.managers.UserManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
@@ -96,8 +100,25 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
 val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     literal<CommandSource>("kit").then(
         Commands.literal("get").then(
-            Commands.argument("kit-name", StringArgumentType.string()).suggests { _, builder ->
-                ISuggestionProvider.suggest(KitManager.getKits().map { it.name }.toList(), builder)
+            Commands.argument("kit-name", StringArgumentType.string()).suggests { ctx, builder ->
+                if (ctx.isPlayerSender()) {
+                    val player = ctx.getPlayer()!!
+                    ISuggestionProvider.suggest(
+                        KitManager.getKits().filter {
+                            KitManager.isKitExpired(
+                                UserManager.getUserByNameOrUUID(
+                                    player.name.string, player.uniqueID.toString()
+                                ) ?: return@filter true, it, player
+                            ) && hasPermission(
+                                player, "ess.kit.receive.${it.name}", it.requiredMinOpLevel
+                            )
+                        }.map { it.name }.toList(), builder
+                    )
+                } else {
+                    ISuggestionProvider.suggest(
+                        KitManager.getKits().map { it.name }.toList(), builder
+                    )
+                }
             }
         ).then(
             Commands.argument("target", EntityArgument.player()).then(

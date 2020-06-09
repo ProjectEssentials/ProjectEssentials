@@ -43,7 +43,7 @@ object KitManager {
         } else return Response.KitNoHasPermissions
     }
 
-    private fun isKitExpired(
+    fun isKitExpired(
         user: UserDataConfigurationModel.User, kit: Kit, target: ServerPlayerEntity
     ) = user.lastKitsDates.map { value ->
         value.split('@').let { it[0] to it[1] }
