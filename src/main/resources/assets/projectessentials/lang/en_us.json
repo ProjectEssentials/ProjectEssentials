@@ -102,9 +102,5 @@
   "project_essentials_basic.tptoggle.on": "§6Teleport requests to you toggled on.",
   "project_essentials_basic.tptoggle.off": "§6Teleport requests to you toggled off.",
   "project_essentials_basic.tphere.success": "§6Teleporting player §7%s §6to you...",
-  "death.attack.suicide": "§cKilled of his own free will.",
-  "project_essentials.tpahere.success": "§6Teleport to you request sent to player §7%s§6.",
-  "project_essentials.tpahere.recipient_success": "§7%s§6 player has requested to teleport to him.\n§6For accepting request type §7/tpyes§6, for deny type §7/tpno",
-  "project_essentials.tpahere.request_exist": "§cRequest for teleport to you for §7%s §calready exist or player restricted teleports, cancel request (§7/tpacancel§c) or wait decide or timeout.",
-  "project_essentials.tpahere.tried_to_teleport": "§7Player §7§o%s §7tried to make teleport request to you for teleporting to him."
+  "death.attack.suicide": "§cKilled of his own free will."
 }
