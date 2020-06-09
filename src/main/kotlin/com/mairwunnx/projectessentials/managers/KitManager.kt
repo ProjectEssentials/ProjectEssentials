@@ -19,12 +19,7 @@ import java.time.Duration
 import java.time.ZonedDateTime
 
 object KitManager {
-    enum class Response {
-        KitNotFound,
-        KitNoHasPermissions,
-        KitTimeNotExpired,
-        Success
-    }
+    enum class Response { KitNotFound, KitNoHasPermissions, KitTimeNotExpired, Success }
 
     private val userDataConfiguration by lazy {
         getConfigurationByName<UserDataConfiguration>("user-data")
