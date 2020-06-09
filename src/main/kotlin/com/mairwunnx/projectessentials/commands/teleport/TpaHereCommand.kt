@@ -28,7 +28,7 @@ object TpaHereCommand : CommandBase(tpaHereLiteral, false) {
                 if (result == "success") {
                     MessagingAPI.sendMessage(
                         CommandAPI.getPlayer(context, "target"),
-                        "${MESSAGE_MODULE_PREFIX}basic.tpahere.by.$result",
+                        "${MESSAGE_MODULE_PREFIX}basic.tpahere.by",
                         args = *arrayOf(context.playerName())
                     )
                 }
