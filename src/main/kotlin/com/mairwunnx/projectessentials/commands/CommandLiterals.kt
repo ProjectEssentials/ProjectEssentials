@@ -1,7 +1,6 @@
 package com.mairwunnx.projectessentials.commands
 
 import com.mairwunnx.projectessentials.commands.teleport.*
-import com.mairwunnx.projectessentials.core.api.v1.commands.arguments.StringArrayArgument
 import com.mairwunnx.projectessentials.managers.KitManager
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
@@ -9,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
+import net.minecraft.command.ISuggestionProvider
 import net.minecraft.command.arguments.BlockPosArgument
 import net.minecraft.command.arguments.EntityArgument
 
@@ -96,16 +96,16 @@ val sendPosLiteral: LiteralArgumentBuilder<CommandSource> =
 val kitLiteral: LiteralArgumentBuilder<CommandSource> by lazy {
     literal<CommandSource>("kit").then(
         Commands.literal("get").then(
-            Commands.argument(
-                "kit-name", StringArrayArgument.with(KitManager.getKits().map { it.name })
-            ).then(
-                Commands.argument("target", EntityArgument.player()).then(
-                    Commands.literal("cooldown").then(Commands.literal("refresh")).executes {
-                        KitCommand.kitRefreshCooldown(it)
-                    }
-                ).executes { KitCommand.kitOtherGet(it) }
-            ).executes { KitCommand.kitGet(it) }
-        )
+            Commands.argument("kit-name", StringArgumentType.string()).suggests { ctx, builder ->
+                ISuggestionProvider.suggest(KitManager.getKits().map { it.name }.toList(), builder)
+            }
+        ).then(
+            Commands.argument("target", EntityArgument.player()).then(
+                Commands.literal("cooldown").then(Commands.literal("refresh")).executes {
+                    KitCommand.kitRefreshCooldown(it)
+                }
+            )
+        ).executes { KitCommand.kitGet(it) }
     ).then(
         Commands.literal("list").then(
             Commands.argument(
