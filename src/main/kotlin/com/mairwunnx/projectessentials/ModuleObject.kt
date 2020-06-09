@@ -4,25 +4,19 @@ package com.mairwunnx.projectessentials
 
 import com.mairwunnx.projectessentials.commands.FlyCommand
 import com.mairwunnx.projectessentials.commands.GodCommand
-import com.mairwunnx.projectessentials.configurations.UserDataConfiguration
 import com.mairwunnx.projectessentials.configurations.UserDataConfigurationModel
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
-import com.mairwunnx.projectessentials.core.api.v1.events.ModuleEventAPI
-import com.mairwunnx.projectessentials.core.api.v1.events.forge.FMLCommonSetupEventData
-import com.mairwunnx.projectessentials.core.api.v1.events.forge.ForgeEventType
 import com.mairwunnx.projectessentials.core.api.v1.extensions.commandName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.directoryName
-import com.mairwunnx.projectessentials.core.api.v1.localization.Localization
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.IModule
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
 import com.mairwunnx.projectessentials.core.api.v1.providers.ProviderAPI
 import com.mairwunnx.projectessentials.core.impl.commands.ConfigureEssentialsCommandAPI
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
 import com.mairwunnx.projectessentials.managers.AfkManager
+import com.mairwunnx.projectessentials.managers.UserManager
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraftforge.common.MinecraftForge.EVENT_BUS
@@ -32,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.eventbus.api.EventPriority
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent
 import org.apache.logging.log4j.LogManager
 import java.time.ZonedDateTime
 
@@ -41,20 +36,22 @@ class ModuleObject : IModule {
     override val version = this::class.java.`package`.implementationVersion!!
     override val loadIndex = 2
 
-    private val generalConfiguration by lazy {
-        getConfigurationByName<GeneralConfiguration>("general")
-    }
-
-    private val userDataConfiguration by lazy {
-        getConfigurationByName<UserDataConfiguration>("user-data")
-    }
-
     private val logger = LogManager.getLogger()
 
     init {
         providers.forEach(ProviderAPI::addProvider)
-        subscribeEvents()
+        initLocalization()
         EVENT_BUS.register(this)
+    }
+
+    private fun initLocalization() {
+        LocalizationAPI.apply(this.javaClass) {
+            mutableListOf(
+                "/assets/projectessentials/lang/en_us.json",
+                "/assets/projectessentials/lang/ru_ru.json",
+                "/assets/projectessentials/lang/zh_cn.json"
+            )
+        }
     }
 
     override fun init() = initializeModuleSettings()
@@ -80,22 +77,6 @@ class ModuleObject : IModule {
         ConfigureEssentialsCommandAPI.required(SETTING_REPLACE_NATIVE_HELP_COMMAND)
     }
 
-    private fun subscribeEvents() {
-        ModuleEventAPI.subscribeOn<FMLCommonSetupEventData>(
-            ForgeEventType.SetupEvent
-        ) {
-            LocalizationAPI.apply(
-                Localization(
-                    mutableListOf(
-                        "/assets/projectessentials/lang/en_us.json",
-                        "/assets/projectessentials/lang/ru_ru.json",
-                        "/assets/projectessentials/lang/zh_cn.json"
-                    ), "basic", ModuleObject::class.java
-                )
-            )
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onPlayerCommand(it: CommandEvent) {
         if (!handleBlockedCommand(it)) it.isCanceled = true
@@ -103,45 +84,34 @@ class ModuleObject : IModule {
 
     @SubscribeEvent
     fun onPlayerUpdate(event: TickEvent.PlayerTickEvent) {
-        withServerPlayer(event.player) {
-            AfkManager.handle(it)
-        }
+        withServerPlayer(event.player) { AfkManager.handle(it) }
     }
 
     @SubscribeEvent
+    fun onServerShutdown(event: FMLServerStoppingEvent) =
+        event.server.playerList.players.forEach(this::savePlayerData)
+
+    @SubscribeEvent
     fun onPlayerLeave(event: PlayerEvent.PlayerLoggedOutEvent) {
-        withServerPlayer(event.player) {
-            disposeAfkStates(it)
-            savePlayerData(it)
-        }
+        withServerPlayer(event.player) { disposeAfkStates(it).run { savePlayerData(it) } }
     }
 
     @SubscribeEvent
     fun onPlayerJoin(event: PlayerEvent.PlayerLoggedInEvent) {
         withServerPlayer(event.player) {
-            processPlayerAbilities(it)
-            executeFirstLoginCommands(it)
+            processPlayerAbilities(it).run { executeFirstLoginCommands(it) }
         }
     }
 
     @SubscribeEvent
     fun onPlayerChangedDimension(event: PlayerEvent.PlayerChangedDimensionEvent) {
-        withServerPlayer(event.player) {
-            /*
-                Saving player data after dimension changing can work
-                incorrectly, still experimental this.
-            */
-            savePlayerData(it)
-            processPlayerAbilities(it)
-        }
+        withServerPlayer(event.player) { savePlayerData(it).run { processPlayerAbilities(it) } }
     }
 
     internal fun savePlayerData(player: ServerPlayerEntity) {
         val uuid = player.uniqueID.toString()
         val name = player.name.string
-        userDataConfiguration.take().users.find {
-            it.uuid == uuid || it.name == name
-        }?.also {
+        UserManager.getUserByNameOrUUID(player.name.string, player.uniqueID.toString())?.also {
             it.isInvisible = player.isInvisible
             it.lastDateTime = ZonedDateTime.now().toString()
             it.lastWorldName = player.serverWorld.directoryName
@@ -151,7 +121,7 @@ class ModuleObject : IModule {
             it.flyWorldDimensions = getFlyEnabledWorlds(player, it.flyWorldDimensions)
             it.godWorldDimensions = getGodEnabledWorlds(player, it.godWorldDimensions)
         } ?: run {
-            userDataConfiguration.take().users.add(
+            userDataConfiguration.users.add(
                 UserDataConfigurationModel.User(
                     name, uuid,
                     player.isInvisible,
@@ -189,9 +159,7 @@ class ModuleObject : IModule {
 
     private fun processPlayerAbilities(player: ServerPlayerEntity) {
         if (hasPermission(player, "ess.vanish.auto", 4)) {
-            userDataConfiguration.take().users.find {
-                it.name == player.name.string || it.uuid == player.uniqueID.toString()
-            }?.let {
+            UserManager.getUserByNameOrUUID(player.name.string, player.uniqueID.toString())?.let {
                 player.isInvisible = it.isInvisible
             }
         }
@@ -200,9 +168,9 @@ class ModuleObject : IModule {
             processPlayerNamedAbility(player, "fly") {
                 with(player.abilities) {
                     allowEdit = true
-                    userDataConfiguration.take().users.find {
-                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
-                    }?.let {
+                    UserManager.getUserByNameOrUUID(
+                        player.name.string, player.uniqueID.toString()
+                    )?.let {
                         val inFlyWorld = it.flyWorldDimensions.contains(
                             "${player.serverWorld.directoryName}&${player.currentDimensionName}"
                         )
@@ -223,9 +191,9 @@ class ModuleObject : IModule {
             processPlayerNamedAbility(player, "god") {
                 with(player.abilities) {
                     allowEdit = true
-                    userDataConfiguration.take().users.find {
-                        player.name.string == it.name || player.uniqueID.toString() == it.uuid
-                    }?.let {
+                    UserManager.getUserByNameOrUUID(
+                        player.name.string, player.uniqueID.toString()
+                    )?.let {
                         val inGodWorld = it.godWorldDimensions.contains(
                             "${player.serverWorld.directoryName}&${player.currentDimensionName}"
                         )
@@ -256,9 +224,7 @@ class ModuleObject : IModule {
     }
 
     private fun executeFirstLoginCommands(player: ServerPlayerEntity) {
-        userDataConfiguration.take().users.find {
-            it.name == player.name.string || it.uuid == player.uniqueID.toString()
-        } ?: run {
+        UserManager.getUserByNameOrUUID(player.name.string, player.uniqueID.toString()) ?: run {
             generalConfiguration.getList(SETTING_FIRST_JOIN_COMMANDS).forEach {
                 player.server.commandManager.handleCommand(player.commandSource, it)
             }
