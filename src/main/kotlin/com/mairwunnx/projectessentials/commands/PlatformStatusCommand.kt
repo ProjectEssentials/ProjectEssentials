@@ -10,6 +10,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.lang.Runtime.getRuntime
+import java.lang.management.ManagementFactory
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import kotlin.math.min
@@ -26,7 +27,7 @@ object PlatformStatusCommand : CommandBase(platformStatusLiteral) {
 
             message.append("§6Uptime: ")
             DurationFormatUtils.formatDuration(
-                context.source.server.serverTime, "d:H:m:s"
+                ManagementFactory.getRuntimeMXBean().uptime, "d:H:m:s"
             ).split(':').asSequence().forEachIndexed { index, value ->
                 message.append(
                     StringBuilder(String.empty).apply {
