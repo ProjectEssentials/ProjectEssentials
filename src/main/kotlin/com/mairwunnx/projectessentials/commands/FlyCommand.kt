@@ -4,14 +4,13 @@ import com.mairwunnx.projectessentials.SETTING_FLY_WORLDS_DISABLED
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
 import com.mairwunnx.projectessentials.core.api.v1.extensions.playerName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.generalConfiguration
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
@@ -19,10 +18,6 @@ import net.minecraft.entity.player.ServerPlayerEntity
 
 object FlyCommand : CommandBase(flyLiteral, false) {
     override val name = "fly"
-
-    private val generalConfiguration by lazy {
-        getConfigurationByName<GeneralConfiguration>("general")
-    }
 
     fun flySelf(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.fly.self", 2) { isServer ->
