@@ -72,7 +72,7 @@ object KitCommand : CommandBase(kitLiteral, false) {
                             MessagingAPI.sendMessage(
                                 target,
                                 "${MESSAGE_MODULE_PREFIX}basic.kit.by",
-                                args = *arrayOf(sender.name.string)
+                                args = *arrayOf(sender.name.string, kit)
                             ).also { process(context) }
                         }
                     }

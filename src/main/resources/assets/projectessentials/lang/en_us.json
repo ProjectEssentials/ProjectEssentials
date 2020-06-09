@@ -54,6 +54,7 @@
   "project_essentials_basic.kit.other.no_permission": "§cYou have not permissions to give §7%s §ckit.",
   "project_essentials_basic.kit.other.not_found": "§cRequested kit §7%s §cwas not found.",
   "project_essentials_basic.kit.other.kit_not_expired": "§cKit §7%s §ccooldown is not expired for you.",
+  "project_essentials_basic.kit.by": "§6Player §7%s §6given you the kit §7%s §6at his own expense.",
   "project_essentials_basic.invsee.error": "§cYou can't see or edit inventory of selected player.",
   "project_essentials_basic.glow.self.enabled": "§6You've §2enabled §6glowing.",
   "project_essentials_basic.glow.self.disabled": "§6You've §4disabled §6glowing.",

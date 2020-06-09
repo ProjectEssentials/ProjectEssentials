@@ -54,6 +54,7 @@
   "project_essentials_basic.kit.other.no_permission": "§cУ Вас нет специфического права для получения набора §7%s.",
   "project_essentials_basic.kit.other.not_found": "§cЗапрошенный набор §7%s §cне найден.",
   "project_essentials_basic.kit.other.kit_not_expired": "§cЗадержка для набора §7%s §cне истекла для Вас.",
+  "project_essentials_basic.kit.by": "§6Игрок §7%s §6выдал вам набор §7%s §6за свой счет.",
   "project_essentials_basic.invsee.error": "§cВы не можете посмотреть или редактировать инвентарь выбранного игрока.",
   "project_essentials_basic.glow.self.enabled": "§6Свечение §2включено §6для Вас.",
   "project_essentials_basic.glow.self.disabled": "§6Свечение §4выключено §6для Вас.",
