@@ -4,14 +4,13 @@ import com.mairwunnx.projectessentials.SETTING_GOD_WORLDS_DISABLED
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
 import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI
 import com.mairwunnx.projectessentials.core.api.v1.extensions.currentDimensionName
 import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
 import com.mairwunnx.projectessentials.core.api.v1.extensions.playerName
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.generalConfiguration
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
@@ -19,10 +18,6 @@ import net.minecraft.entity.player.ServerPlayerEntity
 
 object GodCommand : CommandBase(godLiteral, false) {
     override val name = "god"
-
-    private val generalConfiguration by lazy {
-        ConfigurationAPI.getConfigurationByName<GeneralConfiguration>("general")
-    }
 
     fun godSelf(context: CommandContext<CommandSource>) = 0.also {
         validateAndExecute(context, "ess.god.self", 2) { isServer ->
