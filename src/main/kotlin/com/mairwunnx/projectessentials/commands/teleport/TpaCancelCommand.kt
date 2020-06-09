@@ -24,12 +24,12 @@ object TpaCancelCommand : CommandBase(tpaCancelLiteral) {
                 val result = TeleportManager.removeLastRequest(context.getPlayer()!!.name.string)
                 if (result == TeleportRemoveRequestResponse.NothingToRemove) {
                     MessagingAPI.sendMessage(
-                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacencel.error"
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacancel.error"
                     )
                     return@validateAndExecute
                 }
                 MessagingAPI.sendMessage(
-                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacencel.success"
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpacancel.success"
                 ).also { super.process(context) }
             }
         }
