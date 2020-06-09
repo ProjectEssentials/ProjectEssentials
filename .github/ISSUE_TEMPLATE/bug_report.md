@@ -7,27 +7,16 @@ assignees: ''
 
 ---
 
-### Describe the bug
-> - A clear and concise description of what the bug is. 
+### Description of the problem
 
-### Steps to reproduce the behavior
-> - 1. Go to '...'
-> - 2. Enter command '....'
-> - 3. See error
+### Steps to reproduce this problem
 
 ### Expected behavior
-> - A clear and concise description of what you expected to happen.
 
-### Screenshots
-> - If applicable, add screenshots to help explain your problem.
+### Additional materials
 
 ### Environment information
-> - Project Essentials version: [e.g. v0.5.0.0]
-> - Project Essentials Core version: [e.g. v0.3.0.0]
-> - Project Essentials Modules version: [e.g. Spawn - v1.0.0.0; Home - v1.0.0.0]
-> - Minecraft / Forge version: [e.g. 1.14.4 / 28.1.0]
 
-### Additional context
-> - Add any other context about the problem here.
+### Your comment.
 
 ### Log files. (latest.log and debug.log file in attachment)

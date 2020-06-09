@@ -1,42 +1,36 @@
 modLoader="javafml"
 loaderVersion="[31,)"
-logoFile="logo.png"
 issueTrackerURL="https://github.com/ProjectEssentials/ProjectEssentials/issues"
 
 [[mods]]
-    modId="project_essentials"
-    version="1.15.2-1.1.2"
-    displayName="Project Essentials"
-    credits="Thanks JetBrains for Intellij IDEA license!"
+    modId="project_essentials_basic"
+    version="${file.jarVersion}"
+    displayName="Project Essentials Basic"
+    credits="hujle, JetBrains, all forge developers, and other contributors"
     authors="MairwunNx (Pavel Erokhin)"
-    updateJSONURL="https://raw.githubusercontent.com/ProjectEssentials/ProjectEssentials/MC-1.15.2/update.json"
+    updateJSONURL="https://raw.githubusercontent.com/ProjectEssentials/ProjectEssentials/MC-1.15.2/updatev2.json"
     displayURL="https://github.com/MairwunNx/ProjectEssentials"
     description='''
-    Project Essentials - main module, just minecraft command mod.
+    A basic module of Project Essentials. This module adds a few basic commands
+    in minecraft for the project. Many of the commands in this module will be
+    familiar to you from EssentialsX.
     '''
 
-[[dependencies.mod]]
+[[dependencies.project_essentials_basic]]
     modId="project_essentials_core"
     mandatory=true
-    versionRange="[1,)"
+    versionRange="[2,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.projectessentials]]
-    modId="project_essentials_permissions"
-    mandatory=true
-    versionRange="[1,)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.projectessentials]]
+[[dependencies.project_essentials_basic]]
     modId="forge"
     mandatory=true
     versionRange="[31,)"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.projectessentials]]
+[[dependencies.project_essentials_basic]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.15.2]"

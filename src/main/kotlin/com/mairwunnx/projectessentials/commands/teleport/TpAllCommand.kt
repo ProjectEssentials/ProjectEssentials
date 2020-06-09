@@ -1,75 +1,40 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpAllLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandAPI
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.commands.back.BackLocationAPI
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
-import net.minecraft.command.arguments.EntityArgument
-import net.minecraft.entity.player.ServerPlayerEntity
-import org.apache.logging.log4j.LogManager
 
-object TpAllCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpAll
+object TpAllCommand : CommandBase(tpAllLiteral, false) {
+    override val name = "tp-all"
 
-    init {
-        command = "tpall"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpAll
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument("player", EntityArgument.player()).executes {
-                        return@executes execute(it, EntityArgument.getPlayer(it, "player"))
-                    }
-                )
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (PermissionsAPI.hasPermission(senderName, "ess.tpall", senderIsServer)) {
-            val entity = argument as ServerPlayerEntity
-            val entityPosX = entity.positionVec.x
-            val entityPosY = entity.positionVec.y
-            val entityPosZ = entity.positionVec.z
-            val entityWorld = entity.serverWorld
-            val entityYaw = entity.rotationYaw
-            val entityPitch = entity.rotationPitch
-
-            senderPlayer.server.playerList.players.forEach {
-                BackLocationProvider.commit(it)
-                it.teleport(entityWorld, entityPosX, entityPosY, entityPosZ, entityYaw, entityPitch)
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpall", 4) { isServer ->
+            with(CommandAPI.getPlayer(context, "target")) {
+                context.source.server.playerList.players.forEach {
+                    BackLocationAPI.commit(it)
+                    it.teleport(
+                        this.serverWorld,
+                        this.positionVec.x, this.positionVec.y, this.positionVec.z,
+                        this.rotationYaw, this.rotationPitch
+                    )
+                }
+            }.also {
+                if (isServer) {
+                    ServerMessagingAPI.response { "Teleporting all players to target ..." }
+                } else {
+                    MessagingAPI.sendMessage(
+                        context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpall.success"
+                    ).also { super.process(context) }
+                }
             }
-            sendMsg(sender, "tpall.success")
-        } else {
-            throwPermissionLevel(senderName, command)
-            sendMsg(sender, "tpall.restricted", senderName)
-            return 0
         }
-
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }

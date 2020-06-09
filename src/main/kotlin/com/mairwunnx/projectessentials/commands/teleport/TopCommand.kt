@@ -1,83 +1,41 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.topLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.commands.back.BackLocationAPI
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.world.gen.Heightmap.Type
-import org.apache.logging.log4j.LogManager
 
-object TopCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
+object TopCommand : CommandBase(topLiteral) {
     private const val topYPosModifier = 1.4
     private const val centerOfBlockPos = 0.5
-    private var config = getCommandsConfig().commands.top
 
-    init {
-        command = "top"
-        aliases = config.aliases.toMutableList()
-    }
+    override val name = "top"
 
-    override fun reload() {
-        config = getCommandsConfig().commands.top
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes {
-                    return@executes execute(it)
-                }
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.top")) {
-                val position = senderPlayer.position
-                val heightTop = senderPlayer.world
-                    .getChunkAt(position)
-                    .getTopBlockY(
-                        Type.MOTION_BLOCKING,
-                        position.x,
-                        position.z
-                    ) + topYPosModifier
-
-                logger.info(
-                    "Player ($senderName) top pos (y) changed from ${position.y.toDouble()} to $heightTop"
-                )
-                BackLocationProvider.commit(senderPlayer)
-                senderPlayer.setPositionAndUpdate(
-                    position.x + centerOfBlockPos,
-                    heightTop,
-                    position.z + centerOfBlockPos
-                )
-                sendMsg(sender, "top.success")
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.top", 2) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "top.restricted", senderName)
-                return 0
+                val position = context.getPlayer()!!.position
+                val heightTop = context.getPlayer()!!.world
+                    .getChunkAt(position)
+                    .getTopBlockY(Type.MOTION_BLOCKING, position.x, position.z) + topYPosModifier
+
+                BackLocationAPI.commit(context.getPlayer()!!)
+                context.getPlayer()!!.setPositionAndUpdate(
+                    position.x + centerOfBlockPos, heightTop, position.z + centerOfBlockPos
+                )
+                MessagingAPI.sendMessage(
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.top.success"
+                ).also { super.process(context) }
             }
         }
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }

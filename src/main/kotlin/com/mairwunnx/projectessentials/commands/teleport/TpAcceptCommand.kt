@@ -1,112 +1,67 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpAcceptLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.extensions.playerName
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportAcceptRequestResponse
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import org.apache.logging.log4j.LogManager
+import net.minecraft.entity.player.ServerPlayerEntity
 
-object TpAcceptCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpAccept
+object TpAcceptCommand : CommandBase(tpAcceptLiteral) {
+    override val name = "tp-accept"
+    override val aliases = listOf("tp-yes")
 
-    init {
-        command = "tpaccept"
-        aliases = config.aliases.toMutableList()
-    }
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpaccept", 0) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
+            } else {
+                val result = TeleportManager.takeRequest(context.getPlayer()!!.name.string)
+                val response = result.first
+                val initiator = result.second
 
-    override fun reload() {
-        config = getCommandsConfig().commands.tpAccept
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
+                fun out(status: String, vararg args: String) = MessagingAPI.sendMessage(
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaccept.${status}",
+                    args = *args
+                )
 
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes { execute(it) }
-            )
-        }
-    }
+                fun outTarget(status: String) = MessagingAPI.sendMessage(
+                    initiator!!, "${MESSAGE_MODULE_PREFIX}basic.tpaccept.by.${status}",
+                    args = *arrayOf(context.playerName())
+                )
 
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpaccept")) {
-                val requestInitiator =
-                    ProjectEssentials.teleportPresenter.getRequest(senderPlayer)
-
-                val requestHereInitiator =
-                    ProjectEssentials.teleportPresenter.getRequestHere(senderPlayer)
-
-                when {
-                    requestInitiator != null -> {
-                        BackLocationProvider.commit(requestInitiator)
-                        requestInitiator.teleport(
-                            senderPlayer.serverWorld,
-                            senderPlayer.positionVec.x,
-                            senderPlayer.positionVec.y,
-                            senderPlayer.positionVec.z,
-                            senderPlayer.rotationYaw,
-                            senderPlayer.rotationPitch
-                        )
-                        sendMsg(
-                            requestInitiator.commandSource,
-                            "tpaccept.request_accepted",
-                            senderName
-                        )
-                        ProjectEssentials.teleportPresenter.removeRequest(
-                            requestInitiator.name.string,
-                            senderPlayer.name.string
-                        )
+                when (response) {
+                    TeleportAcceptRequestResponse.NothingToAccept -> out("nothing_accept")
+                    TeleportAcceptRequestResponse.RequestedPlayerOffline -> out("player_offline")
+                    TeleportAcceptRequestResponse.AcceptedToSuccessful -> {
+                        teleport(initiator!!, context.getPlayer()!!)
+                        out("to.success", initiator.name.string)
+                            .also { outTarget("to.success") }
+                            .also { super.process(context) }
                     }
-                    requestHereInitiator != null -> {
-                        BackLocationProvider.commit(requestHereInitiator)
-                        senderPlayer.teleport(
-                            requestHereInitiator.serverWorld,
-                            requestHereInitiator.positionVec.x,
-                            requestHereInitiator.positionVec.y,
-                            requestHereInitiator.positionVec.z,
-                            requestHereInitiator.rotationYaw,
-                            requestHereInitiator.rotationPitch
-                        )
-                        sendMsg(
-                            requestHereInitiator.commandSource,
-                            "tpaccept.request_accepted",
-                            senderName
-                        )
-                        ProjectEssentials.teleportPresenter.removeRequestHere(
-                            requestHereInitiator.name.string,
-                            senderPlayer.name.string
-                        )
-                    }
-                    else -> {
-                        sendMsg(sender, "tpaccept.nothing_to_accept")
+                    TeleportAcceptRequestResponse.AcceptedHereSuccessful -> {
+                        teleport(context.getPlayer()!!, initiator!!)
+                        out("from.success", initiator.name.string)
+                            .also { outTarget("from.success") }
+                            .also { super.process(context) }
                     }
                 }
-            } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tpaccept.restricted")
-                return 0
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
+    }
+
+    private fun teleport(from: ServerPlayerEntity, to: ServerPlayerEntity) {
+        from.teleport(
+            to.serverWorld,
+            to.positionVec.x, to.positionVec.y, to.positionVec.z,
+            to.rotationYaw, to.rotationPitch
+        )
     }
 }

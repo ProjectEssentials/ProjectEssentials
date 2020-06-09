@@ -1,77 +1,43 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration
-import com.mairwunnx.projectessentials.core.backlocation.BackLocationProvider
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpPosLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.commands.back.BackLocationAPI
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.command.Commands
 import net.minecraft.command.arguments.BlockPosArgument
-import org.apache.logging.log4j.LogManager
 
-object TpPosCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = ModConfiguration.getCommandsConfig().commands.tpPos
+object TpPosCommand : CommandBase(tpPosLiteral, false) {
+    override val name = "tp-pos"
 
-    init {
-        command = "tppos"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = ModConfiguration.getCommandsConfig().commands.tpPos
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .then(
-                    Commands.argument("position", BlockPosArgument.blockPos()).executes {
-                        return@executes execute(it)
-                    }
-                )
-            )
-        }
-    }
-
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tppos")) {
-                val position = BlockPosArgument.getBlockPos(c, "position")
-                BackLocationProvider.commit(senderPlayer)
-                senderPlayer.teleport(
-                    senderPlayer.serverWorld,
-                    position.x.toDouble() + 0.5,
-                    position.y.toDouble(),
-                    position.z.toDouble() + 0.5,
-                    senderPlayer.rotationYaw,
-                    senderPlayer.rotationPitch
-                )
-                sendMsg(sender, "tppos.success")
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tppos", 2) { isServer ->
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tppos.restricted", senderName)
-                return 0
+                val position = BlockPosArgument.getBlockPos(
+                    context, "position"
+                )
+                with(context.getPlayer()!!) {
+                    BackLocationAPI.commit(this)
+                    this.teleport(
+                        this.serverWorld,
+                        position.x.toDouble() + 0.5,
+                        position.y.toDouble(),
+                        position.z.toDouble() + 0.5,
+                        this.rotationYaw,
+                        this.rotationPitch
+                    )
+                }
+                MessagingAPI.sendMessage(
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tppos.success"
+                ).also { super.process(context) }
             }
         }
-        logger.info("Executed command \"/$command\" from $senderName")
-        return 0
     }
 }

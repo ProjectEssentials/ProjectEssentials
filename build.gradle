@@ -1,117 +1,76 @@
 buildscript {
     repositories {
-        maven { url("https://files.minecraftforge.net/maven") }
-        jcenter()
-        mavenCentral()
+        maven { url 'https://files.minecraftforge.net/maven' }
     }
     dependencies {
-        classpath(
-            group: "net.minecraftforge.gradle",
-            name: "ForgeGradle",
-            version: forge_gradle_version,
-            changing: true
-        )
-        classpath(
-            group: "org.jetbrains.kotlin",
-            name: "kotlin-gradle-plugin",
-            version: kotlin_version
-        )
-        classpath(
-            group: "org.jetbrains.kotlin",
-            name: "kotlin-serialization",
-            version: kotlin_version
-        )
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.72'
 }
 
 apply(plugin: "net.minecraftforge.gradle")
-apply(plugin: "kotlin")
-apply(plugin: "kotlinx-serialization")
+
+String packagesToken = new String(package_public_token.decodeBase64())
 
 version = module_version
-group = "com.mairwunnx.$module_id"
+group = "com.projectessentials.basic"
 archivesBaseName = module_name
 
 minecraft {
-    mappings(
-        channel: forge_mappings_channel_type,
-        version: forge_mappings_channel_version
-    )
-
-    runs {
-        client {
-            //noinspection GroovyAssignabilityCheck
-            workingDirectory(project.file(dev_run_client_path))
-            property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
-            property("forge.logging.console.level", "debug")
-            mods {
-                ProjectEssentials {
-                    //noinspection GroovyAssignabilityCheck
-                    source(sourceSets.main)
-                }
-            }
-        }
-
-        server {
-            //noinspection GroovyAssignabilityCheck
-            workingDirectory(project.file(dev_run_server_path))
-            property("forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP")
-            property("forge.logging.console.level", "debug")
-            mods {
-                ProjectEssentials {
-                    //noinspection GroovyAssignabilityCheck
-                    source(sourceSets.main)
-                }
-            }
-        }
-    }
+    accessTransformer = file 'src/main/resources/META-INF/accesstransformer.cfg'
+    mappings channel: forge_mappings_channel_type, version: forge_mappings_channel_version
 }
 
 repositories {
-    jcenter()
+    maven {
+        name = package_maven_repo_name
+        url = uri "$package_maven_repo-core"
+        credentials {
+            username = package_maven_repo_mail
+            password = packagesToken
+        }
+    }
+    maven { url 'https://libraries.minecraft.net' }
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    minecraft(group: "net.minecraftforge", name: "forge", version: forge_version)
-    compile(group: "com.mojang", name: "brigadier", version: brigadier_version)
-    compile(
-        group: "org.jetbrains.kotlinx",
-        name: "kotlinx-serialization-runtime",
-        version: kotlinx_serialization_version
-    )
-    compile(
-        group: "org.jetbrains.kotlin",
-        name: "kotlin-stdlib-$kotlin_jdk_version_target",
-        version: kotlin_version
-    )
+    minecraft "net.minecraftforge:forge:$forge_version"
+    implementation("com.projectessentials.core:ProjectEssentials-Core:$core_version") {
+        transitive = false
+    }
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlinx_serialization_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-$kotlin_jdk_version_target:$kotlin_version"
 }
 
 jar {
     manifest {
         attributes([
-            "Specification-Title"     : module_name,
-            "Specification-Vendor"    : module_vendor,
-            "Specification-Version"   : module_version,
-            "Implementation-Title"    : module_name,
-            "Implementation-Version"  : module_version,
-            "Implementation-Vendor"   : module_vendor,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : module_name,
+                "Specification-Vendor"    : module_vendor,
+                "Specification-Version"   : module_version,
+                "Implementation-Title"    : module_name,
+                "Implementation-Version"  : module_version,
+                "Implementation-Vendor"   : module_vendor,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
 sourceCompatibility = targetCompatibility =
-    compileJava.sourceCompatibility =
-        compileJava.targetCompatibility = project_jvm_version_target
+        compileJava.sourceCompatibility =
+                compileJava.targetCompatibility = project_jvm_version_target
 
 compileKotlin.kotlinOptions.jvmTarget =
-    compileTestKotlin.kotlinOptions.jvmTarget = project_jvm_version_target
+        compileTestKotlin.kotlinOptions.jvmTarget = project_jvm_version_target
 
-//noinspection GroovyAssignabilityCheck
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
-        freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
+        freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
     }
 }

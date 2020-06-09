@@ -1,105 +1,49 @@
 package com.mairwunnx.projectessentials.commands.teleport
 
-import com.mairwunnx.projectessentials.ProjectEssentials.Companion.teleportPresenter
-import com.mairwunnx.projectessentials.commands.CommandBase
-import com.mairwunnx.projectessentials.configurations.ModConfiguration.getCommandsConfig
-import com.mairwunnx.projectessentials.core.helpers.throwOnlyPlayerCan
-import com.mairwunnx.projectessentials.core.helpers.throwPermissionLevel
-import com.mairwunnx.projectessentials.extensions.sendMsg
-import com.mairwunnx.projectessentials.permissions.permissions.PermissionsAPI
-import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mairwunnx.projectessentials.commands.tpDenyLiteral
+import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
+import com.mairwunnx.projectessentials.core.api.v1.commands.CommandBase
+import com.mairwunnx.projectessentials.core.api.v1.extensions.getPlayer
+import com.mairwunnx.projectessentials.core.api.v1.extensions.playerName
+import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
+import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
+import com.mairwunnx.projectessentials.managers.TeleportAcceptRequestResponse.*
+import com.mairwunnx.projectessentials.managers.TeleportManager
+import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import org.apache.logging.log4j.LogManager
 
-object TpDenyCommand : CommandBase() {
-    private val logger = LogManager.getLogger()
-    private var config = getCommandsConfig().commands.tpDeny
+object TpDenyCommand : CommandBase(tpDenyLiteral) {
+    override val name = "tp-deny"
+    override val aliases = listOf("tp-no")
 
-    init {
-        command = "tpdeny"
-        aliases = config.aliases.toMutableList()
-    }
-
-    override fun reload() {
-        config = getCommandsConfig().commands.tpDeny
-        aliases = config.aliases.toMutableList()
-        super.reload()
-    }
-
-    override fun register(dispatcher: CommandDispatcher<CommandSource>) {
-        super.register(dispatcher)
-        aliases.forEach { command ->
-            dispatcher.register(literal<CommandSource>(command)
-                .executes { execute(it) }
+    override fun process(context: CommandContext<CommandSource>) = 0.also {
+        validateAndExecute(context, "ess.teleport.tpdeny", 0) { isServer ->
+            fun out(status: String, vararg args: String) = MessagingAPI.sendMessage(
+                context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpdeny.${status}",
+                args = *args
             )
-        }
-    }
 
-    override fun execute(
-        c: CommandContext<CommandSource>,
-        argument: Any?
-    ): Int {
-        super.execute(c, argument)
-
-        if (senderIsServer) {
-            throwOnlyPlayerCan(command)
-            return 0
-        } else {
-            if (PermissionsAPI.hasPermission(senderName, "ess.tpdeny")) {
-                val requestInitiator =
-                    teleportPresenter.getRequest(senderPlayer)
-
-                val requestHereInitiator =
-                    teleportPresenter.getRequestHere(senderPlayer)
-
-                when {
-                    requestInitiator != null -> {
-                        if (teleportPresenter.removeRequest(
-                                requestInitiator.name.string, senderPlayer.name.string
-                            )
-                        ) {
-                            sendMsg(
-                                requestInitiator.commandSource,
-                                "tpdeny.request_denied",
-                                senderName
-                            )
-                            sendMsg(
-                                sender,
-                                "tpdeny.request_denied_successfully",
-                                requestInitiator.name.string
-                            )
+            if (isServer) {
+                ServerMessagingAPI.throwOnlyPlayerCan()
+            } else {
+                val result = TeleportManager.takeRequest(context.getPlayer()!!.name.string)
+                when (result.first) {
+                    NothingToAccept -> out("nothing_cancel")
+                    RequestedPlayerOffline, AcceptedToSuccessful, AcceptedHereSuccessful -> {
+                        out(
+                            "success", result.second!!.name.string
+                        ).also { super.process(context) }.also {
+                            result.second?.let {
+                                MessagingAPI.sendMessage(
+                                    it, "${MESSAGE_MODULE_PREFIX}basic.tpdeny.by",
+                                    args = *arrayOf(context.playerName())
+                                )
+                            }
                         }
-                    }
-                    requestHereInitiator != null -> {
-                        if (teleportPresenter.removeRequestHere(
-                                requestHereInitiator.name.string, senderPlayer.name.string
-                            )
-                        ) {
-                            sendMsg(
-                                requestHereInitiator.commandSource,
-                                "tpdeny.request_denied",
-                                senderName
-                            )
-                            sendMsg(
-                                sender,
-                                "tpdeny.request_denied_successfully",
-                                requestHereInitiator.name.string
-                            )
-                        }
-                    }
-                    else -> {
-                        sendMsg(sender, "tpdeny.nothing_to_cancel")
                     }
                 }
-            } else {
-                throwPermissionLevel(senderName, command)
-                sendMsg(sender, "tpdeny.restricted")
-                return 0
             }
         }
-        logger.info("Executed command \"/${command}\" from $senderName")
-        return 0
     }
 }
