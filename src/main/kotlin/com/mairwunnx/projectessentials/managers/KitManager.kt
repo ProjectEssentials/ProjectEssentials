@@ -44,7 +44,7 @@ object KitManager {
                 it.name == playerEntity.name.string || it.uuid == playerEntity.uniqueID.toString()
             }?.let { user ->
                 user.lastKitsDates.map { value ->
-                    value.split(':')[0] to value.split(':')[1]
+                    value.split('@').let { it[0] to it[1] }
                 }.find { it.first == name }?.let {
                     val lastTime = ZonedDateTime.parse(it.second)
                     val nowTime = ZonedDateTime.now()
@@ -133,11 +133,11 @@ object KitManager {
             it.name == receiver.name.string || it.uuid == receiver.uniqueID.toString()
         }?.let { user ->
             user.lastKitsDates.map { value ->
-                value.split(':')[0] to value.split(':')[1]
+                value.split('@').let { it[0] to it[1] }
             }.find { it.first == kitName }?.let { expiredKit ->
                 user.lastKitsDates.removeAll { expiredKit.first in it }
             }
-            user.lastKitsDates.add("$kitName:${ZonedDateTime.now()}")
+            user.lastKitsDates.add("$kitName@${ZonedDateTime.now()}")
         }
     }
 }
