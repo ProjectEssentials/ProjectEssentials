@@ -35,7 +35,7 @@ object KitsConfiguration : IConfiguration<KitsConfigurationModel> {
 
         logger.info("Saving configuration `${name}`")
         val raw = jsonInstance.stringify(
-            KitsConfigurationModel.serializer(), configuration
+            KitsConfigurationModel.serializer(), configurationData
         )
         try {
             File(path).writeText(raw)
