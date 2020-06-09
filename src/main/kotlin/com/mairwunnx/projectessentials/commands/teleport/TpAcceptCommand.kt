@@ -27,8 +27,9 @@ object TpAcceptCommand : CommandBase(tpAcceptLiteral) {
                 val response = result.first
                 val initiator = result.second
 
-                fun out(status: String) = MessagingAPI.sendMessage(
-                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaccept.${status}"
+                fun out(status: String, vararg args: String) = MessagingAPI.sendMessage(
+                    context.getPlayer()!!, "${MESSAGE_MODULE_PREFIX}basic.tpaccept.${status}",
+                    args = *args
                 )
 
                 fun outTarget(status: String) = MessagingAPI.sendMessage(
@@ -41,13 +42,13 @@ object TpAcceptCommand : CommandBase(tpAcceptLiteral) {
                     TeleportAcceptRequestResponse.RequestedPlayerOffline -> out("player_offline")
                     TeleportAcceptRequestResponse.AcceptedToSuccessful -> {
                         teleport(initiator!!, context.getPlayer()!!)
-                        out("to.success")
+                        out("to.success", initiator.name.string)
                             .also { outTarget("to.success") }
                             .also { super.process(context) }
                     }
                     TeleportAcceptRequestResponse.AcceptedHereSuccessful -> {
                         teleport(context.getPlayer()!!, initiator!!)
-                        out("from.success")
+                        out("from.success", initiator.name.string)
                             .also { outTarget("from.success") }
                             .also { super.process(context) }
                     }
