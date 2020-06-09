@@ -9,7 +9,7 @@ import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import net.minecraft.nbt.INBT
+import net.minecraft.nbt.CompoundNBT
 
 object SkullCommand : CommandBase(skullLiteral, false) {
     override val name = "skull"
@@ -21,7 +21,7 @@ object SkullCommand : CommandBase(skullLiteral, false) {
                 ServerMessagingAPI.throwOnlyPlayerCan()
             } else {
                 ItemStack(Items.PLAYER_HEAD).also { process(context) }.apply {
-                    setTagInfo("SkullOwner", INBT.create(8))
+                    setTagInfo("SkullOwner", CompoundNBT())
                     tag?.putString("SkullOwner", CommandAPI.getString(context, "nick"))
                 }.also { context.getPlayer()!!.addItemStackToInventory(it) }
             }
