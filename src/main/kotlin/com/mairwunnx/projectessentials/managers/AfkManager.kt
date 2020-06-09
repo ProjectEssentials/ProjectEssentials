@@ -5,12 +5,11 @@ import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_KICK_TIME
 import com.mairwunnx.projectessentials.SETTING_AFK_IDLENESS_TIME
 import com.mairwunnx.projectessentials.core.api.v1.MESSAGE_MODULE_PREFIX
 import com.mairwunnx.projectessentials.core.api.v1.SETTING_LOC_ENABLED
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.localization.LocalizationAPI
 import com.mairwunnx.projectessentials.core.api.v1.messaging.MessagingAPI
 import com.mairwunnx.projectessentials.core.api.v1.module.ModuleAPI
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.generalConfiguration
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.util.text.TextComponentUtils
 import net.minecraft.util.text.TranslationTextComponent
@@ -22,10 +21,6 @@ import kotlin.time.toDuration
  * !Experimental, issues can be present in production.
  */
 object AfkManager {
-    private val generalConfiguration by lazy {
-        getConfigurationByName<GeneralConfiguration>("general")
-    }
-
     private val afkPlayers = mutableSetOf<ServerPlayerEntity>()
 
     fun getAfkPlayers() = afkPlayers
