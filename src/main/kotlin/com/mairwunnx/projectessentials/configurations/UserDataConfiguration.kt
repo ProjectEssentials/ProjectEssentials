@@ -3,6 +3,7 @@ package com.mairwunnx.projectessentials.configurations
 import com.mairwunnx.projectessentials.core.api.v1.configuration.IConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.helpers.jsonInstance
 import com.mairwunnx.projectessentials.core.api.v1.helpers.projectConfigDirectory
+import net.minecraftforge.fml.server.ServerLifecycleHooks.getCurrentServer
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.io.FileNotFoundException
@@ -16,7 +17,9 @@ object UserDataConfiguration : IConfiguration<UserDataConfigurationModel> {
     override val name = "user-data"
     override val version = 1
     override val configuration = take()
-    override val path = projectConfigDirectory + File.separator + "user-data.json"
+    override val path by lazy {
+        projectConfigDirectory + File.separator + getCurrentServer().folderName + File.separator + "users.json"
+    }
 
     override fun load() {
         try {
