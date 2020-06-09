@@ -26,14 +26,14 @@ object KitManager {
     }
 
     private val kitsConfiguration by lazy {
-        getConfigurationByName<KitsConfiguration>("kits")
+        getConfigurationByName<KitsConfiguration>("kits").take()
     }
 
-    fun isKitExist(name: String) = name in kitsConfiguration.take().kits.map { it.name }
+    fun getKits() = kitsConfiguration.kits.asSequence()
 
-    fun getKit(name: String) = kitsConfiguration.take().kits.find { it.name == name }
+    fun getKit(name: String) = getKits().find { it.name == name }
 
-    fun getKits() = kitsConfiguration.take().kits
+    fun isKitExist(name: String) = getKits().filter { it.name == name }.count() > 0
 
     fun requestKit(playerEntity: ServerPlayerEntity, name: String): Response {
         if (!isKitExist(name)) return Response.KitNotFound
@@ -54,19 +54,11 @@ object KitManager {
                             hasPermission(
                                 playerEntity, "ess.kit.receive.kit.$name.cooldown.bypass", 4
                             )
-                        ) {
-                            return Response.Success.also { unpackKit(playerEntity, kit) }
-                        }
+                        ) return Response.Success.also { unpackKit(playerEntity, kit) }
                         return Response.KitTimeNotExpired
-                    } else {
-                        return Response.Success.also { unpackKit(playerEntity, kit) }
-                    }
-                } ?: run {
-                    return Response.Success.also { unpackKit(playerEntity, kit) }
-                }
-            } ?: run {
-                return Response.Success.also { unpackKit(playerEntity, kit) }
-            }
+                    } else return Response.Success.also { unpackKit(playerEntity, kit) }
+                } ?: run { return Response.Success.also { unpackKit(playerEntity, kit) } }
+            } ?: run { return Response.Success.also { unpackKit(playerEntity, kit) } }
         }
         return Response.KitNoHasPermissions
     }
@@ -74,11 +66,8 @@ object KitManager {
     private fun unpackKit(receiver: ServerPlayerEntity, kit: KitsConfigurationModel.Kit) {
         kit.items.forEach { kitItem ->
             if (kitItem.name.isNotBlank()) {
-                val item = checkIllegalItem(kitItem.name)
-                if (item != null) {
-                    ItemStack(
-                        item, checkIllegalItemCount(kitItem.count)
-                    ).apply {
+                checkIllegalItem(kitItem.name)?.also { item ->
+                    ItemStack(item, checkIllegalItemCount(kitItem.count)).apply {
                         if (kitItem.displayName.isNotBlank()) {
                             displayName = TextComponentUtils.toTextComponent {
                                 kitItem.displayName
@@ -89,9 +78,8 @@ object KitManager {
                         }
                         kitItem.enchantments.forEach {
                             if (it.enchantment.isNotBlank()) {
-                                val enchantment = checkIllegalEnchantment(it.enchantment)
-                                if (enchantment != null) {
-                                    addEnchantment(enchantment, checkIllegalEnchantLevel(it.level))
+                                checkIllegalEnchantment(it.enchantment)?.also { ench ->
+                                    addEnchantment(ench, checkIllegalEnchantLevel(it.level))
                                 }
                             }
                         }
@@ -106,14 +94,10 @@ object KitManager {
     }
 
     private fun checkIllegalItem(item: String) =
-        ForgeRegistries.ITEMS.getValue(
-            ResourceLocation.read(StringReader(item))
-        )?.item
+        ForgeRegistries.ITEMS.getValue(ResourceLocation.read(StringReader(item)))?.item
 
     private fun checkIllegalEnchantment(enchantment: String) =
-        ForgeRegistries.ENCHANTMENTS.getValue(
-            ResourceLocation.read(StringReader(enchantment))
-        )
+        ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.read(StringReader(enchantment)))
 
     private fun checkIllegalItemCount(count: Int) = when {
         count < 1 -> 1
