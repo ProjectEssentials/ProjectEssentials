@@ -53,7 +53,7 @@ Removed data: $it
 
         logger.info("Saving configuration `${name}`")
         val raw = jsonInstance.stringify(
-            UserDataConfigurationModel.serializer(), configuration
+            UserDataConfigurationModel.serializer(), configurationData
         )
         try {
             File(path).writeText(raw)
