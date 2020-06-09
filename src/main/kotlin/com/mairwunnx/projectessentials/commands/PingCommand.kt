@@ -8,7 +8,7 @@ import com.mairwunnx.projectessentials.core.api.v1.messaging.ServerMessagingAPI
 import com.mairwunnx.projectessentials.validateAndExecute
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraftforge.fml.server.ServerLifecycleHooks
+import net.minecraftforge.fml.server.ServerLifecycleHooks.getCurrentServer
 
 object PingCommand : CommandBase(pingLiteral) {
     override val name = "ping"
@@ -22,7 +22,7 @@ object PingCommand : CommandBase(pingLiteral) {
                     context.getPlayer()!!,
                     "${MESSAGE_MODULE_PREFIX}basic.ping.success",
                     args = *arrayOf(
-                        ServerLifecycleHooks.getCurrentServer().serverHostname,
+                        if (getCurrentServer().serverHostname.isBlank()) "local-host" else getCurrentServer().serverHostname,
                         context.getPlayer()!!.ping.toString()
                     )
                 ).also { super.process(context) }
