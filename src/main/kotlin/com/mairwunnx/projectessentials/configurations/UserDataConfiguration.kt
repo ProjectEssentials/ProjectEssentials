@@ -1,8 +1,10 @@
 package com.mairwunnx.projectessentials.configurations
 
+import com.mairwunnx.projectessentials.ModuleObject
 import com.mairwunnx.projectessentials.core.api.v1.configuration.IConfiguration
 import com.mairwunnx.projectessentials.core.api.v1.helpers.jsonInstance
 import com.mairwunnx.projectessentials.core.api.v1.helpers.projectConfigDirectory
+import com.mairwunnx.projectessentials.core.api.v1.module.ModuleAPI
 import net.minecraftforge.fml.server.ServerLifecycleHooks.getCurrentServer
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -52,7 +54,9 @@ Removed data: $it
     }
 
     override fun save() {
-        File(path).parentFile.mkdirs()
+        getCurrentServer().playerList.players.forEach(
+            (ModuleAPI.getModuleByName("basic") as ModuleObject)::savePlayerData
+        ).also { File(path).parentFile.mkdirs() }
 
         logger.info("Saving configuration `${name}`")
         val raw = jsonInstance.stringify(
