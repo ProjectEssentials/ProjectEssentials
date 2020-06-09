@@ -1,9 +1,8 @@
 package com.mairwunnx.projectessentials.container
 
 import com.mairwunnx.projectessentials.SETTING_INVSEE_DISABLE_DANGER_SLOTS
-import com.mairwunnx.projectessentials.core.api.v1.configuration.ConfigurationAPI.getConfigurationByName
 import com.mairwunnx.projectessentials.core.api.v1.permissions.hasPermission
-import com.mairwunnx.projectessentials.core.impl.configurations.GeneralConfiguration
+import com.mairwunnx.projectessentials.generalConfiguration
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.entity.player.ServerPlayerEntity
@@ -33,10 +32,4 @@ class PlayerInventoryContainer(
     }
 
     override fun canInteractWith(playerIn: PlayerEntity) = playerIn.isAlive
-
-    companion object {
-        private val generalConfiguration by lazy {
-            getConfigurationByName<GeneralConfiguration>("general")
-        }
-    }
 }
