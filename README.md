@@ -8,6 +8,10 @@ A basic module of Project Essentials. This module adds a few basic commands in m
 
 [![](https://github.com/ProjectEssentials/ProjectEssentials-Assets/raw/ASSETS-20-Q2/assets/common/support.png)](https://gist.github.com/MairwunNx/fda95062618db6880ef8ee06e1bba54f)
 
+### Support
+
+At now, I'm support minecraft versions: [1.14.4](https://github.com/ProjectEssentials/ProjectEssentials/tree/MC-1.14.4) and [1.15.2](https://github.com/ProjectEssentials/ProjectEssentials/tree/MC-1.15.2).
+
 ### Credits
 
 - `hujle` for testing this mod and almost all modules in production
