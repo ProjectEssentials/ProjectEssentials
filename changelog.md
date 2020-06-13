@@ -49,7 +49,7 @@ Since 2.0.0 versions change log same for all supported minecraft versions.
 - `brigadier` removed from dependencies.
 - `brigadier_version` property removed from gradle.properties.
 
-## [2.0.0+SNAPSHOT.1] - 2020-05-30
+## [2.0.0-SNAPSHOT.1] - 2020-05-30
 
 ### Added
 - **Fully re-written all code of this module.**
